@@ -1,1 +1,1 @@
-# mean-meeting
+# tech-stack
