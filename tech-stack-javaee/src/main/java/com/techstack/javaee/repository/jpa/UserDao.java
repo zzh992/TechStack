@@ -1,5 +1,10 @@
 package com.techstack.javaee.repository.jpa;
 
-public interface UserDao {
+import com.techstack.javaee.entity.User;
 
+public interface UserDao extends BaseRepository<User, Long>{
+
+	User findByName(String name);
+
+	User findByLoginName(String loginName);
 }
