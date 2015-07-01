@@ -1,4 +1,4 @@
-package com.techstack.javaee.entity;
+package com.techstack.javaee.entity.jpa;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -11,7 +11,7 @@ public class Action extends IdEntity {
 	
 	private String actionName; 
 	
-	/**    权限标识    */
+	/**    Permission identification  */
 	private String action;
 	
 	@OneToOne

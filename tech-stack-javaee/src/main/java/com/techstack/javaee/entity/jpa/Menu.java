@@ -1,4 +1,4 @@
-package com.techstack.javaee.entity;
+package com.techstack.javaee.entity.jpa;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;

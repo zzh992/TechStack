@@ -1,6 +1,6 @@
 package com.techstack.javaee.repository.jpa;
 
-import com.techstack.javaee.entity.User;
+import com.techstack.javaee.entity.jpa.User;
 
 public interface UserDao extends BaseRepository<User, Long>{
 
