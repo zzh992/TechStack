@@ -1,0 +1,17 @@
+1. 在mapper文件中，如果碰上这样的sql
+	<select id="findByLoginName" parameterType="string" resultType="com.oocl.web.permission.entity.PmsUser">
+    	select * from <include refid="pms_user"/> where LOGIN_NAME = #{loginName}
+  	</select>
+  	由于查出来的记录字段属性名称是数据库中定义的名称（带下划线），而我们的JavaBean中的属性名称是用驼峰命名的，所以会出现记录并未能正确赋值到JavaBean中
+  	解决方法有两种：a. 在sql语句块中的resultType改成resultMap,定义一个resultMap来映射实体，如：
+			  		<resultMap id="beanMap" type="com.AAA">
+						<id column="ID" property="id" />
+						<result column="XXX_SSS" property="xxxSss" />
+					</resultMap>
+					
+					<select id="findByLoginName" parameterType="string" resultMap="beanMap">
+				    	select * from <include refid="pms_user"/> where LOGIN_NAME = #{loginName}
+				  	</select>
+				  	
+				b. 在java程序中转化，但sql中的resultType必须为Map，见BaseDaoImpl（不建议）
+  	
