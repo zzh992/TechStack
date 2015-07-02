@@ -30,6 +30,7 @@ node_modules
 #Eclipse Files
 .settings/
 target/
+tech-stack-javaee/tech-stack-sms2/src/main/webapp/js/dwz/
 .classpath
 .project
 

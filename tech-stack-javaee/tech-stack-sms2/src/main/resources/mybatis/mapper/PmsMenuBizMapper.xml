@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.oocl.web.permission.biz.PmsMenuBiz">
+
+	<resultMap id="RoleMenuMap" type="com.oocl.web.permission.entity.PmsRoleMenu">
+	    <id column="ID" property="id" />
+		<result column="ROLE_ID" property="roleId" />
+		<result column="MENU_ID" property="menuId" />
+	</resultMap>
+
+	<select id="listMenuByParent" parameterType="string" resultType="com.oocl.web.permission.entity.PmsMenu">
+		select 
+			M.ID AS "id", 
+			M.VERSION AS "version", 
+			M.PARENT_ID AS "parentId", 
+			M.NAME as "name", 
+			M.IS_LEAF AS "isLeaf", 
+			M.LEVEL AS "level", 
+			M.TARGET_NAME AS "targetName" 
+		FROM PMS_MENU M
+		<where>
+			<if test="parentId!=null and parentId!=''">
+				And M.PARENT_ID = #{parentId}
+			</if>
+		</where>
+		ORDER BY M.NUMBER ASC
+	</select>
+	
+	<select id="listMenuByRoleIds" parameterType="string" resultType="com.oocl.web.permission.entity.PmsMenu">
+		<!-- SELECT DISTINCT * FROM (
+			SELECT 
+				M.ID AS "id", 
+				M.VERSION AS "version", 
+				M.PARENT_ID AS "parentId", 
+				M.NAME as "name", 
+				M.IS_LEAF AS "isLeaf",
+				M.LEVEL AS "level",
+				M.URL as "url",
+				M.TARGET_NAME AS "targetName",
+				M.NUMBER as "number"
+			FROM <include refid="pms_role"/> R
+			LEFT JOIN
+			<include refid="pms_role_menu"/> RM
+			ON R.ID = RM.ROLE_ID
+			LEFT JOIN <include refid="pms_menu"/> M
+			ON RM.MENU_ID = M.ID
+			WHERE R.ID in
+			<foreach item="item" index="index" collection="list" open="(" separator="," close=")">#{item}</foreach>
+		) AS MT ORDER BY MT.number ASC -->
+		
+		SELECT
+			m.ID AS "id",
+			m.VERSION AS "version",
+			m.PARENT_ID AS "parentId",
+			m. NAME AS "name",
+			m.IS_LEAF AS "isLeaf",
+			m. LEVEL AS "level",
+			m.URL AS "url",
+			m.TARGET_NAME AS "targetName",
+			m.NUMBER AS "number"
+		FROM
+			PMS_MENU m
+		JOIN PMS_ROLE_MENU rm ON m.ID = rm.MENU_ID
+		WHERE
+			rm.ROLE_ID IN <foreach item="item" index="index" collection="list" open="(" separator="," close=")">#{item}</foreach>
+		UNION
+		SELECT
+			m.ID AS "id",
+			m.VERSION AS "version",
+			m.PARENT_ID AS "parentId",
+			m. NAME AS "name",
+			m.IS_LEAF AS "isLeaf",
+			m. LEVEL AS "level",
+			m.URL AS "url",
+			m.TARGET_NAME AS "targetName",
+			m.NUMBER AS "number"
+		FROM
+			PMS_MENU m,
+			PMS_ROLE r
+		WHERE
+			r.ID IN <foreach item="item" index="index" collection="list" open="(" separator="," close=")">#{item}</foreach>
+		AND r.ROLE_TYPE = 1
+	</select>
+	
+	<select id="listRoleMenuByRoleId" parameterType="long" resultMap="RoleMenuMap">
+		select * from PMS_ROLE_MENU where ROLE_ID = #{roleId}
+	</select>
+	
+	<select id="listAllActionByMenuId" parameterType="java.util.Map" resultType="com.oocl.web.permission.entity.PmsAction">
+    	select  
+    		D.ID AS "id",
+			D.VERSION AS "version",
+			D.ACTION_NAME AS "actionName",
+			D.ACTION AS "action",
+			D.REMARK AS "remark",
+			D.CREATE_TIME AS "createTime",
+			D.MENU_ID AS "menuId",
+			D.MENU_NAME as "menuName"
+    	from PMS_ACTION D
+    	where 1=1
+    	<if test="menuId!=null and menuId!=''">
+    	    and  D.MENU_ID = #{menuId}
+    	</if>
+  	</select>
+  	
+  	<select id="listMenuByParentId" parameterType="long" resultType="com.oocl.web.permission.entity.PmsMenu">
+		SELECT
+		ID AS "id" ,
+		VERSION AS "version",
+		PARENT_ID AS "parentId",
+		NAME as "name",
+		IS_LEAF AS "isLeaf",
+		LEVEL AS "level",
+		TARGET_NAME AS "targetName"
+		FROM PMS_MENU where PARENT_ID = #{parentId}
+	</select>
+	
+	<select id="listMenuBy" parameterType="java.util.Map" resultType="com.oocl.web.permission.entity.PmsMenu">
+		select * from PMS_MENU
+		<where>
+			<if test="isLeaf != null and isLeaf != ''"> and IS_LEAF = #{isLeaf}</if>
+			<if test="name != null and name != ''"> and NAME = #{name}</if>
+			<if test="parentId != null and parentId != ''"> and PARENT_ID = #{parentId}</if>
+		</where>
+	</select>
+	
+</mapper>

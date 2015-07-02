@@ -1,0 +1,423 @@
+package com.techstack.sms2.permission.action;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import net.sf.json.JSONObject;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.techstack.sms2.base.annotation.permission.Permission;
+import com.techstack.sms2.base.page.PageBean;
+import com.techstack.sms2.base.struts.BaseAction;
+import com.techstack.sms2.permission.biz.PmsActionBiz;
+import com.techstack.sms2.permission.biz.PmsMenuBiz;
+import com.techstack.sms2.permission.biz.PmsRoleBiz;
+import com.techstack.sms2.permission.biz.PmsUserBiz;
+import com.techstack.sms2.permission.entity.PmsAction;
+import com.techstack.sms2.permission.entity.PmsMenu;
+import com.techstack.sms2.permission.entity.PmsRole;
+import com.techstack.sms2.permission.entity.PmsUser;
+import com.techstack.sms2.permission.enums.RoleTypeEnum;
+import com.techstack.sms2.permission.enums.UserTypeEnum;
+
+/**
+ * @Title: PmsRoleAction.java 
+ * @Description: 角色管理ACTION
+ * @author zzh
+ */
+public class PmsRoleAction extends BaseAction{
+
+	private static final long serialVersionUID = 1L;
+
+	private static Log log = LogFactory.getLog(PmsRoleAction.class);
+	
+	@Autowired
+	private PmsActionBiz pmsActionBiz;
+	@Autowired
+	private PmsRoleBiz pmsRoleBiz;
+	@Autowired
+	private PmsUserBiz pmsUserBiz;
+	@Autowired
+	private PmsMenuBiz pmsMenuBiz;
+	
+	
+	/**
+	 * @Description: 获取角色列表
+	 * @param @return    
+	 * @return String
+	 */
+	@Permission("pms:role:view")
+	public String pmsRoleList() {
+		try {
+
+			Map<String, Object> paramMap = new HashMap<String, Object>(); // 业务条件查询参数
+			paramMap.put("roleName", getString("roleName")); // 角色名称（模糊查询）
+			paramMap.put("module", "pmsRole");
+			PageBean pageBean = pmsRoleBiz.listPage(getPageParam(), paramMap);
+
+			PmsUser user = this.getLoginedUser();
+			this.pushData(user);
+			this.pushData(pageBean);
+			// 回显查询条件值
+			this.pushData(paramMap);		
+			
+			this.putData("RoleTypeEnumList", RoleTypeEnum.toList());
+			this.putData("RoleTypeEnum", RoleTypeEnum.toMap());
+			this.putData("UserTypeEnum", UserTypeEnum.toMap());
+			
+			return "pmsRoleList";
+		} catch (Exception e) {
+			log.error("==== error ==== 查询角色失败：", e);
+			return operateError("获取数据失败");
+		}
+	}
+
+	/**
+	 * @Description: 转到添加角色页面 .
+	 * @param @return    
+	 * @return String
+	 */
+	@Permission("pms:role:add")
+	public String pmsRoleAdd() {
+		try {
+			return "pmsRoleAdd";
+		} catch (Exception e) {
+			log.error("==== error ==== 进入角色添加页面失败", e);
+			return operateError("获取数据失败");
+		}
+	}
+
+	/**
+	 * @Description: 保存新添加的一个角色 
+	 * @param @return    
+	 * @return String
+	 */
+	@Permission("pms:role:add")
+	public String pmsRoleSave() {
+		try {
+			String roleName = getString("roleName");
+			PmsRole roleCheck = pmsRoleBiz.getByRoleName(roleName);
+			if (roleCheck != null) {
+				return operateError("角色名【" + roleName + "】已存在");
+			}
+
+			// 保存基本角色信息
+			PmsRole pmsRole = new PmsRole();
+			pmsRole.setRoleType(RoleTypeEnum.USER.getValue()); // 角色类型（1:超级管理员角色，0:普通用户角色）
+			pmsRole.setRoleName(roleName);
+			pmsRole.setRemark(getString("desc"));
+			pmsRole.setCreateTime(new Date());
+
+			// 表单数据校验
+			String validateMsg = validatePmsRole(pmsRole);
+			if (StringUtils.isNotBlank(validateMsg)) {
+				return operateError(validateMsg); // 返回错误信息
+			}
+
+			pmsRoleBiz.saveRole(pmsRole);
+			log.info("==== info ==== 添加角色【"+roleName+"】成功");
+			return operateSuccess();
+		} catch (Exception e) {
+			log.error("==== error ==== 添加角色失败：", e);
+			return operateError("保存数据失败");
+		}
+	}
+
+	/**
+	 * @Description: 校验角色表单数据
+	 * @param @param pmsRole
+	 * @param @return    
+	 * @return String
+	 */
+	private String validatePmsRole(PmsRole pmsRole) {
+		String msg = ""; // 用于存放校验提示信息的变量
+		String roleName = pmsRole.getRoleName(); // 角色名称
+		String desc = pmsRole.getRemark(); // 描述
+		// 角色名称 actionName
+		msg += lengthValidate("角色名称", roleName, true, 3, 90);
+		// 描述 desc
+		msg += lengthValidate("描述", desc, true, 3, 300);
+		return msg;
+	}
+
+	/**
+	 * @Description:  转到角色修改页面 .
+	 * @param @return    
+	 * @return String
+	 */
+	@Permission("pms:role:edit")
+	public String pmsRoleEdit() {
+		try {
+			Long roleId = getLong("roleId");
+			PmsRole pmsRole = pmsRoleBiz.getById(roleId);
+			if (pmsRole == null) {
+				return operateError("获取数据失败");
+			}
+
+			// 普通用户没有修改超级管理员角色的权限
+			if (UserTypeEnum.USER.getValue().equals(this.getLoginedUser().getType()) 
+			 && RoleTypeEnum.ADMIN.getValue().equals(pmsRole.getRoleType())) {
+				return operateError("你没有修改超级管理员角色的权限");
+			}
+
+			this.pushData(pmsRole);
+			
+			return "pmsRoleEdit";
+		} catch (Exception e) {
+			log.error("==== error ==== 进入修改角色页面失败：", e);
+			return operateError("获取数据失败");
+		}
+	}
+
+	/**
+	 * @Description: 保存修改后的角色信息
+	 * @param @return    
+	 * @return String
+	 */
+	@Permission("pms:role:edit")
+	public String pmsRoleUpdate() {
+		try {
+			Long id = getLong("id");
+
+			PmsRole pmsRole = pmsRoleBiz.getById(id);
+			if (pmsRole == null) {
+				return operateError("无法获取要修改的数据");
+			}
+
+			// 普通用户没有修改超级管理员角色的权限
+			if (UserTypeEnum.USER.getValue().equals(this.getLoginedUser().getType()) 
+			 && RoleTypeEnum.ADMIN.getValue().equals(pmsRole.getRoleType())) {
+				return operateError("你没有修改超级管理员角色的权限");
+			}
+
+			String roleName = getString("roleName");
+			PmsRole roleCheck = pmsRoleBiz.findByRoleNameNotEqId(id, roleName);
+			if (roleCheck != null) {
+				return operateError("角色名【" + roleName + "】已存在");
+			}
+
+			pmsRole.setRoleName(roleName);
+			pmsRole.setRemark(getString("remark"));
+
+			// 表单数据校验
+			String validateMsg = validatePmsRole(pmsRole);
+			if (StringUtils.isNotBlank(validateMsg)) {
+				return operateError(validateMsg); // 返回错误信息
+			}
+
+			pmsRoleBiz.updateRole(pmsRole);
+			log.info("==== info ==== 修改角色【"+roleName+"】成功");
+			return operateSuccess();
+		} catch (Exception e) {
+			log.error("==== error ==== 修改角色失败", e);
+			return operateError("保存失败");
+		}
+	}
+
+	/**
+	 * @Description: 删除一个角色
+	 * @param @return    
+	 * @return String
+	 */
+	@Permission("pms:role:delete")
+	public String pmsRoleDel() {
+		try {
+			Long roleId = getLong("roleId");
+
+			PmsRole role = pmsRoleBiz.getById(roleId);
+			if (role == null) {
+				return operateError("无法获取要删除的角色");
+			}
+			if (RoleTypeEnum.ADMIN.getValue().equals(role.getRoleType())) {
+				return operateError("超级管理员角色不可删除");
+			}
+
+			String msg = "";
+			// 判断是否有用户关联到此角色
+			int userCount = pmsUserBiz.countUserByRoleId(roleId);
+			if (userCount > 0) {
+				msg += "【" + userCount + "】个用户";
+			}
+			// 判断是否有权限关联到此角色 
+			// int actionCount = pmsActionBiz.countActionByRoleId(roleId);
+			// if (actionCount > 0){
+			// msg += "【"+actionCount+"】个权限";
+			// }
+			// // 判断是否有菜单关联到此角色
+			// int menuCount = pmsMenuBiz.countMenuByRoleId(roleId);
+			// if (menuCount > 0){
+			// msg += "【"+menuCount+"】个菜单";
+			// }
+
+			if (StringUtils.isNotBlank(msg)) {
+				msg += "关联到此角色，要先解除所有关联后才能删除!";
+				return operateError("有" + msg);
+			}
+			
+			pmsRoleBiz.deleteRoleById(roleId);
+			log.info("==== info ==== 删除角色成功");
+			return operateSuccess();
+		} catch (Exception e) {
+			log.error("==== error ==== 删除角色失败", e);
+			return operateError("删除失败");
+		}
+	}
+
+	/**
+	 * @Description: 分配权限UI
+	 * @param @return    
+	 * @return String
+	 */
+	@SuppressWarnings("unchecked")
+	@Permission("pms:role:edit")
+	public String assignPermissionUI() {
+		Long roleId = getLong("roleId");
+
+		PmsRole role = pmsRoleBiz.getById(roleId);
+		if (role == null) {
+			return operateError("无法获取角色信息");
+		}
+		// 普通用户没有修改超级管理员角色的权限
+		if (UserTypeEnum.USER.getValue().equals(this.getLoginedUser().getType()) 
+		 && RoleTypeEnum.ADMIN.getValue().equals(role.getRoleType())) {
+			return operateError("你没有修改超级管理员角色的权限");
+		}
+
+		String menuIds = "";
+		String actionIds = "";
+		try {
+			menuIds = pmsMenuBiz.getMenuIdsByRoleId(roleId); // 根据角色查找角色对应的菜单ID集
+			actionIds = pmsActionBiz.getActionIdsByRoleId(roleId); // 根据角色查找角色对应的功能权限ID集
+		} catch (Exception e) {
+			log.error("==== error ==== 根据角色ID，找不到对应的菜单、权限", e);
+		}
+
+		// 前面加个逗号，方便接下来的处理
+		menuIds = "," + menuIds;
+		actionIds = "," + actionIds;
+
+		this.putData("menuActionTree", pmsMenuBiz.buildMenuActionTree(menuIds, actionIds));
+
+		// 查询角色对应的用户
+		List<PmsUser> userList = (List<PmsUser>) pmsUserBiz.listUserByRoleId(roleId);
+		this.putData("userList", userList);
+
+		this.putData("roleId", roleId);
+		return "assignPermissionUI";
+	}
+
+	/**
+	 * @Description: 分配角色权限
+	 * @param     
+	 * @return void
+	 */
+	@Permission("pms:role:edit")
+	public void assignPermission() {
+		try {
+
+			Long roleId = getLong("roleId");
+
+			PmsRole role = pmsRoleBiz.getById(roleId);
+			if (role == null) {
+				getOutputMsg().put("MSG", "无法获取角色信息");
+				return;
+			}
+			// 普通用户没有修改超级管理员角色的权限
+			if (UserTypeEnum.USER.getValue().equals(this.getLoginedUser().getType()) 
+					 && RoleTypeEnum.ADMIN.getValue().equals(role.getRoleType())) {
+				getOutputMsg().put("MSG", "你没有修改超级管理员角色的权限");
+				return;
+			}
+			
+			String menuIds = getString("menuIds");
+			
+			if (StringUtils.isNotBlank(menuIds)) {
+				// 去除js错误选择导致的 undefined
+				menuIds = menuIds.replaceAll("undefined,", "");
+			}
+			
+			String actionIds = getString("actionIds");
+			
+			if (StringUtils.isNotBlank(actionIds)) {
+				// 去除js错误选择导致的 undefined
+				actionIds = actionIds.replaceAll("undefined,", "");
+			}
+			// 分配菜单权限，功能权限
+			pmsMenuBiz.assignPermission(roleId, menuIds, actionIds);
+
+			// String menuNameBuffer = theMenusIdsChangeNames(menuIds); // 查询菜单的
+
+			// String actionNameBuffer = theActionIdsChangeNames(actionIds);
+			getOutputMsg().put("STATE", "SUCCESS");
+		} catch (Exception e) {
+			log.error("分配权限出现错误!", e);
+			getOutputMsg().put("STATE", "FAIL");
+			getOutputMsg().put("MSG", "分配权限出现错误。" + e.getMessage());
+		}
+		outPrint(getHttpResponse(), JSONObject.fromObject(getOutputMsg()));
+	}
+
+	/**
+	 * @Description: 把权限的ID转换成NAME
+	 * @param @param actionIds
+	 * @param @return    
+	 * @return String
+	 */
+	@SuppressWarnings("unused")
+	private String theActionIdsChangeNames(String actionIds) {
+		if (StringUtils.isEmpty(actionIds))
+			return null;
+		StringBuffer actionBuffer = new StringBuffer();
+		int actionNum = actionIds.indexOf(",");
+		if (actionNum <= 0) {
+			PmsAction action = pmsActionBiz.getById(Long.valueOf(actionIds));
+			actionBuffer.append(action.getActionName());
+		} else {
+			String[] actionArray = actionIds.split(",");
+			for (int i = 0; i < actionArray.length; i++) {
+				PmsAction action = pmsActionBiz.getById(Long.valueOf(actionArray[i]));
+				if (i == actionArray.length - 1) {
+					actionBuffer.append(action.getActionName());
+				} else {
+					actionBuffer.append(action.getActionName()).append(",");
+				}
+			}
+		}
+		return actionBuffer.toString();
+	}
+
+	/**
+	 * @Description: 把菜单的ID转换成name
+	 * @param @param menuIds
+	 * @param @return    
+	 * @return String
+	 */
+	@SuppressWarnings("unused")
+	private String theMenusIdsChangeNames(String menuIds) {
+		if (StringUtils.isEmpty(menuIds))
+			return null;
+		StringBuffer menuBuffer = new StringBuffer(); // 追加菜单的名称
+		int menuNum = menuIds.indexOf(",");
+		if (menuNum <= 0) {
+			PmsMenu menu = pmsMenuBiz.getById(Long.valueOf(menuIds));
+			menuBuffer.append(menu.getName());
+		} else {
+			String[] menuArray = menuIds.split(",");
+			for (int i = 0; i < menuArray.length; i++) {
+				PmsMenu menu = pmsMenuBiz.getById(Long.valueOf(menuArray[i]));
+				if (i == menuArray.length - 1) {
+					menuBuffer.append(menu.getName());
+				} else {
+					menuBuffer.append(menu.getName()).append(",");
+				}
+			}
+		}
+		return menuBuffer.toString();
+	}
+}
