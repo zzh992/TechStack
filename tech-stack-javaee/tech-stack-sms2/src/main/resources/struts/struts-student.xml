@@ -7,7 +7,7 @@
 	<!-- 学生信息管理以及课程选择 -->
 	<package name="student" extends="loginPackage">
 	
-		<action name="student_*" class="com.oocl.web.course.action.StudentAction" method="{1}">
+		<action name="student_*" class="com.techstack.sms2.course.action.StudentAction" method="{1}">
 			<result name="studentInfo">page/studentManage/studentInfo.jsp</result>
 			
 			<result name="myStudentInfo">page/courseSelect/myStudentInfo.jsp</result>

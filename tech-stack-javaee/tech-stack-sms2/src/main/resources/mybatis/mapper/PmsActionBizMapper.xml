@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.oocl.web.permission.biz.PmsActionBiz">
+<mapper namespace="com.techstack.sms2.permission.biz.PmsActionBiz">
 
-	<resultMap id="RoleActionMap" type="com.oocl.web.permission.entity.PmsRoleAction">
+	<resultMap id="RoleActionMap" type="com.techstack.sms2.permission.entity.PmsRoleAction">
 	    <id column="ID" property="id" />
 		<result column="ROLE_ID" property="roleId" />
 		<result column="ACTION_ID" property="actionId" />
 	</resultMap>
 
-	<select id="findActionByIds" resultType="com.oocl.web.permission.entity.PmsAction">
+	<select id="findActionByIds" resultType="com.techstack.sms2.permission.entity.PmsAction">
     	select  
     		D.ID AS "id",
 			D.VERSION AS "version",
@@ -22,7 +22,7 @@
     	<foreach item="item" index="index" collection="list" open="(" separator="," close=")">#{item}</foreach>
   	</select>
   	
-  	<select id="getActionByAction" parameterType="string" resultType="com.oocl.web.permission.entity.PmsAction">
+  	<select id="getActionByAction" parameterType="string" resultType="com.techstack.sms2.permission.entity.PmsAction">
     	SELECT  
     		ID AS "id",
 			VERSION AS "version",
@@ -35,7 +35,7 @@
     	FROM PMS_ACTION where ACTION = #{action}
   	</select>
   	
-  	<select id="getActionByActionName" parameterType="string" resultType="com.oocl.web.permission.entity.PmsAction">
+  	<select id="getActionByActionName" parameterType="string" resultType="com.techstack.sms2.permission.entity.PmsAction">
     	SELECT  
     		ID AS "id",
 			VERSION AS "version",
@@ -48,7 +48,7 @@
     	FROM PMS_ACTION where ACTION_NAME = #{actionName}
   	</select>
 	
-	<select id="getActionByActionNameNotEqId" parameterType="java.util.Map" resultType="com.oocl.web.permission.entity.PmsAction">
+	<select id="getActionByActionNameNotEqId" parameterType="java.util.Map" resultType="com.techstack.sms2.permission.entity.PmsAction">
     	SELECT  
     		ID AS "id",
 			VERSION AS "version",
@@ -62,7 +62,7 @@
   	</select>
   	
   	
-  	<select id="getActionByActionNotEqId" parameterType="java.util.Map" resultType="com.oocl.web.permission.entity.PmsAction">
+  	<select id="getActionByActionNotEqId" parameterType="java.util.Map" resultType="com.techstack.sms2.permission.entity.PmsAction">
     	SELECT  
     		ID AS "id",
 			VERSION AS "version",
@@ -75,7 +75,7 @@
     	FROM PMS_ACTION where ACTION = #{action} and ID != #{id}
   	</select>
   	
-  	<select id="listActionByMenuId" parameterType="long" resultType="com.oocl.web.permission.entity.PmsAction">
+  	<select id="listActionByMenuId" parameterType="long" resultType="com.techstack.sms2.permission.entity.PmsAction">
     	SELECT  
     		ID AS "id",
 			VERSION AS "version",

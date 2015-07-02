@@ -7,7 +7,7 @@
 	<!-- 专业管理 -->
 	<package name="major" extends="loginPackage">
 	
-		<action name="major_*" class="com.oocl.web.course.action.MajorAction" method="{1}">
+		<action name="major_*" class="com.techstack.sms2.course.action.MajorAction" method="{1}">
 			<result name="majorList">page/majorCourse/major/majorList.jsp</result>
 			<result name="majorAdd">page/majorCourse/major/majorAdd.jsp</result>
 			<result name="majorEdit">page/majorCourse/major/majorEdit.jsp</result>

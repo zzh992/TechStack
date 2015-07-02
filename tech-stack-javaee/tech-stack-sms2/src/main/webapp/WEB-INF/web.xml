@@ -17,7 +17,7 @@
 	
 	<filter>
 		<filter-name>webActionFilter</filter-name>
-		<filter-class>com.oocl.web.base.filter.WebActionFilter</filter-class>
+		<filter-class>com.techstack.sms2.base.filter.WebActionFilter</filter-class>
 	</filter>
 	<filter-mapping>
 		<filter-name>webActionFilter</filter-name>

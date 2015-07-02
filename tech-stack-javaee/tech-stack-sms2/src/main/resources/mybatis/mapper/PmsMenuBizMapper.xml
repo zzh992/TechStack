@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.oocl.web.permission.biz.PmsMenuBiz">
+<mapper namespace="com.techstack.sms2.permission.biz.PmsMenuBiz">
 
-	<resultMap id="RoleMenuMap" type="com.oocl.web.permission.entity.PmsRoleMenu">
+	<resultMap id="RoleMenuMap" type="com.techstack.sms2.permission.entity.PmsRoleMenu">
 	    <id column="ID" property="id" />
 		<result column="ROLE_ID" property="roleId" />
 		<result column="MENU_ID" property="menuId" />
 	</resultMap>
 
-	<select id="listMenuByParent" parameterType="string" resultType="com.oocl.web.permission.entity.PmsMenu">
+	<select id="listMenuByParent" parameterType="string" resultType="com.techstack.sms2.permission.entity.PmsMenu">
 		select 
 			M.ID AS "id", 
 			M.VERSION AS "version", 
@@ -26,7 +26,7 @@
 		ORDER BY M.NUMBER ASC
 	</select>
 	
-	<select id="listMenuByRoleIds" parameterType="string" resultType="com.oocl.web.permission.entity.PmsMenu">
+	<select id="listMenuByRoleIds" parameterType="string" resultType="com.techstack.sms2.permission.entity.PmsMenu">
 		<!-- SELECT DISTINCT * FROM (
 			SELECT 
 				M.ID AS "id", 
@@ -86,7 +86,7 @@
 		select * from PMS_ROLE_MENU where ROLE_ID = #{roleId}
 	</select>
 	
-	<select id="listAllActionByMenuId" parameterType="java.util.Map" resultType="com.oocl.web.permission.entity.PmsAction">
+	<select id="listAllActionByMenuId" parameterType="java.util.Map" resultType="com.techstack.sms2.permission.entity.PmsAction">
     	select  
     		D.ID AS "id",
 			D.VERSION AS "version",
@@ -103,7 +103,7 @@
     	</if>
   	</select>
   	
-  	<select id="listMenuByParentId" parameterType="long" resultType="com.oocl.web.permission.entity.PmsMenu">
+  	<select id="listMenuByParentId" parameterType="long" resultType="com.techstack.sms2.permission.entity.PmsMenu">
 		SELECT
 		ID AS "id" ,
 		VERSION AS "version",
@@ -115,7 +115,7 @@
 		FROM PMS_MENU where PARENT_ID = #{parentId}
 	</select>
 	
-	<select id="listMenuBy" parameterType="java.util.Map" resultType="com.oocl.web.permission.entity.PmsMenu">
+	<select id="listMenuBy" parameterType="java.util.Map" resultType="com.techstack.sms2.permission.entity.PmsMenu">
 		select * from PMS_MENU
 		<where>
 			<if test="isLeaf != null and isLeaf != ''"> and IS_LEAF = #{isLeaf}</if>

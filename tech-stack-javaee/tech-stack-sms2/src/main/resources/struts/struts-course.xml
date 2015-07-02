@@ -7,7 +7,7 @@
 	<!-- 课程管理 -->
 	<package name="course" extends="loginPackage">
 	
-		<action name="course_*" class="com.oocl.web.course.action.CourseAction" method="{1}">
+		<action name="course_*" class="com.techstack.sms2.course.action.CourseAction" method="{1}">
 			<result name="courseList">page/majorCourse/course/courseList.jsp</result>
 			<result name="courseAdd">page/majorCourse/course/courseAdd.jsp</result>
 			<result name="courseEdit">page/majorCourse/course/courseEdit.jsp</result>

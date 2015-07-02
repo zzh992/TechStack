@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.oocl.web.permission.biz.PmsUserBiz">
+<mapper namespace="com.techstack.sms2.permission.biz.PmsUserBiz">
 
-	<resultMap id="UserMap" type="com.oocl.web.permission.entity.PmsUser">
+	<resultMap id="UserMap" type="com.techstack.sms2.permission.entity.PmsUser">
 		<id column="ID" property="id" />
 		<result column="VERSION" property="version" />
 		<result column="LOGIN_NAME" property="loginName" />
@@ -12,7 +12,7 @@
 		<result column="TYPE" property="type" />
 	</resultMap>
 	
-	<resultMap id="RoleUserMap" type="com.oocl.web.permission.entity.PmsRoleUser">
+	<resultMap id="RoleUserMap" type="com.techstack.sms2.permission.entity.PmsRoleUser">
 	    <id column="ID" property="id" />
 		<result column="ROLE_ID" property="roleId" />
 		<result column="USER_ID" property="userId" />

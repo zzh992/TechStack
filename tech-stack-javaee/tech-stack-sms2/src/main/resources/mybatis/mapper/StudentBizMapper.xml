@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.oocl.web.course.biz.StudentBiz">
+<mapper namespace="com.techstack.sms2.course.biz.StudentBiz">
 	
-	<resultMap id="StudentMap" type="com.oocl.web.course.entity.Student">
+	<resultMap id="StudentMap" type="com.techstack.sms2.course.entity.Student">
 		<id column="ID" property="id" />
 		<result column="VERSION" property="version" />
 		<result column="CREATE_TIME" property="createTime" />

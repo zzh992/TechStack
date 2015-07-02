@@ -8,7 +8,7 @@
 		<default-interceptor-ref name="defaultStack" />
 		
 		<!-- 用户登录Action -->
-		<action name="login_*" class="com.oocl.web.permission.action.PmsLoginAction" method="{1}">
+		<action name="login_*" class="com.techstack.sms2.permission.action.PmsLoginAction" method="{1}">
 			<result name="main">page/index.jsp</result>
 			<!-- 进入登录页面 -->
 			<result name="input">page/login.jsp</result>
@@ -23,7 +23,7 @@
 		</action>
 		
 		<!-- 用户注册Action  -->
-		<action name="register_*" class="com.oocl.web.permission.action.PmsRegisterAction" method="{1}">
+		<action name="register_*" class="com.techstack.sms2.permission.action.PmsRegisterAction" method="{1}">
 			<result name="register">page/register.jsp</result>
 			<result name="login">page/login.jsp</result>
 		</action>

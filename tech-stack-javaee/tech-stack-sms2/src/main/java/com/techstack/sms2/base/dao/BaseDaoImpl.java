@@ -94,7 +94,7 @@ public class BaseDaoImpl extends SqlSessionDaoSupport implements BaseDao{
 					for(int i =0;i<columns.size();i++){
 						value.append(columns.get(i).get("columnName")+"='"+columns.get(i).get("val")+"',");
 					}
-					int version = (int) model.getClass().getMethod("get" + getMethodName("version")).invoke(model);
+					int version =  (Integer) model.getClass().getMethod("get" + getMethodName("version")).invoke(model);
 					value.append("VERSION="+(version+1));
 					sql.append("UPDATE "+tableName+" SET "+value+" WHERE ID="+"'"+id+"'");
 					log.info("==== info ==== UPDATE SQL:"+sql);
