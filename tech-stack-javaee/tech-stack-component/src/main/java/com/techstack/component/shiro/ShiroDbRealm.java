@@ -1,10 +1,14 @@
 package com.techstack.component.shiro;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
+import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.AuthorizationInfo;
+import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 
@@ -29,10 +33,10 @@ public class ShiroDbRealm extends AuthorizingRealm{
 		UsernamePasswordToken token = (UsernamePasswordToken) authcToken;// Shiro 提供了一个直接拿来用的UsernamePasswordToken，用于实现用户名/密码Token组，另外其实现了RememberMeAuthenticationToken和HostAuthenticationToken，可以实现记住我及主机验证的支持。
 		ShiroUser shiroUser = shiroService.findShiroUserByUsername(token.getUsername());
 		if(shiroUser != null){
-			
+			return new SimpleAuthenticationInfo(shiroUser,shiroUser.getPassword(),shiroUser.getName());
+		}else{
+			return null;
 		}
-		
-		return null;
 	}
 	
 	
@@ -43,14 +47,26 @@ public class ShiroDbRealm extends AuthorizingRealm{
 	 * 
 	 */
 	@Override
-	protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection arg0) {
-		// TODO Auto-generated method stub
-		return null;
+	protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
+		ShiroUser shiroUser = (ShiroUser) principals.getPrimaryPrincipal();
+		ShiroUser user = shiroService.findShiroUserByUsername(shiroUser.getUsername());
+		SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
+//		info.addRoles(user.getRoleList());
+		return info;
 	}
 
 	public void setShiroService(ShiroService shiroService) {
 		this.shiroService = shiroService;
 	}
 
+	
+	/** 
+     * 设定Password校验. 
+     */  
+	@PostConstruct
+	public void initCredentialsMatcher() {
+		//重写shiro的密码验证，让shiro用自定义验证
+		setCredentialsMatcher(new CustomCredentialsMatcher());
+	}
 	
 }
