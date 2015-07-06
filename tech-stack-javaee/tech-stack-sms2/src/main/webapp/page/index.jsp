@@ -7,7 +7,7 @@ String path = request.getContextPath();
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>xx大学选课系统</title>
+<title>tech-stack-sms2</title>
 <jsp:include page="config/dwz.jsp" />
 </head>
 <body scroll="no">
@@ -17,7 +17,7 @@ String path = request.getContextPath();
 			<div class="headerNav">
 				<img alt="" src="<%=path %>${COMPANY_LOGO}" height="50" />
 				<ul class="nav">
-					<li style="color:red;">欢迎您（${loginName }）！&nbsp;
+					<li style="color:red;">Welcome （${loginName }）！&nbsp;
 					<li><a href="pmsUser_pmsUserViewOwnInfo.action" target="dialog" width="500" height="400" style="color:#fff;">帐号信息</a></li>
 					<li><a href="pmsUser_pmsUserChangeOwnPwd.action" target="dialog" width="550" height="300" style="color:#fff;">修改密码</a></li>
 					<li>
@@ -78,7 +78,7 @@ String path = request.getContextPath();
 				<div class="navTab-panel tabsPageContent layoutBox">
 					<div class="page unitBox">
 						<div class="accountInfo">
-							<p><span>xx大学选课系统</span></p>
+							<p><span>tech-stack-sms2</span></p>
 						</div>
 						<div class="pageFormContent" layoutH="60" style="margin-right:230px">
 							<!--  

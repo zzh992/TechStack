@@ -3,7 +3,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>xx大学选课系统登录</title>
+<title>tech-stack-sms2</title>
 <link href="js/dwz/themes/css/login.css" rel="stylesheet" type="text/css" />
 <script src="js/dwz/js/jquery-1.7.2.min.js" type="text/javascript"></script>
 <style type="text/css">
@@ -14,7 +14,7 @@
 	<div id="login">
 		<div id="login_header">
 			<h1 class="login_logo">
-				<a style="font-size:25px">xx大学选课系统</a>
+				<a style="font-size:25px">tech-stack-sms2</a>
 			</h1>
 			<div class="login_headerContent">
 				<div class="navList">
@@ -42,7 +42,7 @@
 					</p>
 					<div class="login_bar" style="margin-left:10px;">
 						<input class="sub" type="submit" value="" style="display: inline;"/>
-						<a href="register_register.action" style="color:blue" >学生注册</a>
+						<a href="register_register.action" style="color:blue" >注册</a>
 					</div>
 				</form>
 			</div>

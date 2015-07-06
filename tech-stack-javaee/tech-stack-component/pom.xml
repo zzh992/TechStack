@@ -6,12 +6,23 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>tech-stack-component</name>
 	<description>tech-stack-component</description>
+	
+	<properties>
+		<shiro.version>1.2.3</shiro.version>
+	</properties>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.eclipse.jetty.aggregate</groupId>
 			<artifactId>jetty-webapp</artifactId>
 			<version>8.1.16.v20140903</version>
+			<scope>provided</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-spring</artifactId>
+			<version>${shiro.version}</version>
 			<scope>provided</scope>
 		</dependency>
 
