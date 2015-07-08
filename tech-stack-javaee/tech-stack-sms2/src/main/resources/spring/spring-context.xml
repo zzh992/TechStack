@@ -24,7 +24,7 @@
 	<aop:aspectj-autoproxy proxy-target-class="true" />
 
 	<!-- AOP权限拦截，作用：允许AspecJ拦截Action -->
-	<bean id="permissionInterceptor" class="com.techstack.sms2.base.interceptor.PermissionInterceptor"></bean>
+	<!-- <bean id="permissionInterceptor" class="com.techstack.sms2.base.interceptor.PermissionInterceptor"></bean>
 	<aop:config>
 		<aop:pointcut id="strutsActions" expression="execution(* com.techstack.sms2.course.action.*.*(..))" />
 		<aop:advisor pointcut-ref="strutsActions" advice-ref="permissionInterceptor" />
@@ -32,8 +32,11 @@
 	<aop:config>
 		<aop:pointcut id="strutsActionsPms" expression="execution(* com.techstack.sms2.permission.action.*.*(..))" />
 		<aop:advisor pointcut-ref="strutsActionsPms" advice-ref="permissionInterceptor" />
-	</aop:config>
+	</aop:config> -->
 
 
 	<import resource="spring-mybatis.xml" />
+	
+	<!-- 加载shiro组件的配置 -->
+	<import resource="classpath:shiro/applicationContext-shiro.xml" />
 </beans>

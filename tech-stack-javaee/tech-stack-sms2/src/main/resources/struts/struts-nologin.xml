@@ -11,12 +11,12 @@
 		<action name="login_*" class="com.techstack.sms2.permission.action.PmsLoginAction" method="{1}">
 			<result name="main">page/index.jsp</result>
 			<!-- 进入登录页面 -->
-			<result name="input">page/login.jsp</result>
-			<result name="login">page/login.jsp</result>
+			<result name="input">login.jsp</result>
+			<result name="login">login.jsp</result>
 			<!-- 退出登录前确认 -->
 			<result name="logoutConfirm">page/logoutConfirm.jsp</result>
 			<!-- 退出登录 -->
-			<result name="logout">page/login.jsp</result>
+			<result name="logout">login.jsp</result>
 			<!-- 登录超时确认 -->
 			<result name="timeoutConfirm">page/timeoutConfirm.jsp</result>
 			<result name="effectiveOperator">page/effectiveOperator.jsp</result>
@@ -24,8 +24,8 @@
 		
 		<!-- 用户注册Action  -->
 		<action name="register_*" class="com.techstack.sms2.permission.action.PmsRegisterAction" method="{1}">
-			<result name="register">page/register.jsp</result>
-			<result name="login">page/login.jsp</result>
+			<result name="register">register.jsp</result>
+			<result name="login">login.jsp</result>
 		</action>
 		
 	</package>

@@ -53,7 +53,7 @@ public class PmsLoginAction extends BaseAction {
 	 * @return
 	 * @throws Exception
 	 */
-	public String userLogin() {
+	/*public String userLogin() {
 		try {
 			String loginName = getString("loginName");
 
@@ -116,6 +116,10 @@ public class PmsLoginAction extends BaseAction {
 			this.putData("errorMsg", "登录出错");
 			return "input";
 		}
+	}*/
+	
+	public String mainpage(){
+		return "mainpage";
 	}
 
 	/**
