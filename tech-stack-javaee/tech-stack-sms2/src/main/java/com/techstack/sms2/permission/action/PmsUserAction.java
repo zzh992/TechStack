@@ -8,6 +8,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.techstack.sms2.base.annotation.permission.Permission;
@@ -45,6 +46,7 @@ public class PmsUserAction extends BaseAction{
 	 * @return String
 	 */
 	@Permission("pms:user:view")
+	@RequiresPermissions("pms:user:view")
 	public String pmsUserList() {
 		try {
 			Map<String, Object> paramMap = new HashMap<String, Object>(); // 业务条件查询参数

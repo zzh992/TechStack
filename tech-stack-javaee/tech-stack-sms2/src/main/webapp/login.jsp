@@ -31,7 +31,8 @@
 		</div>
 		<div id="login_content">
 			<div class="loginForm" >
-				<form action="<%=basePath%>login_userLogin.action" method="post">
+				<form action="<%=basePath%>login_loginPage.action" method="post">
+					<p class="info">${loginInfo}</p>
 					<p>
 						<label>用户名：</label>
 						<input name="username" type="text" style="width:140px;height:20px;" class="login_input" />

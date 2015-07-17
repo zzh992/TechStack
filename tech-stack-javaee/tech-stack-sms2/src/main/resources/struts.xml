@@ -45,7 +45,7 @@
 		<default-interceptor-ref name="defaultStack" />
 
 		<global-results>
-			<result name="mainpage">page/index.jsp</result>
+			<!-- <result name="mainpage">page/index.jsp</result> -->
 			<result name="login">login.jsp</result>
 			<result name="operateSuccess">page/common/operateSuccess.jsp</result>
 			<result name="operateError">page/common/operateError.jsp</result>

@@ -5,13 +5,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.techstack.component.shiro.ShiroUser;
 import com.techstack.sms2.base.struts.BaseAction;
+import com.techstack.sms2.base.utils.StringUtil;
 import com.techstack.sms2.permission.biz.PmsActionBiz;
 import com.techstack.sms2.permission.biz.PmsMenuBiz;
 import com.techstack.sms2.permission.biz.PmsRoleBiz;
@@ -44,6 +47,10 @@ public class PmsLoginAction extends BaseAction {
 	 * @return
 	 */
 	public String loginPage() {
+		Object error = getHttpRequest().getAttribute(FormAuthenticationFilter.DEFAULT_ERROR_KEY_ATTRIBUTE_NAME);
+		if(error != null){
+			this.putData("loginInfo", "Login fail, please check the username or password");
+		}
 		return "login";
 	}
 
@@ -119,7 +126,26 @@ public class PmsLoginAction extends BaseAction {
 	}*/
 	
 	public String mainpage(){
-		return "mainpage";
+		// 用户信息，包括登录信息和权限
+		ShiroUser shiroUser = (ShiroUser) SecurityUtils.getSubject().getPrincipal();
+		Map<String, Object> userInfoMap = new HashMap<String, Object>();
+		PmsUser user = pmsUserBiz.findUserByLoginName(shiroUser.getUsername());
+		userInfoMap.put("pmsUser", user);
+		userInfoMap.put("pmsAction", getActions(user));
+
+		getSessionMap().put("userInfoMap", userInfoMap);
+		this.putData("loginName", shiroUser.getUsername());
+		
+		try {
+			this.putData("tree", buildUserPermissionMenu(user));
+			pmsUserBiz.update(user);
+
+		} catch (Exception e) {
+			log.error("==== error ==== 登录出现异常",e);
+			return "input";
+		}
+		log.info("==== info ==== 用户"+shiroUser.getUsername()+"登录系统");
+		return "main";
 	}
 
 	/**

@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans  
-           http://www.springframework.org/schema/beans/spring-beans-3.2.xsd"
+           http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+           http://www.springframework.org/schema/aop   
+           http://www.springframework.org/schema/aop/spring-aop-3.2.xsd"
 	default-lazy-init="false">
 
 	<description>Shiro安全配置</description>
@@ -21,12 +24,13 @@
 	<bean id="shiroCacheManager" class="org.apache.shiro.cache.MemoryConstrainedCacheManager" />
 	
 	<!-- 基于Form表单的身份验证过滤器-->
-	<bean id="formAuthenticationFilter"
-		class="org.apache.shiro.web.filter.authc.FormAuthenticationFilter">
+	<!-- <bean id="formAuthenticationFilter"
+		class="com.techstack.component.shiro.BaseFormAuthenticationFilter">
 		<property name="usernameParam" value="username" />
 		<property name="passwordParam" value="password" />
 		<property name="loginUrl" value="/login_userLogin.action" />
-	</bean>
+	</bean> -->
+	<bean id="formAuthenticationFilter" class="com.techstack.component.shiro.BaseFormAuthenticationFilter" />
 	
 	<!-- Shiro's main business-tier object for web-enabled applications -->
 	<!-- Shiro默认会使用Servlet容器的Session,可通过sessionMode属性来指定使用Shiro原生Session -->  
@@ -44,9 +48,11 @@
 		<!-- Shiro的核心安全接口,这个属性是必须的 -->  
 		<property name="securityManager" ref="securityManager" />
 		<!-- 要求登录时的链接(可根据项目的URL进行替换),非必须的属性,默认会自动寻找Web工程根目录下的"/login.jsp"页面 -->  
-		<property name="loginUrl" value="/login_loginPage.action" />
+		<property name="loginUrl" value="/login_loginPage.action" /> <!-- 拦截了post method的这个url请求，如果用户验证失败是放过这个url让其他filterq去处理，所以在controller中也可以写对应的action方法，处理用户验证失败后的逻辑，如返回错误信息回ui -->
 		<!-- 登录成功后要跳转的连接 -->  
 		<property name="successUrl" value="/login_mainpage.action" />
+		<!-- 没有权限跳转的url -->
+		<property name="unauthorizedUrl" value="/login_loginPage.action" />
 		<property name="filters">
 			<map>
 				<entry key="authc" value-ref="formAuthenticationFilter" />
@@ -73,7 +79,7 @@
 				url 模式匹配顺序是按照在配置中的声明顺序匹配，即从头开始使用第一个匹配的url 模式对应的拦截器链
 				-->
              	/js/** = anon <!-- 静态文件 -->
-             	/login_userLogin.action = authc
+             	/login_loginPage.action = authc 
              	/login_logout.action = logout
              	/login_mainpage.action = user
              	/login_*.action = anon 
@@ -83,10 +89,38 @@
 			</value>
 		</property>
 	</bean>
+	
+	<!-- AOP权限拦截，作用：允许AspecJ拦截Controller的method， 做权限的异常处理，因为shiro处理权限注解的时候，如果无权限只会抛异常 -->
+	<!-- 这段配置必须放在开启Shiro aop方法级权限控制的配置前面，否则拦截器拦截的方法会失效.
+		估计是多个拦截器对同一方法起效的时候，spring根据配置顺序进行拦截，
+		被shiro的aop拦截器拦截后，因为没有权限直接抛异常，所以自定义的拦截器会失效 -->
+	<!-- proxy-target-class默认"false",更改为"ture"使用CGLib动态代理 -->
+	<aop:aspectj-autoproxy proxy-target-class="true" />
+	<bean id="shiroPermissionInterceptor" class="com.techstack.component.shiro.ShiroPermissionInterceptor">
+		<property name="unauthorizedUrl" value="login" />
+	</bean>
+	<aop:config>
+		<aop:pointcut id="permissionActions" expression="execution(* com.techstack.sms2.permission.action.*.*(..))" />
+		<aop:advisor pointcut-ref="permissionActions" advice-ref="shiroPermissionInterceptor" />
+	</aop:config>
+	<!-- <aop:config>
+		<aop:pointcut id="strutsActionsPms" expression="execution(* com.techstack.sms2.permission.action.*.*(..))" />
+		<aop:advisor pointcut-ref="strutsActionsPms" advice-ref="permissionInterceptor" />
+	</aop:config> -->
 
 	<!-- Shiro 生命周期处理器, 保证实现了Shiro内部lifecycle函数的bean执行, 用于在实现了Initializable 接口的Shiro 
 		bean 初始化时调用 Initializable 接口回调，在实现了Destroyable 接口的Shiro bean 销毁时调用Destroyable 
 		接 口回调。如UserRealm就实现了Initializable，而DefaultSecurityManager实现了Destroyable。 -->
 	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor" />
+	
+	<!-- AOP式方法级权限检查, 支持 Shiro对Controller的方法级AOP安全控制  -->
+	<bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" depends-on="lifecycleBeanPostProcessor">
+		<property name="proxyTargetClass" value="true" />
+	</bean>
+	<bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+    	<property name="securityManager" ref="securityManager"/>
+	</bean>
+	
+	
 
 </beans>
