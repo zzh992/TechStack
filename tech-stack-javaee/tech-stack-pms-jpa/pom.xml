@@ -6,6 +6,39 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>tech-stack-pms-jpa</name>
 	<description>tech-stack-pms-jpa</description>
+	
+	<dependencies>
+	
+		<!-- PERSISTENCE begin -->
+		<!-- hibernate -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-entitymanager</artifactId>
+			<version>3.4.0.GA</version>
+		</dependency>
+
+		<!-- spring data access -->
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-jpa</artifactId>
+			<version>1.7.1.RELEASE</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>tech.stack.pms.dao</groupId>
+			<artifactId>tech-stack-pms-dao</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>tech.stack.component</groupId>
+			<artifactId>tech-stack-component</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		
+	</dependencies>
 
 	<build>
 		<plugins>
