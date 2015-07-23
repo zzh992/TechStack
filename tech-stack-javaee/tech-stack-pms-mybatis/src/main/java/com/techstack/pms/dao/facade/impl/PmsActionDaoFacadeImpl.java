@@ -5,10 +5,15 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import com.techstack.component.mapper.BeanMapper;
 import com.techstack.component.mybatis.dao.BaseDao;
+import com.techstack.component.mybatis.page.PageBean;
+import com.techstack.component.mybatis.page.PageParam;
 import com.techstack.pms.dao.dto.PmsActionDTO;
 import com.techstack.pms.dao.dto.PmsRoleActionDTO;
 import com.techstack.pms.dao.facade.PmsActionDaoFacade;
@@ -106,6 +111,14 @@ public class PmsActionDaoFacadeImpl implements PmsActionDaoFacade {
 		String statement = sb.toString();
 
 		return statement;
+	}
+
+	@Override
+	public Page<PmsActionDTO> listPage(Pageable pageable, Map<String, Object> paramMap) {
+		PageParam pageParam = new PageParam(pageable.getPageNumber(), pageable.getPageSize());
+		PageBean pageBean = baseDao.listPage(PmsAction.class, pageParam, paramMap);
+		Page<PmsActionDTO> page = new PageImpl<PmsActionDTO>(BeanMapper.mapList(pageBean.getRecordList(), PmsActionDTO.class));
+		return page;
 	}
 
 }

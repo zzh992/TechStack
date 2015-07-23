@@ -2,13 +2,13 @@ package com.techstack.pms.biz;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.techstack.pms.dao.dto.PmsActionDTO;
@@ -137,10 +137,13 @@ public class PmsActionBiz {
 	 * @param @return    
 	 * @return PageBean
 	 */
-	public PageBean listPage(PageParam pageParam, Map<String, Object> paramMap) {
+	/*public PageBean listPage(PageParam pageParam, Map<String, Object> paramMap) {
 		//return pmsActionDao.listPage(pageParam, paramMap);
 		//return pmsActionDao.listPage(PmsAction.class, pageParam, paramMap);
 		return getBaseDao().listPage(PmsAction.class, pageParam, paramMap);
+	}*/
+	public Page<PmsActionDTO> listPage(Pageable pageable, Map<String, Object> paramMap) {
+		return pmsActionDaoFacade.listPage(pageable, paramMap);
 	}
 
 	/**

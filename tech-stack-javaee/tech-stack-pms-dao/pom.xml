@@ -7,6 +7,15 @@
 	<name>tech-stack-pms-dao</name>
 	<description>tech-stack-pms-dao</description>
 	
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-commons</artifactId>
+			<version>1.9.1.RELEASE</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+	
 	<build>
 		<plugins>
 			<!-- compiler插件, 设定JDK版本 -->
