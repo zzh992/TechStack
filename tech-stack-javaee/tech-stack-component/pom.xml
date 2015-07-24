@@ -60,6 +60,13 @@
 			<version>1.2.0</version>
 			<scope>provided</scope>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.struts</groupId>
+			<artifactId>struts2-core</artifactId>
+			<version>2.3.4.1</version>
+			<scope>provided</scope>
+		</dependency>
 
 		<!-- Guava工程包含了若干被Google的 Java项目广泛依赖 的核心库，例如：集合 [collections] 、缓存 [caching] 
 			、原生类型支持 [primitives support] 、并发库 [concurrency libraries] 、通用注解 [common annotations] 
