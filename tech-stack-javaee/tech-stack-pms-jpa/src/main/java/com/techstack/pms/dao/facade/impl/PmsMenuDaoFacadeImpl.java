@@ -1,99 +1,129 @@
 package com.techstack.pms.dao.facade.impl;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.techstack.component.mapper.BeanMapper;
-import com.techstack.component.mybatis.dao.BaseDao;
 import com.techstack.pms.dao.dto.PmsActionDTO;
 import com.techstack.pms.dao.dto.PmsMenuDTO;
 import com.techstack.pms.dao.dto.PmsRoleMenuDTO;
 import com.techstack.pms.dao.facade.PmsMenuDaoFacade;
-import com.techstack.pms.dao.mybatis.entity.PmsAction;
-import com.techstack.pms.dao.mybatis.entity.PmsMenu;
-import com.techstack.pms.dao.mybatis.entity.PmsRoleMenu;
+import com.techstack.pms.dao.jpa.entity.Action;
+import com.techstack.pms.dao.jpa.entity.Menu;
+import com.techstack.pms.dao.jpa.entity.Role;
+import com.techstack.pms.dao.jpa.mapper.PmsActionDTOMapper;
+import com.techstack.pms.dao.jpa.mapper.PmsMenuDTOMapper;
+import com.techstack.pms.dao.jpa.mapper.PmsRoleMenuDTOMapper;
+import com.techstack.pms.dao.jpa.repository.ActionDao;
+import com.techstack.pms.dao.jpa.repository.MenuDao;
+import com.techstack.pms.dao.jpa.repository.RoleDao;
 
+@Component("pmsMenuDaoFacade")
 public class PmsMenuDaoFacadeImpl implements PmsMenuDaoFacade {
 	
 	@Autowired
-	private BaseDao baseDao;
+	private MenuDao menuDao;
+	@Autowired
+	private RoleDao roleDao;
+	@Autowired
+	private ActionDao actionDao;
 
 	@Override
 	public <Model> Model saveOrUpdate(Model model) {
-		PmsMenu pmsMenu = BeanMapper.map(model, PmsMenu.class);
-		baseDao.saveOrUpdate(pmsMenu);
-		return (Model) BeanMapper.map(pmsMenu,PmsMenuDTO.class);
+		PmsMenuDTO pmsMenuDTO = BeanMapper.map(model, PmsMenuDTO.class);
+		Menu menu = PmsMenuDTOMapper.toMenu(pmsMenuDTO);
+		menu = menuDao.save(menu);
+		return (Model) PmsMenuDTOMapper.toPmsMenuDTO(menu);
 	}
 
 	@Override
 	public <Model> Model getById(Long id) {
-		PmsMenu pmsMenu = baseDao.getById(PmsMenu.class, id);
-		return (Model) BeanMapper.map(pmsMenu,PmsMenuDTO.class);
+		Menu menu = menuDao.findOne(id);
+		return (Model) PmsMenuDTOMapper.toPmsMenuDTO(menu);
 	}
 
 	@Override
 	public void deleteById(Long id) {
-		baseDao.deleteById(PmsMenu.class, id);
+		menuDao.delete(id);
 	}
 
 	@Override
 	public <Model> void deleteByModel(Model model) {
-		PmsMenu pmsMenu = BeanMapper.map(model, PmsMenu.class);
-		baseDao.deleteByModel(pmsMenu);
+		PmsMenuDTO pmsMenuDTO = BeanMapper.map(model, PmsMenuDTO.class);
+		Menu menu = PmsMenuDTOMapper.toMenu(pmsMenuDTO);
+		menuDao.delete(menu);
 	}
 
 	@Override
 	public List<PmsMenuDTO> listMenuByParent(Long parentId) {
-		List<PmsMenu> pmsMenuList = baseDao.selectList(getStatement("listMenuByParent"), parentId);
-		return BeanMapper.mapList(pmsMenuList, PmsMenuDTO.class);
+		Menu parentMenu = new Menu();
+		parentMenu.setId(parentId);
+		List<Menu> menuList = menuDao.findByParentMenu(parentMenu);
+		List<PmsMenuDTO> pmsMenuDTOList = new ArrayList<PmsMenuDTO>();
+		for(Menu menu : menuList){
+			pmsMenuDTOList.add(PmsMenuDTOMapper.toPmsMenuDTO(menu));
+		}
+		return pmsMenuDTOList;
 	}
 
 	@Override
 	public List<PmsMenuDTO> listMenuByRoleIds(List<Long> roleIds) {
-		List<PmsMenu> pmsMenuList = baseDao.selectList(getStatement("listMenuByRoleIds"), roleIds);
-		return BeanMapper.mapList(pmsMenuList, PmsMenuDTO.class);
+		List<Role> roleList = roleDao.findByIdIn(roleIds);
+		List<PmsMenuDTO> pmsMenuDTOList = new ArrayList<PmsMenuDTO>();
+		for(Role role : roleList){
+			for(Menu menu : role.getMenus()){
+				pmsMenuDTOList.add(PmsMenuDTOMapper.toPmsMenuDTO(menu));
+			}
+		}
+		return pmsMenuDTOList;
 	}
 
 	@Override
 	public List<PmsRoleMenuDTO> listRoleMenuByRoleId(Long roleId) {
-		List<PmsRoleMenu> menuList = baseDao.selectList(getStatement("listRoleMenuByRoleId"), roleId);
-		return BeanMapper.mapList(menuList, PmsRoleMenuDTO.class);
+		Role role = roleDao.findOne(roleId);
+		List<PmsRoleMenuDTO> pmsRoleMenuDTOList = new ArrayList<PmsRoleMenuDTO>();
+		for(Menu menu : role.getMenus()){
+			pmsRoleMenuDTOList.add(PmsRoleMenuDTOMapper.toPmsRoleMenuDTO(role, menu));
+		}
+		return pmsRoleMenuDTOList;
 	}
 
 	@Override
 	public List<PmsActionDTO> listAllActionByMenuId(Long menuId) {
-		Map<String, Object> param = new HashMap<String, Object>();
-		param.put("menuId", Long.valueOf(menuId));
-		List<PmsAction> actionList = baseDao.selectList(getStatement("listAllActionByMenuId"), menuId);
-		return BeanMapper.mapList(actionList, PmsActionDTO.class);
+		Menu relevantMenu = new Menu();
+		relevantMenu.setId(menuId);
+		List<Action> actionList = actionDao.findByRelevantMenu(relevantMenu);
+		List<PmsActionDTO> pmsActionDTOList = new ArrayList<PmsActionDTO>();
+		for(Action action : actionList){
+			pmsActionDTOList.add(PmsActionDTOMapper.toPmsActionDTO(action));
+		}
+		return pmsActionDTOList;
 	}
 
 	@Override
 	public List<PmsMenuDTO> listMenuByParentId(Long parentId) {
-		List<PmsMenu> pmsMenuList = baseDao.selectList(getStatement("listMenuByParentId"), parentId);
-		return BeanMapper.mapList(pmsMenuList, PmsMenuDTO.class);
+		Menu parentMenu = new Menu();
+		parentMenu.setId(parentId);
+		List<Menu> menuList = menuDao.findByParentMenu(parentMenu);
+		List<PmsMenuDTO> pmsMenuDTOList = new ArrayList<PmsMenuDTO>();
+		for(Menu menu : menuList){
+			pmsMenuDTOList.add(PmsMenuDTOMapper.toPmsMenuDTO(menu));
+		}
+		return pmsMenuDTOList;
 	}
 
 	@Override
 	public List<PmsMenuDTO> listMenuBy(Integer isLeaf, String name,Long parentId) {
-		Map<String, Object> param = new HashMap<String, Object>();
-		param.put("isLeaf", isLeaf);
-		param.put("name", name);
-		param.put("name", name);
-		List<PmsMenu> pmsMenuList = baseDao.selectList(getStatement("listMenuBy"), param);
-		return BeanMapper.mapList(pmsMenuList, PmsMenuDTO.class);
+		List<Menu> menuList = menuDao.findByNameAndIsLeaf(name, isLeaf);
+		List<PmsMenuDTO> pmsMenuDTOList = new ArrayList<PmsMenuDTO>();
+		for(Menu menu : menuList){
+			pmsMenuDTOList.add(PmsMenuDTOMapper.toPmsMenuDTO(menu));
+		}
+		return pmsMenuDTOList;
 	}
 	
-	public String getStatement(String sqlId) {
-		String name = this.getClass().getName();
-		StringBuffer sb = new StringBuffer();
-		sb.append(name).append(".").append(sqlId);
-		String statement = sb.toString();
-
-		return statement;
-	}
 
 }

@@ -1,6 +1,8 @@
 package com.techstack.pms.dao.jpa.entity;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -29,15 +31,15 @@ public class Role extends BaseEntity {
 	 * 
 	 */
 	@ManyToMany(mappedBy = "roles")
-	private Set<User> users = new HashSet<User>();
+	private List<User> users = new ArrayList<User>();
 
 	@ManyToMany
 	@JoinTable(name = "PMS_ROLE_MENU", joinColumns = { @JoinColumn(name = "ROLE_ID", referencedColumnName = "ID") }, inverseJoinColumns = { @JoinColumn(name = "MENU_ID", referencedColumnName = "ID") })
-	private Set<Menu> menus = new HashSet<Menu>();
+	private List<Menu> menus = new ArrayList<Menu>();
 
 	@ManyToMany
 	@JoinTable(name = "PMS_ROLE_ACTION", joinColumns = { @JoinColumn(name = "ROLE_ID", referencedColumnName = "ID") }, inverseJoinColumns = { @JoinColumn(name = "ACTION_ID", referencedColumnName = "ID") })
-	private Set<Action> actions = new HashSet<Action>();
+	private List<Action> actions = new ArrayList<Action>();
 
 	public String getRoleName() {
 		return roleName;
@@ -63,29 +65,31 @@ public class Role extends BaseEntity {
 		this.remark = remark;
 	}
 
-	public Set<User> getUsers() {
+	public List<User> getUsers() {
 		return users;
 	}
 
-	public void setUsers(Set<User> users) {
+	public void setUsers(List<User> users) {
 		this.users = users;
 	}
 
-	public Set<Menu> getMenus() {
+	public List<Menu> getMenus() {
 		return menus;
 	}
 
-	public void setMenus(Set<Menu> menus) {
+	public void setMenus(List<Menu> menus) {
 		this.menus = menus;
 	}
 
-	public Set<Action> getActions() {
+	public List<Action> getActions() {
 		return actions;
 	}
 
-	public void setActions(Set<Action> actions) {
+	public void setActions(List<Action> actions) {
 		this.actions = actions;
 	}
+
+	
 
 	
 }

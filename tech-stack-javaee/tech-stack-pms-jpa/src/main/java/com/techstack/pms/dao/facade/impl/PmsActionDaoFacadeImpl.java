@@ -1,7 +1,6 @@
 package com.techstack.pms.dao.facade.impl;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,14 +17,20 @@ import com.techstack.pms.dao.dto.PmsActionDTO;
 import com.techstack.pms.dao.dto.PmsRoleActionDTO;
 import com.techstack.pms.dao.facade.PmsActionDaoFacade;
 import com.techstack.pms.dao.jpa.entity.Action;
+import com.techstack.pms.dao.jpa.entity.Menu;
+import com.techstack.pms.dao.jpa.entity.Role;
 import com.techstack.pms.dao.jpa.mapper.PmsActionDTOMapper;
+import com.techstack.pms.dao.jpa.mapper.PmsRoleActionDTOMapper;
 import com.techstack.pms.dao.jpa.repository.ActionDao;
+import com.techstack.pms.dao.jpa.repository.RoleDao;
 
 @Component("pmsActionDaoFacade")
 public class PmsActionDaoFacadeImpl implements PmsActionDaoFacade {
 
 	@Autowired
 	private ActionDao actionDao;
+	@Autowired
+	private RoleDao roleDao;
 	
 	@Override
 	public <Model> Model saveOrUpdate(Model model) {
@@ -65,61 +70,62 @@ public class PmsActionDaoFacadeImpl implements PmsActionDaoFacade {
 
 	@Override
 	public PmsActionDTO getActionByAction(String action) {
-		PmsAction pmsAction = baseDao.selectOne(getStatement("getActionByAction"), action);
-		return BeanMapper.map(pmsAction, PmsActionDTO.class);
+		Action pmsAction = actionDao.findByAction(action);
+		return PmsActionDTOMapper.toPmsActionDTO(pmsAction);
 	}
 
 	@Override
 	public PmsActionDTO getActionByActionName(String actionName) {
-		PmsAction pmsAction = baseDao.selectOne(getStatement("getActionByActionName"), actionName);
-		return BeanMapper.map(pmsAction, PmsActionDTO.class);
+		Action pmsAction = actionDao.findByActionName(actionName);
+		return PmsActionDTOMapper.toPmsActionDTO(pmsAction);
 	}
 
 	@Override
 	public PmsActionDTO getActionByActionNameNotEqId(String actionName, Long id) {
-		Map<String, Object> param = new HashMap<String, Object>();
-		param.put("actionName", actionName);
-		param.put("id", id);
-		PmsAction pmsAction = baseDao.selectOne(getStatement("getActionByActionNameNotEqId"), param);
-		return BeanMapper.map(pmsAction, PmsActionDTO.class);
+		Action pmsAction = actionDao.findByActionNameAndIdNot(actionName, id);
+		return PmsActionDTOMapper.toPmsActionDTO(pmsAction);
 	}
 
 	@Override
 	public PmsActionDTO getActionByActionNotEqId(String action, Long id) {
-		Map<String, Object> param = new HashMap<String, Object>();
-		param.put("action", action);
-		param.put("id", id);
-		PmsAction pmsAction = baseDao.selectOne(getStatement("getActionByActionNotEqId"), param);
-		return BeanMapper.map(pmsAction, PmsActionDTO.class);
+		Action pmsAction = actionDao.findByActionAndIdNot(action, id);
+		return PmsActionDTOMapper.toPmsActionDTO(pmsAction);
 	}
 
 	@Override
 	public List<PmsActionDTO> listActionByMenuId(Long menuId) {
-		List<PmsAction> pmsActionList = baseDao.selectList(getStatement("listActionByMenuId"), menuId);
-		return BeanMapper.mapList(pmsActionList, PmsActionDTO.class);
+		Menu relevantMenu = new Menu();
+		relevantMenu.setId(menuId);
+		List<Action> actionList = actionDao.findByRelevantMenu(relevantMenu);
+		List<PmsActionDTO> pmsActionDTOList = new ArrayList<PmsActionDTO>();
+		for(Action action : actionList){
+			pmsActionDTOList.add(PmsActionDTOMapper.toPmsActionDTO(action));
+		}
+		return pmsActionDTOList;
 	}
 
 	@Override
 	public List<PmsRoleActionDTO> listRoleActionByRoleId(Long roleId) {
-		List<PmsRoleAction> actionList = baseDao.selectList(getStatement("listRoleActionByRoleId"), roleId);
-		return BeanMapper.mapList(actionList, PmsRoleActionDTO.class);
+		Role role = roleDao.findOne(roleId);
+		List<PmsRoleActionDTO> pmsRoleActionDTOList = new ArrayList<PmsRoleActionDTO>(); 
+		for(Action action : role.getActions()){
+			pmsRoleActionDTOList.add(PmsRoleActionDTOMapper.toPmsRoleActionDTO(role, action));
+		}
+		return pmsRoleActionDTOList;
 	}
 
 	@Override
 	public List<PmsRoleActionDTO> listRoleActionByRoleIds(List<Long> roleIds) {
-		List<PmsRoleAction> listPmsRoleActions = baseDao.selectList(getStatement("listRoleActionByRoleIds"), roleIds);
-		return BeanMapper.mapList(listPmsRoleActions, PmsRoleActionDTO.class);
+		List<Role> roleList = roleDao.findByIdIn(roleIds);
+		List<PmsRoleActionDTO> pmsRoleActionDTOList = new ArrayList<PmsRoleActionDTO>(); 
+		for(Role role : roleList){
+			for(Action action : role.getActions()){
+				pmsRoleActionDTOList.add(PmsRoleActionDTOMapper.toPmsRoleActionDTO(role, action));
+			}
+		}
+		return pmsRoleActionDTOList;
 	}
 	
-	public String getStatement(String sqlId) {
-		String name = this.getClass().getName();
-		StringBuffer sb = new StringBuffer();
-		sb.append(name).append(".").append(sqlId);
-		String statement = sb.toString();
-
-		return statement;
-	}
-
 	@Override
 	public Page<PmsActionDTO> listPage(Pageable pageable, Map<String, Object> paramMap) {
 		PageParam pageParam = new PageParam(pageable.getPageNumber(), pageable.getPageSize());
