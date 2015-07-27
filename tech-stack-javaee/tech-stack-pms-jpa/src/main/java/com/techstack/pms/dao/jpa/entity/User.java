@@ -1,7 +1,7 @@
 package com.techstack.pms.dao.jpa.entity;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -38,7 +38,7 @@ public class User extends BaseEntity {
 	 */
 	@ManyToMany
 	@JoinTable(name = "PMS_ROLE_USER", joinColumns = { @JoinColumn(name = "USER_ID", referencedColumnName = "ID") }, inverseJoinColumns = { @JoinColumn(name = "ROLE_ID", referencedColumnName = "ID") })
-	private Set<Role> roles = new HashSet<Role>(); // 关联的角色可以多个，但是唯一
+	private List<Role> roles = new ArrayList<Role>(); // 关联的角色可以多个，但是唯一
 
 
 	public String getLoginName() {
@@ -81,17 +81,13 @@ public class User extends BaseEntity {
 	}
 
 
-	public Set<Role> getRoles() {
+	public List<Role> getRoles() {
 		return roles;
 	}
 
 
-	public void setRoles(Set<Role> roles) {
+	public void setRoles(List<Role> roles) {
 		this.roles = roles;
 	}
-
-	
-	
-	
 
 }

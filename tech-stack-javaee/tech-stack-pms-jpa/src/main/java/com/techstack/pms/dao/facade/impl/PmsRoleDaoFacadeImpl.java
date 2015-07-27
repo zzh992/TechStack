@@ -1,6 +1,6 @@
 package com.techstack.pms.dao.facade.impl;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -10,86 +10,97 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import com.techstack.component.mapper.BeanMapper;
-import com.techstack.component.mybatis.dao.BaseDao;
 import com.techstack.component.mybatis.page.PageBean;
 import com.techstack.component.mybatis.page.PageParam;
 import com.techstack.pms.dao.dto.PmsRoleDTO;
 import com.techstack.pms.dao.dto.PmsRoleUserDTO;
 import com.techstack.pms.dao.facade.PmsRoleDaoFacade;
-import com.techstack.pms.dao.mybatis.entity.PmsRole;
-import com.techstack.pms.dao.mybatis.entity.PmsRoleUser;
+import com.techstack.pms.dao.jpa.entity.Action;
+import com.techstack.pms.dao.jpa.entity.Role;
+import com.techstack.pms.dao.jpa.entity.User;
+import com.techstack.pms.dao.jpa.mapper.PmsRoleDTOMapper;
+import com.techstack.pms.dao.jpa.mapper.PmsRoleUserDTOMapper;
+import com.techstack.pms.dao.jpa.repository.ActionDao;
+import com.techstack.pms.dao.jpa.repository.RoleDao;
+import com.techstack.pms.dao.jpa.repository.UserDao;
 
 public class PmsRoleDaoFacadeImpl implements PmsRoleDaoFacade {
 	
 	@Autowired
-	private BaseDao baseDao;
+	private RoleDao roleDao;
+	@Autowired
+	private ActionDao actionDao;
+	@Autowired
+	private UserDao userDao;
 
 	@Override
 	public <Model> Model saveOrUpdate(Model model) {
-		PmsRole pmsRole = BeanMapper.map(model, PmsRole.class);
-		baseDao.saveOrUpdate(pmsRole);
-		return (Model) BeanMapper.map(pmsRole,PmsRoleDTO.class);
+		PmsRoleDTO pmsRoleDTO = BeanMapper.map(model, PmsRoleDTO.class);
+		Role role = PmsRoleDTOMapper.toRole(pmsRoleDTO);
+		role = roleDao.save(role);
+		return (Model) PmsRoleDTOMapper.toPmsRoleDTO(role);
 	}
 
 	@Override
 	public <Model> Model getById(Long id) {
-		PmsRole pmsRole = baseDao.getById(PmsRole.class, id);
-		return (Model) BeanMapper.map(pmsRole,PmsRoleDTO.class);
+		Role role = roleDao.findOne(id);
+		return (Model) PmsRoleDTOMapper.toPmsRoleDTO(role);
 	}
 
 	@Override
 	public void deleteById(Long id) {
-		baseDao.deleteById(PmsRole.class, id);
+		roleDao.delete(id);
 	}
 
 	@Override
 	public <Model> void deleteByModel(Model model) {
-		PmsRole pmsRole = BeanMapper.map(model, PmsRole.class);
-		baseDao.deleteByModel(pmsRole);
+		PmsRoleDTO pmsRoleDTO = BeanMapper.map(model, PmsRoleDTO.class);
+		Role role = PmsRoleDTOMapper.toRole(pmsRoleDTO);
+		roleDao.delete(role);
 	}
 
 	@Override
 	public List<PmsRoleDTO> listAllRole() {
-		List<PmsRole> pmsRoleList = baseDao.selectList(getStatement("listAllRole"), new HashMap<String,Object>());
-		return BeanMapper.mapList(pmsRoleList, PmsRoleDTO.class);
+		List<Role> roleList = roleDao.findAll();
+		List<PmsRoleDTO> pmsRoleDTOList = new ArrayList<PmsRoleDTO>();
+		for(Role role : roleList){
+			pmsRoleDTOList.add(BeanMapper.map(role, PmsRoleDTO.class));
+		}
+		return pmsRoleDTOList;
 	}
 
 	@Override
 	public PmsRoleDTO getRoleByRoleName(String roleName) {
-		PmsRole pmsRole = baseDao.selectOne(getStatement("getRoleByRoleName"), roleName);
-		return BeanMapper.map(pmsRole, PmsRoleDTO.class);
+		Role role = roleDao.findByRoleName(roleName);
+		return BeanMapper.map(role, PmsRoleDTO.class);
 	}
 
 	@Override
 	public PmsRoleDTO findRoleByRoleNameNotEqId(String roleName, Long id) {
-		Map<String, Object> param = new HashMap<String, Object>();
-		param.put("id", id);
-		param.put("roleName", roleName);
-		PmsRole pmsRole = baseDao.selectOne(getStatement("findRoleByRoleNameNotEqId"), param);
-		return BeanMapper.map(pmsRole, PmsRoleDTO.class);
+		Role role = roleDao.findByRoleNameAndIdNot(roleName, id);
+		return BeanMapper.map(role, PmsRoleDTO.class);
 	}
 
 	@Override
 	public List<PmsRoleDTO> listRoleByActionId(Long actionId) {
-		List<PmsRole> pmsRoleList = baseDao.selectList(getStatement("listRoleByActionId"), actionId);
-		return BeanMapper.mapList(pmsRoleList, PmsRoleDTO.class);
+		Action action = actionDao.findOne(actionId);
+		List<PmsRoleDTO> pmsRoleDTOList = new ArrayList<PmsRoleDTO>();
+		for(Role role : action.getRoles()){
+			pmsRoleDTOList.add(BeanMapper.map(role, PmsRoleDTO.class));
+		}
+		return pmsRoleDTOList;
 	}
 
 	@Override
 	public List<PmsRoleUserDTO> listRoleUserByUserId(Long userId) {
-		List<PmsRoleUser> rpList = baseDao.selectList(getStatement("listRoleUserByUserId"), userId);
-		return BeanMapper.mapList(rpList, PmsRoleUserDTO.class);
+		User user = userDao.findOne(userId);
+		List<PmsRoleUserDTO> pmsRoleUserDTOList = new ArrayList<PmsRoleUserDTO>();
+		for(Role role : user.getRoles()){
+			pmsRoleUserDTOList.add(PmsRoleUserDTOMapper.toPmsRoleUserDTO(role, user));
+		}
+		return pmsRoleUserDTOList;
 	}
 	
-	public String getStatement(String sqlId) {
-		String name = this.getClass().getName();
-		StringBuffer sb = new StringBuffer();
-		sb.append(name).append(".").append(sqlId);
-		String statement = sb.toString();
-
-		return statement;
-	}
-
 	@Override
 	public Page<PmsRoleDTO> listPage(Pageable pageable, Map<String, Object> paramMap) {
 		PageParam pageParam = new PageParam(pageable.getPageNumber(), pageable.getPageSize());

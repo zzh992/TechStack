@@ -129,6 +129,7 @@ public class PmsActionDaoFacadeImpl implements PmsActionDaoFacade {
 	@Override
 	public Page<PmsActionDTO> listPage(Pageable pageable, Map<String, Object> paramMap) {
 		PageParam pageParam = new PageParam(pageable.getPageNumber(), pageable.getPageSize());
+		actionDao.findAll(arg0, arg1);
 		PageBean pageBean = baseDao.listPage(PmsAction.class, pageParam, paramMap);
 		Page<PmsActionDTO> page = new PageImpl<PmsActionDTO>(BeanMapper.mapList(pageBean.getRecordList(), PmsActionDTO.class));
 		return page;

@@ -3,40 +3,53 @@ package com.techstack.pms.dao.facade.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.techstack.component.mapper.BeanMapper;
-import com.techstack.component.mybatis.dao.BaseDao;
-import com.techstack.pms.dao.dto.PmsMenuDTO;
 import com.techstack.pms.dao.dto.PmsRoleActionDTO;
 import com.techstack.pms.dao.facade.PmsRoleActionDaoFacade;
-import com.techstack.pms.dao.mybatis.entity.PmsMenu;
-import com.techstack.pms.dao.mybatis.entity.PmsRoleAction;
+import com.techstack.pms.dao.jpa.entity.Action;
+import com.techstack.pms.dao.jpa.entity.Role;
+import com.techstack.pms.dao.jpa.repository.ActionDao;
+import com.techstack.pms.dao.jpa.repository.RoleDao;
 
 public class PmsRoleActionDaoFacadeImpl implements PmsRoleActionDaoFacade {
 	
 	@Autowired
-	private BaseDao baseDao;
+	private RoleDao roleDao;
+	@Autowired
+	private ActionDao actionDao;
 
 	@Override
 	public <Model> Model saveOrUpdate(Model model) {
-		PmsRoleAction pmsRoleAction = BeanMapper.map(model, PmsRoleAction.class);
-		baseDao.saveOrUpdate(pmsRoleAction);
-		return (Model) BeanMapper.map(pmsRoleAction,PmsRoleActionDTO.class);
+		PmsRoleActionDTO pmsRoleActionDTO = BeanMapper.map(model, PmsRoleActionDTO.class);
+		Role role = roleDao.findOne(pmsRoleActionDTO.getRoleId());
+		Action action = actionDao.findOne(pmsRoleActionDTO.getActionId());
+		if(!role.getActions().contains(action)){
+			role.getActions().add(action);
+			roleDao.save(role);
+		}
+		return (Model) pmsRoleActionDTO;
 	}
 
 	@Override
 	public <Model> Model getById(Long id) {
-		PmsRoleAction pmsRoleAction = baseDao.getById(PmsRoleAction.class, id);
-		return (Model) BeanMapper.map(pmsRoleAction,PmsRoleActionDTO.class);
+		//PmsRoleActionDTO pmsRoleActionDTO = baseDao.getById(PmsRoleAction.class, id);
+		//return (Model) BeanMapper.map(pmsRoleAction,PmsRoleActionDTO.class);
+		return null;
 	}
 
 	@Override
 	public void deleteById(Long id) {
-		baseDao.deleteById(PmsRoleAction.class, id);
+		//baseDao.deleteById(PmsRoleAction.class, id);
 	}
 
 	@Override
 	public <Model> void deleteByModel(Model model) {
-		PmsRoleAction pmsRoleAction = BeanMapper.map(model, PmsRoleAction.class);
-		baseDao.deleteByModel(pmsRoleAction);
+		PmsRoleActionDTO pmsRoleActionDTO = BeanMapper.map(model, PmsRoleActionDTO.class);
+		Role role = roleDao.findOne(pmsRoleActionDTO.getRoleId());
+		Action action = actionDao.findOne(pmsRoleActionDTO.getActionId());
+		if(role.getActions().contains(action)){
+			role.getActions().remove(action);
+			roleDao.save(role);
+		}
 	}
 
 }

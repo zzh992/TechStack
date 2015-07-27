@@ -1,7 +1,7 @@
 package com.techstack.pms.dao.jpa.entity;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -25,7 +25,7 @@ public class Action extends BaseEntity {
 	private String remark;
 	
 	@ManyToMany(mappedBy = "actions")
-	private Set<Role> roles = new HashSet<Role>();
+	private List<Role> roles = new ArrayList<Role>();
 
 	@OneToOne
 	@JoinColumn(name = "MENU_ID", referencedColumnName = "ID")
@@ -74,13 +74,12 @@ public class Action extends BaseEntity {
 		this.menuName = menuName;
 	}
 
-	public Set<Role> getRoles() {
+	public List<Role> getRoles() {
 		return roles;
 	}
 
-	public void setRoles(Set<Role> roles) {
+	public void setRoles(List<Role> roles) {
 		this.roles = roles;
 	}
 
-	
 }

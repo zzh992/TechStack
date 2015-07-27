@@ -60,20 +60,27 @@
 			<version>1.2.0</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.apache.struts</groupId>
 			<artifactId>struts2-core</artifactId>
 			<version>2.3.4.1</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-jpa</artifactId>
 			<version>1.7.1.RELEASE</version>
+			<scope>provided</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>org.hibernate.javax.persistence</groupId>
+			<artifactId>hibernate-jpa-2.1-api</artifactId>
+			<version>1.0.0.Final</version>
+			<scope>provided</scope>
+		</dependency>
 
 		<!-- Guava工程包含了若干被Google的 Java项目广泛依赖 的核心库，例如：集合 [collections] 、缓存 [caching] 
 			、原生类型支持 [primitives support] 、并发库 [concurrency libraries] 、通用注解 [common annotations] 
@@ -97,10 +104,8 @@
 			<version>1.8</version>
 		</dependency>
 
-		<!-- dozer是一种JavaBean的映射工具，类似于apache的BeanUtils。
-			但是dozer更强大，它可以灵活的处理复杂类型之间的映射。
-			不但可以进行简单的属性映射、复杂的类型映射、双向映射、递归映射等，并且可以通过XML配置文件进行灵活的配置 
-		-->
+		<!-- dozer是一种JavaBean的映射工具，类似于apache的BeanUtils。 但是dozer更强大，它可以灵活的处理复杂类型之间的映射。 
+			不但可以进行简单的属性映射、复杂的类型映射、双向映射、递归映射等，并且可以通过XML配置文件进行灵活的配置 -->
 		<dependency>
 			<groupId>net.sf.dozer</groupId>
 			<artifactId>dozer</artifactId>
