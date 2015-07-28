@@ -8,10 +8,8 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.techstack.pms.dao.dto.PmsRoleDTO;
 import com.techstack.pms.dao.dto.PmsRoleUserDTO;
 import com.techstack.pms.dao.dto.PmsUserDTO;
 import com.techstack.pms.dao.facade.PmsRoleUserDaoFacade;
@@ -139,8 +137,8 @@ public class PmsUserBiz {
 		paramMap.put("module", "pmsUser");
 		return getBaseDao().listPage(PmsUser.class, pageParam, paramMap);
 	}*/
-	public Page<PmsUserDTO> listPage(Pageable pageable, Map<String, Object> paramMap) {
-		return pmsUserDaoFacade.listPage(pageable, paramMap);
+	public Page<PmsUserDTO> listPage(int pageNum, int pageSize, Map<String, Object> paramMap) {
+		return pmsUserDaoFacade.listPage(pageNum, pageSize, paramMap);
 	}
 
 	/**

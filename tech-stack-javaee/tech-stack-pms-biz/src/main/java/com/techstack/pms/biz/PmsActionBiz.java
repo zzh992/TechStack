@@ -7,7 +7,6 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -142,8 +141,8 @@ public class PmsActionBiz {
 		//return pmsActionDao.listPage(PmsAction.class, pageParam, paramMap);
 		return getBaseDao().listPage(PmsAction.class, pageParam, paramMap);
 	}*/
-	public Page<PmsActionDTO> listPage(Pageable pageable, Map<String, Object> paramMap) {
-		return pmsActionDaoFacade.listPage(pageable, paramMap);
+	public Page<PmsActionDTO> listPage(int pageNum, int pageSize, Map<String, Object> paramMap) {
+		return pmsActionDaoFacade.listPage(pageNum, pageSize, paramMap);
 	}
 
 	/**

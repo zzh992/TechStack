@@ -7,11 +7,10 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 
+import com.techstack.component.jpa.JpaPageUtils;
+import com.techstack.component.jpa.SearchFilter;
 import com.techstack.component.mapper.BeanMapper;
-import com.techstack.component.mybatis.page.PageBean;
-import com.techstack.component.mybatis.page.PageParam;
 import com.techstack.pms.dao.dto.PmsRoleDTO;
 import com.techstack.pms.dao.dto.PmsRoleUserDTO;
 import com.techstack.pms.dao.facade.PmsRoleDaoFacade;
@@ -102,10 +101,14 @@ public class PmsRoleDaoFacadeImpl implements PmsRoleDaoFacade {
 	}
 	
 	@Override
-	public Page<PmsRoleDTO> listPage(Pageable pageable, Map<String, Object> paramMap) {
-		PageParam pageParam = new PageParam(pageable.getPageNumber(), pageable.getPageSize());
-		PageBean pageBean = baseDao.listPage(PmsRole.class, pageParam, paramMap);
-		Page<PmsRoleDTO> page = new PageImpl<PmsRoleDTO>(BeanMapper.mapList(pageBean.getRecordList(), PmsRoleDTO.class));
+	public Page<PmsRoleDTO> listPage(int pageNum, int pageSize, Map<String, Object> paramMap) {
+		List<SearchFilter> searchFilterList = new ArrayList<SearchFilter>();
+		if(paramMap.get("tt") !=null){
+			SearchFilter searchFilter = new SearchFilter(null, null, null, null);
+			searchFilterList.add(searchFilter);
+		}
+		Page<Role> pageBean = roleDao.findAll(JpaPageUtils.buildSpecification(searchFilterList), JpaPageUtils.buildPageRequest(pageNum, pageSize, null, null));
+		Page<PmsRoleDTO> page = new PageImpl<PmsRoleDTO>(BeanMapper.mapList(pageBean.getContent(), PmsRoleDTO.class));
 		return page;
 	}
 

@@ -4,9 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
-import com.techstack.pms.dao.dto.PmsRoleDTO;
 import com.techstack.pms.dao.dto.PmsRoleUserDTO;
 import com.techstack.pms.dao.dto.PmsUserDTO;
 
@@ -20,5 +18,5 @@ public interface PmsUserDaoFacade extends PmsBaseDaoFacade {
 
 	public List<PmsRoleUserDTO> listRoleUserByRoleId(Long roleId);
 
-	public Page<PmsUserDTO> listPage(Pageable pageable, Map<String, Object> paramMap);
+	public Page<PmsUserDTO> listPage(int pageNum, int pageSize, Map<String, Object> paramMap);
 }

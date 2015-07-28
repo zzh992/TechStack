@@ -7,7 +7,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import com.techstack.component.mapper.BeanMapper;
@@ -114,8 +113,8 @@ public class PmsActionDaoFacadeImpl implements PmsActionDaoFacade {
 	}
 
 	@Override
-	public Page<PmsActionDTO> listPage(Pageable pageable, Map<String, Object> paramMap) {
-		PageParam pageParam = new PageParam(pageable.getPageNumber(), pageable.getPageSize());
+	public Page<PmsActionDTO> listPage(int pageNum, int pageSize, Map<String, Object> paramMap) {
+		PageParam pageParam = new PageParam(pageNum, pageSize);
 		PageBean pageBean = baseDao.listPage(PmsAction.class, pageParam, paramMap);
 		Page<PmsActionDTO> page = new PageImpl<PmsActionDTO>(BeanMapper.mapList(pageBean.getRecordList(), PmsActionDTO.class));
 		return page;

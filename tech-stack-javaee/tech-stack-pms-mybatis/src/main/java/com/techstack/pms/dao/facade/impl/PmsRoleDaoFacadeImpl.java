@@ -7,7 +7,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 
 import com.techstack.component.mapper.BeanMapper;
 import com.techstack.component.mybatis.dao.BaseDao;
@@ -91,8 +90,8 @@ public class PmsRoleDaoFacadeImpl implements PmsRoleDaoFacade {
 	}
 
 	@Override
-	public Page<PmsRoleDTO> listPage(Pageable pageable, Map<String, Object> paramMap) {
-		PageParam pageParam = new PageParam(pageable.getPageNumber(), pageable.getPageSize());
+	public Page<PmsRoleDTO> listPage(int pageNum, int pageSize, Map<String, Object> paramMap) {
+		PageParam pageParam = new PageParam(pageNum, pageSize);
 		PageBean pageBean = baseDao.listPage(PmsRole.class, pageParam, paramMap);
 		Page<PmsRoleDTO> page = new PageImpl<PmsRoleDTO>(BeanMapper.mapList(pageBean.getRecordList(), PmsRoleDTO.class));
 		return page;

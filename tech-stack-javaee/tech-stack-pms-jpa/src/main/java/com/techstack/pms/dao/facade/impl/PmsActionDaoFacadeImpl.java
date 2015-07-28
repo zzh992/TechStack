@@ -7,12 +7,11 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
+import com.techstack.component.jpa.JpaPageUtils;
+import com.techstack.component.jpa.SearchFilter;
 import com.techstack.component.mapper.BeanMapper;
-import com.techstack.component.mybatis.page.PageBean;
-import com.techstack.component.mybatis.page.PageParam;
 import com.techstack.pms.dao.dto.PmsActionDTO;
 import com.techstack.pms.dao.dto.PmsRoleActionDTO;
 import com.techstack.pms.dao.facade.PmsActionDaoFacade;
@@ -127,11 +126,14 @@ public class PmsActionDaoFacadeImpl implements PmsActionDaoFacade {
 	}
 	
 	@Override
-	public Page<PmsActionDTO> listPage(Pageable pageable, Map<String, Object> paramMap) {
-		PageParam pageParam = new PageParam(pageable.getPageNumber(), pageable.getPageSize());
-		actionDao.findAll(arg0, arg1);
-		PageBean pageBean = baseDao.listPage(PmsAction.class, pageParam, paramMap);
-		Page<PmsActionDTO> page = new PageImpl<PmsActionDTO>(BeanMapper.mapList(pageBean.getRecordList(), PmsActionDTO.class));
+	public Page<PmsActionDTO> listPage(int pageNum, int pageSize, Map<String, Object> paramMap) {
+		List<SearchFilter> searchFilterList = new ArrayList<SearchFilter>();
+		if(paramMap.get("tt") !=null){
+			SearchFilter searchFilter = new SearchFilter(null, null, null, null);
+			searchFilterList.add(searchFilter);
+		}
+		Page<Action> pageBean = actionDao.findAll(JpaPageUtils.buildSpecification(searchFilterList), JpaPageUtils.buildPageRequest(pageNum, pageSize, null, null));
+		Page<PmsActionDTO> page = new PageImpl<PmsActionDTO>(BeanMapper.mapList(pageBean.getContent(), PmsActionDTO.class));
 		return page;
 	}
 
