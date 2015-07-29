@@ -7,6 +7,28 @@
 	<packaging>war</packaging>
 	<name>tech-stack-pms-springmvc</name>
 	<description>tech-stack-pms-springmvc</description>
+
+	<dependencies>
+		<dependency>
+			<groupId>tech.stack.component</groupId>
+			<artifactId>tech-stack-component</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>tech.stack.pms.biz</groupId>
+			<artifactId>tech-stack-pms-biz</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>tech.stack.pms.mybatis</groupId>
+			<artifactId>tech-stack-pms-mybatis</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+
+	</dependencies>
+
 	<build>
 		<plugins>
 			<plugin>
