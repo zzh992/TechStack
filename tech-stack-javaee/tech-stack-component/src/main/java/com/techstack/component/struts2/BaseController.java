@@ -11,12 +11,14 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.shiro.SecurityUtils;
 import org.apache.struts2.ServletActionContext;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 import com.techstack.component.mybatis.page.PageBean;
 import com.techstack.component.mybatis.page.PageParam;
+import com.techstack.component.shiro.ShiroUser;
 
 
 @SuppressWarnings("serial")
@@ -44,6 +46,11 @@ public class BaseController extends ActionSupport{
 		}
 		
 	}*/
+	
+	public ShiroUser getCurrentUser(){
+		ShiroUser user = (ShiroUser) SecurityUtils.getSubject().getPrincipal();
+		return user;
+	}
 
 	/**
 	 * @Description: 线程绑定，其内容会在outPrint方法调用后清空
