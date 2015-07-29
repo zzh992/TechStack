@@ -10,25 +10,26 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 
-import com.techstack.sms2.base.annotation.permission.Permission;
-import com.techstack.sms2.base.page.PageBean;
-import com.techstack.sms2.base.struts.BaseAction;
-import com.techstack.sms2.permission.biz.PmsRoleBiz;
-import com.techstack.sms2.permission.biz.PmsUserBiz;
-import com.techstack.sms2.permission.entity.PmsRole;
-import com.techstack.sms2.permission.entity.PmsRoleUser;
-import com.techstack.sms2.permission.entity.PmsUser;
-import com.techstack.sms2.permission.enums.RoleTypeEnum;
-import com.techstack.sms2.permission.enums.UserStatusEnum;
-import com.techstack.sms2.permission.enums.UserTypeEnum;
+import com.techstack.component.dwz.DwzUtils;
+import com.techstack.component.shiro.ShiroUser;
+import com.techstack.component.struts2.BaseController;
+import com.techstack.pms.biz.PmsRoleBiz;
+import com.techstack.pms.biz.PmsUserBiz;
+import com.techstack.pms.dao.dto.PmsRoleDTO;
+import com.techstack.pms.dao.dto.PmsRoleUserDTO;
+import com.techstack.pms.dao.dto.PmsUserDTO;
+import com.techstack.pms.enums.RoleTypeEnum;
+import com.techstack.pms.enums.UserStatusEnum;
+import com.techstack.pms.enums.UserTypeEnum;
 
 /**
  * @Title: PmsUserAction.java 
  * @Description: 用户ACTION
  * @author zzh
  */
-public class PmsUserController extends BaseAction{
+public class PmsUserController extends BaseController{
 
 	private static final long serialVersionUID = 1L;
 	
@@ -45,14 +46,14 @@ public class PmsUserController extends BaseAction{
 	 * @param @return    
 	 * @return String
 	 */
-	@Permission("pms:user:view")
+	//@Permission("pms:user:view")
 	@RequiresPermissions("pms:user:view")
 	public String pmsUserList() {
 		try {
 			Map<String, Object> paramMap = new HashMap<String, Object>(); // 业务条件查询参数
 			paramMap.put("loginName", getString("loginName")); // 用户登录名（精确查询）
 
-			PageBean pageBean = pmsUserBiz.listPage(getPageParam(), paramMap);
+			Page<PmsUserDTO> pageBean = pmsUserBiz.listPage(DwzUtils.getPageableInStruts2(), paramMap);
 			this.pushData(pageBean);
 			//PmsUser pmsUser = getLoginedUser();// 获取当前登录用户对象
 			//this.putData("currLoginName", pmsUser.getLoginName());
@@ -67,7 +68,7 @@ public class PmsUserController extends BaseAction{
 			return "pmsUserList";
 		} catch (Exception e) {
 			log.error("==== error ==== 查询用户失败：", e);
-			return operateError("获取数据失败");
+			return DwzUtils.operateErrorInStruts2("获取数据失败");
 		}
 	}
 
@@ -76,13 +77,13 @@ public class PmsUserController extends BaseAction{
 	 * @param @return    
 	 * @return String
 	 */
-	@Permission("pms:user:view")
+	//@Permission("pms:user:view")
 	public String pmsUserView() {
 		try {
 			Long userId = getLong("id");
-			PmsUser pmsUser = pmsUserBiz.getById(userId);
+			PmsUserDTO pmsUser = pmsUserBiz.getById(userId);
 			if (pmsUser == null) {
-				return operateError("无法获取要查看的数据");
+				return DwzUtils.operateErrorInStruts2("无法获取要查看的数据");
 			}
 
 			// 普通用户没有查看超级管理员的权限
@@ -96,9 +97,9 @@ public class PmsUserController extends BaseAction{
 			this.putData("rolesList", pmsRoleBiz.listAllRole());
 			
 			// 准备该用户拥有的角色ID字符串
-			List<PmsRoleUser> lisPmsRoleUsers = pmsUserBiz.listRoleUserByUserId(userId);
+			List<PmsRoleUserDTO> lisPmsRoleUsers = pmsUserBiz.listRoleUserByUserId(userId);
 			StringBuffer owenedRoleIdBuffer = new StringBuffer("");
-			for (PmsRoleUser pmsRoleUser : lisPmsRoleUsers) {
+			for (PmsRoleUserDTO pmsRoleUser : lisPmsRoleUsers) {
 				owenedRoleIdBuffer.append(pmsRoleUser.getRoleId());
 				owenedRoleIdBuffer.append(",");
 			}
@@ -110,7 +111,7 @@ public class PmsUserController extends BaseAction{
 			return "pmsUserView";
 		} catch (Exception e) {
 			log.error("==== error ==== 查看用户详情失败：", e);
-			return operateError("获取数据失败");
+			return DwzUtils.operateErrorInStruts2("获取数据失败");
 		}
 	}
 
@@ -119,7 +120,7 @@ public class PmsUserController extends BaseAction{
 	 * @param @return    
 	 * @return String
 	 */
-	@Permission("pms:user:add")
+	//@Permission("pms:user:add")
 	public String pmsUserAdd() {
 		try {
 			
@@ -129,7 +130,7 @@ public class PmsUserController extends BaseAction{
 			return "pmsUserAdd";
 		} catch (Exception e) {
 			log.error("==== error ==== 进入添加用户页面失败：", e);
-			return operateError("获取角色列表数据失败");
+			return DwzUtils.operateErrorInStruts2("获取角色列表数据失败");
 		}
 	}
 
@@ -138,14 +139,14 @@ public class PmsUserController extends BaseAction{
 	 * @param @return    
 	 * @return String
 	 */
-	@Permission("pms:user:add")
+	//@Permission("pms:user:add")
 	public String pmsUserSave() {
 		try {
 			String loginPwd = getString("loginPwdss"); // 初始登录密码
 
 			String loginName = getString("loginNamess");
 
-			PmsUser pmsUser = new PmsUser();
+			PmsUserDTO pmsUser = new PmsUserDTO();
 			pmsUser.setLoginName(loginName); // 登录名
 			pmsUser.setLoginPwd(loginPwd);
 			pmsUser.setRemark(getString("desc")); // 描述
@@ -161,23 +162,23 @@ public class PmsUserController extends BaseAction{
 			// }
 
 			if (StringUtils.isNotBlank(validateMsg)) {
-				return operateError(validateMsg); // 返回错误信息
+				return DwzUtils.operateErrorInStruts2(validateMsg); // 返回错误信息
 			}
 
 			// 校验用户登录名是否已存在
-			PmsUser loginNameCheck = pmsUserBiz.findUserByLoginName(loginName);
+			PmsUserDTO loginNameCheck = pmsUserBiz.findUserByLoginName(loginName);
 			if (loginNameCheck != null) {
-				return operateError("登录名【" + loginName + "】已存在");
+				return DwzUtils.operateErrorInStruts2("登录名【" + loginName + "】已存在");
 			}
 
 			pmsUser.setLoginPwd(DigestUtils.sha1Hex(loginPwd)); // 存存前对密码进行加密
 
 			pmsUserBiz.saveUser(pmsUser, roleUserStr);
 			log.info("==== info ==== 用户【"+loginName+"】保存成功");
-			return operateSuccess();
+			return DwzUtils.operateSuccessInStruts2("操作成功");
 		} catch (Exception e) {
 			log.error("==== error ==== 保存用户信息失败：", e);
-			return operateError("保存用户信息失败");
+			return DwzUtils.operateErrorInStruts2("保存用户信息失败");
 		}
 	}
 
@@ -222,9 +223,9 @@ public class PmsUserController extends BaseAction{
 	 * @param @return    
 	 * @return String
 	 */
-	private String validatePmsUser(PmsUser user, String roleUserStr) {
+	private String validatePmsUser(PmsUserDTO user, String roleUserStr) {
 		String msg = ""; // 用于存放校验提示信息的变量
-		msg += lengthValidate("登录名", user.getLoginName(), true, 3, 50);
+		msg += DwzUtils.lengthValidate("登录名", user.getLoginName(), true, 3, 50);
 
 		/*
 		 * String specialChar = "`!@#$%^&*()_+\\/"; if
@@ -269,11 +270,11 @@ public class PmsUserController extends BaseAction{
 	 * @param @return    
 	 * @return String
 	 */
-	@Permission("pms:user:delete")
+	//@Permission("pms:user:delete")
 	public String pmsUserDel() {
 		long id = getLong("id");
 		pmsUserBiz.deleteUserById(id);
-		return this.operateSuccess("操作成功");
+		return DwzUtils.operateSuccessInStruts2("操作成功");
 	}
 
 	/**
@@ -281,19 +282,19 @@ public class PmsUserController extends BaseAction{
 	 * @param @return    
 	 * @return String
 	 */
-	@Permission("pms:user:edit")
+	//@Permission("pms:user:edit")
 	public String pmsUserEdit() {
 		try {
 			Long id = getLong("id");
-			PmsUser pmsUser = pmsUserBiz.getById(id);
+			PmsUserDTO pmsUser = pmsUserBiz.getById(id);
 			if (pmsUser == null) {
-				return operateError("无法获取要修改的数据");
+				return DwzUtils.operateErrorInStruts2("无法获取要修改的数据");
 			}
 
 			// 普通用户没有修改超级管理员的权限
-			if (UserTypeEnum.USER.getValue().equals(this.getLoginedUser().getType()) 
+			if (UserTypeEnum.USER.getValue().equals(this.getCurrentUser().getType()) 
 			 && UserTypeEnum.ADMIN.getValue().equals(pmsUser.getType())) {
-				return operateError("权限不足");
+				return DwzUtils.operateErrorInStruts2("权限不足");
 			}
 
 			this.pushData(pmsUser);
@@ -301,9 +302,9 @@ public class PmsUserController extends BaseAction{
 			this.putData("rolesList", pmsRoleBiz.listAllRole());
 			
 			// 准备该用户拥有的角色ID字符串
-			List<PmsRoleUser> lisPmsRoleUsers = pmsUserBiz.listRoleUserByUserId(id);
+			List<PmsRoleUserDTO> lisPmsRoleUsers = pmsUserBiz.listRoleUserByUserId(id);
 			StringBuffer owenedRoleIdBuffer = new StringBuffer("");
-			for (PmsRoleUser pmsRoleUser : lisPmsRoleUsers) {
+			for (PmsRoleUserDTO pmsRoleUser : lisPmsRoleUsers) {
 				owenedRoleIdBuffer.append(pmsRoleUser.getRoleId());
 				owenedRoleIdBuffer.append(",");
 			}
@@ -320,7 +321,7 @@ public class PmsUserController extends BaseAction{
 			return "pmsUserEdit";
 		} catch (Exception e) {
 			log.error("==== error ==== 进入用户修改页面失败：", e);
-			return operateError("获取修改数据失败");
+			return DwzUtils.operateErrorInStruts2("获取修改数据失败");
 		}
 	}
 
@@ -329,19 +330,19 @@ public class PmsUserController extends BaseAction{
 	 * @param @return    
 	 * @return String
 	 */
-	@Permission("pms:user:edit")
+	//@Permission("pms:user:edit")
 	public String pmsUserUpdate() {
 		try {
 			Long id = getLong("id");
 
-			PmsUser pmsUser = pmsUserBiz.getById(id);
+			PmsUserDTO pmsUser = pmsUserBiz.getById(id);
 			if (pmsUser == null) {
-				return operateError("无法获取要修改的用户信息");
+				return DwzUtils.operateErrorInStruts2("无法获取要修改的用户信息");
 			}
 
 			// 普通用户没有修改超级管理员的权限
-			if (UserTypeEnum.USER.getValue() == this.getLoginedUser().getType() && UserTypeEnum.ADMIN.getValue()==pmsUser.getType()) {
-				return operateError("权限不足");
+			if (UserTypeEnum.USER.getValue() == this.getCurrentUser().getType() && UserTypeEnum.ADMIN.getValue()==pmsUser.getType()) {
+				return DwzUtils.operateErrorInStruts2("权限不足");
 			}
 
 			pmsUser.setRemark(getString("remark"));
@@ -352,14 +353,14 @@ public class PmsUserController extends BaseAction{
 			String newStr = "";
 			StringBuffer oldRoleNameBuffer = new StringBuffer();
 			// 查询用户原有的角色
-			List<PmsRoleUser> list = pmsUserBiz.listRoleUserByUserId(id);
-			for (PmsRoleUser ro : list) {
+			List<PmsRoleUserDTO> list = pmsUserBiz.listRoleUserByUserId(id);
+			for (PmsRoleUserDTO ro : list) {
 				if (newStr == null || "".equals(newStr) ) {
 					newStr += ro.getRoleId();
 				} else {
 					newStr += "," + ro.getRoleId();
 				}
-				PmsRole role = pmsRoleBiz.getById(ro.getRoleId());
+				PmsRoleDTO role = pmsRoleBiz.getById(ro.getRoleId());
 				oldRoleNameBuffer.append(role.getRoleName()).append(",");
 			}
 
@@ -373,15 +374,15 @@ public class PmsUserController extends BaseAction{
 			// 表单数据校验
 			String validateMsg = validatePmsUser(pmsUser, roleUserStr);
 			if (StringUtils.isNotBlank(validateMsg)) {
-				return operateError(validateMsg); // 返回错误信息
+				return DwzUtils.operateErrorInStruts2(validateMsg); // 返回错误信息
 			}
 
 			pmsUserBiz.updateUser(pmsUser, roleUserStr);
 			log.info("==== info ==== 修改用户【"+pmsUser.getLoginName()+"】成功");
-			return operateSuccess();
+			return DwzUtils.operateSuccessInStruts2("操作成功");
 		} catch (Exception e) {
 			log.error("==== error ==== 修改用户失败", e);
-			return operateError("更新用户信息失败");
+			return DwzUtils.operateErrorInStruts2("更新用户信息失败");
 		}
 	}
 
@@ -391,16 +392,16 @@ public class PmsUserController extends BaseAction{
 	 * @param @return    
 	 * @return String
 	 */
-	@Permission("pms:user:edit")
+	//@Permission("pms:user:edit")
 	public String pmsUserResetPwd() {
-		PmsUser user = pmsUserBiz.getById(getLong("id"));
+		PmsUserDTO user = pmsUserBiz.getById(getLong("id"));
 		if (user == null) {
-			return operateError("无法获取要重置的信息");
+			return DwzUtils.operateErrorInStruts2("无法获取要重置的信息");
 		}
 
 		// 普通用户没有修改超级管理员的权限
-		if (UserTypeEnum.USER.getValue() == this.getLoginedUser().getType() && UserTypeEnum.ADMIN.getValue() == user.getType()) {
-			return operateError("你没有修改超级管理员的权限");
+		if (UserTypeEnum.USER.getValue() == this.getCurrentUser().getType() && UserTypeEnum.ADMIN.getValue() == user.getType()) {
+			return DwzUtils.operateErrorInStruts2("你没有修改超级管理员的权限");
 		}
 
 		this.putData("userId", user.getId());
@@ -414,18 +415,18 @@ public class PmsUserController extends BaseAction{
 	 * @param @return    
 	 * @return String
 	 */
-	@Permission("pms:user:edit")
+	//@Permission("pms:user:edit")
 	public String resetUserPwd() {
 		try {
 			Long userId = getLong("userId");
-			PmsUser user = pmsUserBiz.getById(userId);
+			PmsUserDTO user = pmsUserBiz.getById(userId);
 			if (user == null) {
-				return operateError("无法获取要重置密码的用户信息");
+				return DwzUtils.operateErrorInStruts2("无法获取要重置密码的用户信息");
 			}
 
 			// 普通用户没有修改超级管理员的权限
-			if ("0".equals(this.getLoginedUser().getType()) && "1".equals(user.getType())) {
-				return operateError("你没有修改超级管理员的权限");
+			if ("0".equals(this.getCurrentUser().getType()) && "1".equals(user.getType())) {
+				return DwzUtils.operateErrorInStruts2("你没有修改超级管理员的权限");
 			}
 
 			String newPwd = getString("newPwd");
@@ -437,15 +438,15 @@ public class PmsUserController extends BaseAction{
 
 			String validateMsg = validatePassword(newPwd, newPwd2);
 			if (StringUtils.isNotBlank(validateMsg)) {
-				return operateError(validateMsg); // 返回错误信息
+				return DwzUtils.operateErrorInStruts2(validateMsg); // 返回错误信息
 			}
 			
 			pmsUserBiz.updateUserPwd(userId, DigestUtils.sha1Hex(newPwd), 101);
 
-			return operateSuccess();
+			return DwzUtils.operateSuccessInStruts2("操作成功");
 		} catch (Exception e) {
 			log.error("==== error ==== 重置用户密码失败：", e);
-			return operateError("密码重置出错:" + e.getMessage());
+			return DwzUtils.operateErrorInStruts2("密码重置出错:" + e.getMessage());
 		}
 	}
 
@@ -466,25 +467,25 @@ public class PmsUserController extends BaseAction{
 	public String userChangeOwnPwd() {
 		try {
 
-			PmsUser user = this.getLoginedUser();
+			ShiroUser user = this.getCurrentUser();
 			if (user == null) {
-				return operateError("无法从会话中获取用户信息");
+				return DwzUtils.operateErrorInStruts2("无法从会话中获取用户信息");
 			}
 
 			// 判断旧密码是否正确
 			String oldPwd = getString("oldPwd");
 			if (StringUtils.isBlank(oldPwd)) {
-				return operateError("请输入旧密码");
+				return DwzUtils.operateErrorInStruts2("请输入旧密码");
 			}
 			// 旧密码要判空，否则sha1Hex会出错
-			if (!user.getLoginPwd().equals(DigestUtils.sha1Hex(oldPwd))) {
-				return operateError("旧密码不正确");
+			if (!user.getPassword().equals(DigestUtils.sha1Hex(oldPwd))) {
+				return DwzUtils.operateErrorInStruts2("旧密码不正确");
 			}
 
 			// 校验新密码
 			String newPwd = getString("newPwd");
 			if (oldPwd.equals(newPwd)) {
-				return operateError("新密码不能与旧密码相同");
+				return DwzUtils.operateErrorInStruts2("新密码不能与旧密码相同");
 			}
 
 			/*if (!loginPwdFormat(newPwd)) {
@@ -494,7 +495,7 @@ public class PmsUserController extends BaseAction{
 			String newPwd2 = getString("newPwd2");
 			String validateMsg = validatePassword(newPwd, newPwd2);
 			if (StringUtils.isNotBlank(validateMsg)) {
-				return operateError(validateMsg); // 返回错误信息
+				return DwzUtils.operateErrorInStruts2(validateMsg); // 返回错误信息
 			}
 
 			// 更新密码
@@ -506,10 +507,10 @@ public class PmsUserController extends BaseAction{
 			// getSessionMap().clear();
 
 
-			return operateSuccess("密码修改成功，请重新登录!");
+			return DwzUtils.operateSuccessInStruts2("密码修改成功，请重新登录!");
 		} catch (Exception e) {
 			log.error("==== error ==== 用户重置自己的密码失败：", e);
-			return operateError("修改密码出错:" + e.getMessage());
+			return DwzUtils.operateErrorInStruts2("修改密码出错:" + e.getMessage());
 		}
 	}
 
@@ -521,14 +522,14 @@ public class PmsUserController extends BaseAction{
 	public String pmsUserViewOwnInfo() {
 		try {
 
-			PmsUser pmsUser = this.getLoginedUser();
+			ShiroUser pmsUser = this.getCurrentUser();
 			if (pmsUser == null) {
-				return operateError("无法从会话中获取用户信息");
+				return DwzUtils.operateErrorInStruts2("无法从会话中获取用户信息");
 			}
 
-			PmsUser user = pmsUserBiz.getById(pmsUser.getId());
+			PmsUserDTO user = pmsUserBiz.getById(pmsUser.getId());
 			if (user == null) {
-				return operateError("无法获取用户信息");
+				return DwzUtils.operateErrorInStruts2("无法获取用户信息");
 			}
 
 			this.pushData(user);
@@ -536,7 +537,7 @@ public class PmsUserController extends BaseAction{
 			return "pmsUserViewOwnInfo";
 		} catch (Exception e) {
 			log.error("==== error ==== 查看自己的用户信息失败", e);
-			return operateError("无法获取要修改的用户信息失败");
+			return DwzUtils.operateErrorInStruts2("无法获取要修改的用户信息失败");
 		}
 	}
 

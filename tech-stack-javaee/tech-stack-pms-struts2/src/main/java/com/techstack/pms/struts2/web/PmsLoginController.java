@@ -13,21 +13,20 @@ import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.techstack.component.shiro.ShiroUser;
-import com.techstack.sms2.base.struts.BaseAction;
-import com.techstack.sms2.base.utils.StringUtil;
-import com.techstack.sms2.permission.biz.PmsActionBiz;
-import com.techstack.sms2.permission.biz.PmsMenuBiz;
-import com.techstack.sms2.permission.biz.PmsRoleBiz;
-import com.techstack.sms2.permission.biz.PmsUserBiz;
-import com.techstack.sms2.permission.entity.PmsAction;
-import com.techstack.sms2.permission.entity.PmsUser;
+import com.techstack.component.struts2.BaseController;
+import com.techstack.pms.biz.PmsActionBiz;
+import com.techstack.pms.biz.PmsMenuBiz;
+import com.techstack.pms.biz.PmsRoleBiz;
+import com.techstack.pms.biz.PmsUserBiz;
+import com.techstack.pms.dao.dto.PmsActionDTO;
+import com.techstack.pms.dao.dto.PmsUserDTO;
 
 /**
  * @Title: PmsLoginAction.java 
  * @Description: 用户登录ACTION
  * @author zzh
  */
-public class PmsLoginController extends BaseAction {
+public class PmsLoginController extends BaseController {
 	private static final long serialVersionUID = 1L;
 
 	private static final Log log = LogFactory.getLog(PmsLoginController.class);
@@ -129,7 +128,7 @@ public class PmsLoginController extends BaseAction {
 		// 用户信息，包括登录信息和权限
 		ShiroUser shiroUser = (ShiroUser) SecurityUtils.getSubject().getPrincipal();
 		Map<String, Object> userInfoMap = new HashMap<String, Object>();
-		PmsUser user = pmsUserBiz.findUserByLoginName(shiroUser.getUsername());
+		PmsUserDTO user = pmsUserBiz.findUserByLoginName(shiroUser.getUsername());
 		userInfoMap.put("pmsUser", user);
 		userInfoMap.put("pmsAction", getActions(user));
 
@@ -183,7 +182,7 @@ public class PmsLoginController extends BaseAction {
 	 * @param pmsUser
 	 * @return
 	 */
-	private List<String> getActions(PmsUser pmsUser) {
+	private List<String> getActions(PmsUserDTO pmsUser) {
 		// 根据用户ID得到该用户的所有角色拼成的字符串
 		String roleIds = pmsRoleBiz.getRoleIdsByUserId(pmsUser.getId());
 		// 根据角色ID字符串得到该用户的所有权限拼成的字符串
@@ -192,13 +191,13 @@ public class PmsLoginController extends BaseAction {
 			actionIds = pmsActionBiz.getActionIdsByRoleIds(roleIds);
 		}
 		// 根据权限ID字符串得到权限列表
-		List<PmsAction> pmsActionList = new ArrayList<PmsAction>();
+		List<PmsActionDTO> pmsActionList = new ArrayList<PmsActionDTO>();
 		if (!"".equals(actionIds)) {
 			pmsActionList = pmsActionBiz.findActionsByIdStr(actionIds);
 		}
 		
 		List<String> actionList = new ArrayList<String>();
-		for (PmsAction pmsAction : pmsActionList) {
+		for (PmsActionDTO pmsAction : pmsActionList) {
 			actionList.add(pmsAction.getAction());
 		}
 		log.info("==== info ==== 用户"+pmsUser.getLoginName()+"有"+actionList.size()+"个权限点");
@@ -211,7 +210,7 @@ public class PmsLoginController extends BaseAction {
 	 * @return
 	 * @throws Exception
 	 */
-	private String buildUserPermissionMenu(PmsUser pmsUser){
+	private String buildUserPermissionMenu(PmsUserDTO pmsUser){
 		// 根据用户ID得到该用户的所有角色拼成的字符串
 		String roleIds = pmsRoleBiz.getRoleIdsByUserId(pmsUser.getId());
 		if (StringUtils.isBlank(roleIds)) {

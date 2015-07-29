@@ -11,27 +11,28 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 
-import com.techstack.sms2.base.annotation.permission.Permission;
-import com.techstack.sms2.base.page.PageBean;
-import com.techstack.sms2.base.struts.BaseAction;
-import com.techstack.sms2.permission.biz.PmsActionBiz;
-import com.techstack.sms2.permission.biz.PmsMenuBiz;
-import com.techstack.sms2.permission.biz.PmsRoleBiz;
-import com.techstack.sms2.permission.biz.PmsUserBiz;
-import com.techstack.sms2.permission.entity.PmsAction;
-import com.techstack.sms2.permission.entity.PmsMenu;
-import com.techstack.sms2.permission.entity.PmsRole;
-import com.techstack.sms2.permission.entity.PmsUser;
-import com.techstack.sms2.permission.enums.RoleTypeEnum;
-import com.techstack.sms2.permission.enums.UserTypeEnum;
+import com.techstack.component.dwz.DwzUtils;
+import com.techstack.component.shiro.ShiroUser;
+import com.techstack.component.struts2.BaseController;
+import com.techstack.pms.biz.PmsActionBiz;
+import com.techstack.pms.biz.PmsMenuBiz;
+import com.techstack.pms.biz.PmsRoleBiz;
+import com.techstack.pms.biz.PmsUserBiz;
+import com.techstack.pms.dao.dto.PmsActionDTO;
+import com.techstack.pms.dao.dto.PmsMenuDTO;
+import com.techstack.pms.dao.dto.PmsRoleDTO;
+import com.techstack.pms.dao.mybatis.entity.PmsUser;
+import com.techstack.pms.enums.RoleTypeEnum;
+import com.techstack.pms.enums.UserTypeEnum;
 
 /**
  * @Title: PmsRoleAction.java 
  * @Description: 角色管理ACTION
  * @author zzh
  */
-public class PmsRoleController extends BaseAction{
+public class PmsRoleController extends BaseController{
 
 	private static final long serialVersionUID = 1L;
 
@@ -52,16 +53,16 @@ public class PmsRoleController extends BaseAction{
 	 * @param @return    
 	 * @return String
 	 */
-	@Permission("pms:role:view")
+	//@Permission("pms:role:view")
 	public String pmsRoleList() {
 		try {
 
 			Map<String, Object> paramMap = new HashMap<String, Object>(); // 业务条件查询参数
 			paramMap.put("roleName", getString("roleName")); // 角色名称（模糊查询）
 			paramMap.put("module", "pmsRole");
-			PageBean pageBean = pmsRoleBiz.listPage(getPageParam(), paramMap);
+			Page<PmsRoleDTO> pageBean = pmsRoleBiz.listPage(DwzUtils.getPageableInStruts2(), paramMap);
 
-			PmsUser user = this.getLoginedUser();
+			ShiroUser user = this.getCurrentUser();
 			this.pushData(user);
 			this.pushData(pageBean);
 			// 回显查询条件值
@@ -74,7 +75,7 @@ public class PmsRoleController extends BaseAction{
 			return "pmsRoleList";
 		} catch (Exception e) {
 			log.error("==== error ==== 查询角色失败：", e);
-			return operateError("获取数据失败");
+			return DwzUtils.operateErrorInStruts2("获取数据失败");
 		}
 	}
 
@@ -83,13 +84,13 @@ public class PmsRoleController extends BaseAction{
 	 * @param @return    
 	 * @return String
 	 */
-	@Permission("pms:role:add")
+	//@Permission("pms:role:add")
 	public String pmsRoleAdd() {
 		try {
 			return "pmsRoleAdd";
 		} catch (Exception e) {
 			log.error("==== error ==== 进入角色添加页面失败", e);
-			return operateError("获取数据失败");
+			return DwzUtils.operateErrorInStruts2("获取数据失败");
 		}
 	}
 
@@ -98,17 +99,17 @@ public class PmsRoleController extends BaseAction{
 	 * @param @return    
 	 * @return String
 	 */
-	@Permission("pms:role:add")
+	//@Permission("pms:role:add")
 	public String pmsRoleSave() {
 		try {
 			String roleName = getString("roleName");
-			PmsRole roleCheck = pmsRoleBiz.getByRoleName(roleName);
+			PmsRoleDTO roleCheck = pmsRoleBiz.getByRoleName(roleName);
 			if (roleCheck != null) {
-				return operateError("角色名【" + roleName + "】已存在");
+				return DwzUtils.operateErrorInStruts2("角色名【" + roleName + "】已存在");
 			}
 
 			// 保存基本角色信息
-			PmsRole pmsRole = new PmsRole();
+			PmsRoleDTO pmsRole = new PmsRoleDTO();
 			pmsRole.setRoleType(RoleTypeEnum.USER.getValue()); // 角色类型（1:超级管理员角色，0:普通用户角色）
 			pmsRole.setRoleName(roleName);
 			pmsRole.setRemark(getString("desc"));
@@ -117,15 +118,15 @@ public class PmsRoleController extends BaseAction{
 			// 表单数据校验
 			String validateMsg = validatePmsRole(pmsRole);
 			if (StringUtils.isNotBlank(validateMsg)) {
-				return operateError(validateMsg); // 返回错误信息
+				return DwzUtils.operateErrorInStruts2(validateMsg); // 返回错误信息
 			}
 
 			pmsRoleBiz.saveRole(pmsRole);
 			log.info("==== info ==== 添加角色【"+roleName+"】成功");
-			return operateSuccess();
+			return DwzUtils.operateSuccessInStruts2("操作成功");
 		} catch (Exception e) {
 			log.error("==== error ==== 添加角色失败：", e);
-			return operateError("保存数据失败");
+			return DwzUtils.operateErrorInStruts2("保存数据失败");
 		}
 	}
 
@@ -135,14 +136,14 @@ public class PmsRoleController extends BaseAction{
 	 * @param @return    
 	 * @return String
 	 */
-	private String validatePmsRole(PmsRole pmsRole) {
+	private String validatePmsRole(PmsRoleDTO pmsRole) {
 		String msg = ""; // 用于存放校验提示信息的变量
 		String roleName = pmsRole.getRoleName(); // 角色名称
 		String desc = pmsRole.getRemark(); // 描述
 		// 角色名称 actionName
-		msg += lengthValidate("角色名称", roleName, true, 3, 90);
+		msg += DwzUtils.lengthValidate("角色名称", roleName, true, 3, 90);
 		// 描述 desc
-		msg += lengthValidate("描述", desc, true, 3, 300);
+		msg += DwzUtils.lengthValidate("描述", desc, true, 3, 300);
 		return msg;
 	}
 
@@ -151,19 +152,19 @@ public class PmsRoleController extends BaseAction{
 	 * @param @return    
 	 * @return String
 	 */
-	@Permission("pms:role:edit")
+	//@Permission("pms:role:edit")
 	public String pmsRoleEdit() {
 		try {
 			Long roleId = getLong("roleId");
-			PmsRole pmsRole = pmsRoleBiz.getById(roleId);
+			PmsRoleDTO pmsRole = pmsRoleBiz.getById(roleId);
 			if (pmsRole == null) {
-				return operateError("获取数据失败");
+				return DwzUtils.operateErrorInStruts2("获取数据失败");
 			}
 
 			// 普通用户没有修改超级管理员角色的权限
-			if (UserTypeEnum.USER.getValue().equals(this.getLoginedUser().getType()) 
+			if (UserTypeEnum.USER.getValue().equals(this.getCurrentUser().getType()) 
 			 && RoleTypeEnum.ADMIN.getValue().equals(pmsRole.getRoleType())) {
-				return operateError("你没有修改超级管理员角色的权限");
+				return DwzUtils.operateErrorInStruts2("你没有修改超级管理员角色的权限");
 			}
 
 			this.pushData(pmsRole);
@@ -171,7 +172,7 @@ public class PmsRoleController extends BaseAction{
 			return "pmsRoleEdit";
 		} catch (Exception e) {
 			log.error("==== error ==== 进入修改角色页面失败：", e);
-			return operateError("获取数据失败");
+			return DwzUtils.operateErrorInStruts2("获取数据失败");
 		}
 	}
 
@@ -180,26 +181,26 @@ public class PmsRoleController extends BaseAction{
 	 * @param @return    
 	 * @return String
 	 */
-	@Permission("pms:role:edit")
+	//@Permission("pms:role:edit")
 	public String pmsRoleUpdate() {
 		try {
 			Long id = getLong("id");
 
-			PmsRole pmsRole = pmsRoleBiz.getById(id);
+			PmsRoleDTO pmsRole = pmsRoleBiz.getById(id);
 			if (pmsRole == null) {
-				return operateError("无法获取要修改的数据");
+				return DwzUtils.operateErrorInStruts2("无法获取要修改的数据");
 			}
 
 			// 普通用户没有修改超级管理员角色的权限
-			if (UserTypeEnum.USER.getValue().equals(this.getLoginedUser().getType()) 
+			if (UserTypeEnum.USER.getValue().equals(this.getCurrentUser().getType()) 
 			 && RoleTypeEnum.ADMIN.getValue().equals(pmsRole.getRoleType())) {
-				return operateError("你没有修改超级管理员角色的权限");
+				return DwzUtils.operateErrorInStruts2("你没有修改超级管理员角色的权限");
 			}
 
 			String roleName = getString("roleName");
-			PmsRole roleCheck = pmsRoleBiz.findByRoleNameNotEqId(id, roleName);
+			PmsRoleDTO roleCheck = pmsRoleBiz.findByRoleNameNotEqId(id, roleName);
 			if (roleCheck != null) {
-				return operateError("角色名【" + roleName + "】已存在");
+				return DwzUtils.operateErrorInStruts2("角色名【" + roleName + "】已存在");
 			}
 
 			pmsRole.setRoleName(roleName);
@@ -208,15 +209,15 @@ public class PmsRoleController extends BaseAction{
 			// 表单数据校验
 			String validateMsg = validatePmsRole(pmsRole);
 			if (StringUtils.isNotBlank(validateMsg)) {
-				return operateError(validateMsg); // 返回错误信息
+				return DwzUtils.operateErrorInStruts2(validateMsg); // 返回错误信息
 			}
 
 			pmsRoleBiz.updateRole(pmsRole);
 			log.info("==== info ==== 修改角色【"+roleName+"】成功");
-			return operateSuccess();
+			return DwzUtils.operateSuccessInStruts2("操作成功");
 		} catch (Exception e) {
 			log.error("==== error ==== 修改角色失败", e);
-			return operateError("保存失败");
+			return DwzUtils.operateErrorInStruts2("保存失败");
 		}
 	}
 
@@ -225,17 +226,17 @@ public class PmsRoleController extends BaseAction{
 	 * @param @return    
 	 * @return String
 	 */
-	@Permission("pms:role:delete")
+	//@Permission("pms:role:delete")
 	public String pmsRoleDel() {
 		try {
 			Long roleId = getLong("roleId");
 
-			PmsRole role = pmsRoleBiz.getById(roleId);
+			PmsRoleDTO role = pmsRoleBiz.getById(roleId);
 			if (role == null) {
-				return operateError("无法获取要删除的角色");
+				return DwzUtils.operateErrorInStruts2("无法获取要删除的角色");
 			}
 			if (RoleTypeEnum.ADMIN.getValue().equals(role.getRoleType())) {
-				return operateError("超级管理员角色不可删除");
+				return DwzUtils.operateErrorInStruts2("超级管理员角色不可删除");
 			}
 
 			String msg = "";
@@ -257,15 +258,15 @@ public class PmsRoleController extends BaseAction{
 
 			if (StringUtils.isNotBlank(msg)) {
 				msg += "关联到此角色，要先解除所有关联后才能删除!";
-				return operateError("有" + msg);
+				return DwzUtils.operateErrorInStruts2("有" + msg);
 			}
 			
 			pmsRoleBiz.deleteRoleById(roleId);
 			log.info("==== info ==== 删除角色成功");
-			return operateSuccess();
+			return DwzUtils.operateSuccessInStruts2("操作成功");
 		} catch (Exception e) {
 			log.error("==== error ==== 删除角色失败", e);
-			return operateError("删除失败");
+			return DwzUtils.operateErrorInStruts2("删除失败");
 		}
 	}
 
@@ -275,18 +276,18 @@ public class PmsRoleController extends BaseAction{
 	 * @return String
 	 */
 	@SuppressWarnings("unchecked")
-	@Permission("pms:role:edit")
+	//@Permission("pms:role:edit")
 	public String assignPermissionUI() {
 		Long roleId = getLong("roleId");
 
-		PmsRole role = pmsRoleBiz.getById(roleId);
+		PmsRoleDTO role = pmsRoleBiz.getById(roleId);
 		if (role == null) {
-			return operateError("无法获取角色信息");
+			return DwzUtils.operateErrorInStruts2("无法获取角色信息");
 		}
 		// 普通用户没有修改超级管理员角色的权限
-		if (UserTypeEnum.USER.getValue().equals(this.getLoginedUser().getType()) 
+		if (UserTypeEnum.USER.getValue().equals(this.getCurrentUser().getType()) 
 		 && RoleTypeEnum.ADMIN.getValue().equals(role.getRoleType())) {
-			return operateError("你没有修改超级管理员角色的权限");
+			return DwzUtils.operateErrorInStruts2("你没有修改超级管理员角色的权限");
 		}
 
 		String menuIds = "";
@@ -317,19 +318,19 @@ public class PmsRoleController extends BaseAction{
 	 * @param     
 	 * @return void
 	 */
-	@Permission("pms:role:edit")
+	//@Permission("pms:role:edit")
 	public void assignPermission() {
 		try {
 
 			Long roleId = getLong("roleId");
 
-			PmsRole role = pmsRoleBiz.getById(roleId);
+			PmsRoleDTO role = pmsRoleBiz.getById(roleId);
 			if (role == null) {
 				getOutputMsg().put("MSG", "无法获取角色信息");
 				return;
 			}
 			// 普通用户没有修改超级管理员角色的权限
-			if (UserTypeEnum.USER.getValue().equals(this.getLoginedUser().getType()) 
+			if (UserTypeEnum.USER.getValue().equals(this.getCurrentUser().getType()) 
 					 && RoleTypeEnum.ADMIN.getValue().equals(role.getRoleType())) {
 				getOutputMsg().put("MSG", "你没有修改超级管理员角色的权限");
 				return;
@@ -376,12 +377,12 @@ public class PmsRoleController extends BaseAction{
 		StringBuffer actionBuffer = new StringBuffer();
 		int actionNum = actionIds.indexOf(",");
 		if (actionNum <= 0) {
-			PmsAction action = pmsActionBiz.getById(Long.valueOf(actionIds));
+			PmsActionDTO action = pmsActionBiz.getById(Long.valueOf(actionIds));
 			actionBuffer.append(action.getActionName());
 		} else {
 			String[] actionArray = actionIds.split(",");
 			for (int i = 0; i < actionArray.length; i++) {
-				PmsAction action = pmsActionBiz.getById(Long.valueOf(actionArray[i]));
+				PmsActionDTO action = pmsActionBiz.getById(Long.valueOf(actionArray[i]));
 				if (i == actionArray.length - 1) {
 					actionBuffer.append(action.getActionName());
 				} else {
@@ -405,12 +406,12 @@ public class PmsRoleController extends BaseAction{
 		StringBuffer menuBuffer = new StringBuffer(); // 追加菜单的名称
 		int menuNum = menuIds.indexOf(",");
 		if (menuNum <= 0) {
-			PmsMenu menu = pmsMenuBiz.getById(Long.valueOf(menuIds));
+			PmsMenuDTO menu = pmsMenuBiz.getById(Long.valueOf(menuIds));
 			menuBuffer.append(menu.getName());
 		} else {
 			String[] menuArray = menuIds.split(",");
 			for (int i = 0; i < menuArray.length; i++) {
-				PmsMenu menu = pmsMenuBiz.getById(Long.valueOf(menuArray[i]));
+				PmsMenuDTO menu = pmsMenuBiz.getById(Long.valueOf(menuArray[i]));
 				if (i == menuArray.length - 1) {
 					menuBuffer.append(menu.getName());
 				} else {

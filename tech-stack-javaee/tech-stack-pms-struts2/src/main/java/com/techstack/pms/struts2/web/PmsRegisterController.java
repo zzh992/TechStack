@@ -5,18 +5,17 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.techstack.sms2.base.struts.BaseAction;
-import com.techstack.sms2.permission.biz.PmsUserBiz;
-import com.techstack.sms2.permission.entity.PmsRoleUser;
-import com.techstack.sms2.permission.entity.PmsUser;
-import com.techstack.sms2.permission.enums.UserTypeEnum;
+import com.techstack.component.struts2.BaseController;
+import com.techstack.pms.biz.PmsUserBiz;
+import com.techstack.pms.dao.dto.PmsUserDTO;
+import com.techstack.pms.enums.UserTypeEnum;
 
 /**
  * @Title: PmsRegisterAction.java 
  * @Description: 用户注册ACTION
  * @author zzh
  */
-public class PmsRegisterController extends BaseAction{
+public class PmsRegisterController extends BaseController{
 
 	private static final long serialVersionUID = 1L;
 	
@@ -41,22 +40,19 @@ public class PmsRegisterController extends BaseAction{
 	 */
 	public String userSave(){
 		String loginName = getString("loginName");
-		PmsUser user  = pmsUserBiz.findUserByLoginName(loginName);
+		PmsUserDTO user  = pmsUserBiz.findUserByLoginName(loginName);
 		if(user!=null){
 			this.putData("loginNameMsg", "用户名已被注册");
 			log.info("==== info ==== 用户【"+loginName+"】已被注册");
 			return "register";
 		}
-		user = new PmsUser();
+		user = new PmsUserDTO();
 		user.setLoginName(loginName);
 		String loginPwd =DigestUtils.sha1Hex(getString("loginPwd"));
 		user.setLoginPwd(loginPwd);
 		user.setType(UserTypeEnum.USER.getValue());
-		pmsUserBiz.create(user);
-		PmsRoleUser studentUser = new PmsRoleUser();
-		studentUser.setUserId(user.getId());
-		studentUser.setRoleId(4L);
-		pmsUserBiz.getBaseDao().saveOrUpdate(studentUser);
+		//pmsUserBiz.create(user);
+		pmsUserBiz.saveUser(user, "4");
 		log.info("==== info ==== 用户【"+loginName+"】注册成功");
 		return "login";
 	}

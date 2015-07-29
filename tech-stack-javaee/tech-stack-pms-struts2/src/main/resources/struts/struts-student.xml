@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+	"http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+
+	<!-- 学生信息管理以及课程选择 -->
+	<package name="student" extends="loginPackage">
+	
+		<action name="student_*" class="com.techstack.sms2.course.action.StudentAction" method="{1}">
+			<result name="studentInfo">page/studentManage/studentInfo.jsp</result>
+			
+			<result name="myStudentInfo">page/courseSelect/myStudentInfo.jsp</result>
+			<result name="courseSelectInfo">page/courseSelect/courseSelectInfo.jsp</result>
+			<result name="myCourseInfo">page/courseSelect/myCourseInfo.jsp</result>
+		</action>
+	
+	
+		
+	</package>
+
+</struts>
