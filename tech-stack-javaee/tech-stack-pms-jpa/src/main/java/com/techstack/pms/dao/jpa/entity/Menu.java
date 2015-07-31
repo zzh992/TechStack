@@ -6,6 +6,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
+
 @Entity
 @Table(name = "PMS_MENU")
 public class Menu extends BaseEntity {
@@ -44,6 +47,7 @@ public class Menu extends BaseEntity {
 
 	@ManyToOne
 	@JoinColumn(name = "PARENT_ID", referencedColumnName = "ID")
+	@NotFound(action = NotFoundAction.IGNORE) //当预期的被关联的元素不在数据库(关乎关联列的错误id)时，致使Hibernate无法解决关联性问题时，Hibernate就会抛出异常，使用@ NotFound可以让Hibernate忽略这样的元素而不抛出异常。
 	public Menu getParentMenu() {
 		return parentMenu;
 	}

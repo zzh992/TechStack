@@ -9,10 +9,10 @@ import com.google.common.collect.Maps;
 
 public class SearchFilter {
 	public enum Operator {
-		EQ, NEQ, LIKE, GT, LT, GTE, LTE,IN
+		EQ, NEQ, LIKE, GT, LT, GTE, LTE, IN
 	}
-	
-	public enum Logic{
+
+	public enum Logic {
 		AND, OR
 	}
 
@@ -21,11 +21,11 @@ public class SearchFilter {
 	public Operator operator;
 	public Logic logic;
 
-	public SearchFilter(String fieldName, Operator operator, Object value, Logic logic) {
+	public SearchFilter(String fieldName, Operator operator, Object value,Logic logic) {
 		this.fieldName = fieldName;
 		this.value = value;
 		this.operator = operator;
-		this.logic = logic;
+		this.logic = logic == null ? Logic.AND : logic;
 	}
 
 	/**
@@ -45,13 +45,15 @@ public class SearchFilter {
 			// 拆分operator与filedAttribute
 			String[] names = StringUtils.split(key, "_");
 			if (names.length != 2) {
-				throw new IllegalArgumentException(key + " is not a valid search filter name");
+				throw new IllegalArgumentException(key
+						+ " is not a valid search filter name");
 			}
 			String filedName = names[1];
 			Operator operator = Operator.valueOf(names[0]);
-			Logic logic = Logic.AND; //TODO: add logic enum and the default value
+			Logic logic = Logic.AND; // TODO: add logic enum and the default value
 			// 创建searchFilter
-			SearchFilter filter = new SearchFilter(filedName, operator, value, logic);
+			SearchFilter filter = new SearchFilter(filedName, operator, value,
+					logic);
 			filters.put(key, filter);
 		}
 

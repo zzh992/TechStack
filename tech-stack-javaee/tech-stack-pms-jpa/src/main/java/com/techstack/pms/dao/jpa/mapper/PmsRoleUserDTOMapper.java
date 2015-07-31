@@ -6,10 +6,13 @@ import com.techstack.pms.dao.jpa.entity.User;
 
 public class PmsRoleUserDTOMapper {
 
-	public static PmsRoleUserDTO toPmsRoleUserDTO(Role role, User user){
-		PmsRoleUserDTO pmsRoleUserDTO = new PmsRoleUserDTO();
-		pmsRoleUserDTO.setRoleId(role.getId());
-		pmsRoleUserDTO.setUserId(user.getId());
+	public static PmsRoleUserDTO toPmsRoleUserDTO(Role role, User user) {
+		PmsRoleUserDTO pmsRoleUserDTO = null;
+		if (role != null && user != null) {
+			pmsRoleUserDTO = new PmsRoleUserDTO();
+			pmsRoleUserDTO.setRoleId(role.getId());
+			pmsRoleUserDTO.setUserId(user.getId());
+		}
 		return pmsRoleUserDTO;
 	}
 }

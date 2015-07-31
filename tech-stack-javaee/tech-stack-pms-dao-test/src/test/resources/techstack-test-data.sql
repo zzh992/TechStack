@@ -2,7 +2,7 @@ INSERT INTO `PMS_MENU` VALUES ('1', '1', '2013-11-13 13:17:43', 'parent_menu', '
 INSERT INTO `PMS_MENU` VALUES ('2', '1', '2013-11-13 13:17:43', 'child_menu', 'pmsMenu_pmsMenuList.action', '00101', '1', '2', '1', 'listPmsMenu');
 
 INSERT INTO `PMS_ACTION` VALUES ('1', '0', '2014-12-10 16:36:43', 'menu_list', 'pms:menu:view', 'menu_list', '2', 'child_menu');
-INSERT INTO `PMS_ACTION` VALUES ('2', '0', '2014-12-10 16:37:22', 'menu_add', 'pms:menu:add', 'menu_list', '2', 'child_menu');
+INSERT INTO `PMS_ACTION` VALUES ('2', '0', '2014-12-10 16:37:23', 'menu_add', 'pms:menu:add', 'menu_add', '2', 'child_menu');
 
 INSERT INTO `PMS_ROLE` VALUES ('1', '0', '2014-12-16 14:10:55', '1', 'superAdmin', 'superAdmin');
 INSERT INTO `PMS_ROLE` VALUES ('2', '0', '2014-12-11 14:11:56', '0', 'admin', 'admin');

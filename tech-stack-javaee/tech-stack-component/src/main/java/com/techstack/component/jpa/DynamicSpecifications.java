@@ -2,6 +2,7 @@ package com.techstack.component.jpa;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -18,6 +19,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
 
 import com.techstack.component.jpa.SearchFilter.Logic;
+import com.techstack.component.jpa.SearchFilter.Operator;
+import com.techstack.component.reflection.Reflections;
 
 
 public class DynamicSpecifications {
@@ -120,5 +123,22 @@ public class DynamicSpecifications {
 				return builder.conjunction();
 			}
 		};
+	}
+	
+	/**
+	 * TODO：支持单对象属性查询，不支持级联查询 ，慎用
+	 * @param model
+	 * @return
+	 */
+	public static <T> Specification<T> bySearchModel(final T model) {
+		List<String> fieldNameList = Reflections.getAllFieldName(model);
+		List<SearchFilter> filters = new ArrayList<SearchFilter>();
+		for(String fieldName : fieldNameList){
+			if(Reflections.getFieldValue(model, fieldName) != null){
+				SearchFilter searchFilter = new SearchFilter(fieldName, Operator.EQ, Reflections.getFieldValue(model, fieldName), Logic.AND);
+				filters.add(searchFilter);
+			}
+		}
+		return bySearchFilter(filters) ;
 	}
 }
