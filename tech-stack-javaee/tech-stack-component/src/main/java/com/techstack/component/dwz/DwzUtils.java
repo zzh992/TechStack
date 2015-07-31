@@ -75,7 +75,7 @@ public class DwzUtils {
 	 * 如果没有值则默认返回1.
 	 * 
 	 */
-	private static int getPageNumInStruts2() {
+	public static int getPageNumInStruts2() {
 		// 当前页数
 		String pageNumStr = ServletActionContext.getRequest().getParameter("pageNum");
 		int pageNum = 1;
@@ -90,7 +90,7 @@ public class DwzUtils {
 	 * 如果没有值则默认返回15.
 	 * 
 	 */
-	private static int getNumPerPageInStruts2() {
+	public static int getNumPerPageInStruts2() {
 		String numPerPageStr = ServletActionContext.getRequest().getParameter("numPerPage");
 		int numPerPage = 20;
 		if (StringUtils.isNotBlank(numPerPageStr)) {

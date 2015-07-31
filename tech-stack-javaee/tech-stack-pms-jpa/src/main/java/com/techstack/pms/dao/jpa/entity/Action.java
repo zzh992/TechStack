@@ -14,26 +14,20 @@ import javax.persistence.Table;
 @Table(name = "PMS_ACTION")
 public class Action extends BaseEntity {
 
-	@Column(name="ACTION_NAME")
 	private String actionName; 
 
 	/** Permission identification */
-	@Column(name="ACTION")
 	private String action;
 	
-	@Column(name="REMARK")
 	private String remark;
 	
-	@ManyToMany(mappedBy = "actions")
 	private List<Role> roles = new ArrayList<Role>();
 
-	@OneToOne
-	@JoinColumn(name = "MENU_ID", referencedColumnName = "ID")
 	private Menu relevantMenu;
 	
-	@Column(name="MENU_NAME")
 	private String menuName;
 
+	@Column(name="ACTION_NAME")
 	public String getActionName() {
 		return actionName;
 	}
@@ -42,6 +36,7 @@ public class Action extends BaseEntity {
 		this.actionName = actionName;
 	}
 
+	@Column(name="ACTION")
 	public String getAction() {
 		return action;
 	}
@@ -50,6 +45,7 @@ public class Action extends BaseEntity {
 		this.action = action;
 	}
 
+	@Column(name="REMARK")
 	public String getRemark() {
 		return remark;
 	}
@@ -58,6 +54,8 @@ public class Action extends BaseEntity {
 		this.remark = remark;
 	}
 
+	@OneToOne
+	@JoinColumn(name = "MENU_ID", referencedColumnName = "ID")
 	public Menu getRelevantMenu() {
 		return relevantMenu;
 	}
@@ -66,6 +64,7 @@ public class Action extends BaseEntity {
 		this.relevantMenu = relevantMenu;
 	}
 
+	@Column(name="MENU_NAME")
 	public String getMenuName() {
 		return menuName;
 	}
@@ -74,6 +73,7 @@ public class Action extends BaseEntity {
 		this.menuName = menuName;
 	}
 
+	@ManyToMany(mappedBy = "actions")
 	public List<Role> getRoles() {
 		return roles;
 	}

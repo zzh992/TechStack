@@ -51,7 +51,7 @@ public class PmsPermissionController extends BaseController {
 			paramMap.put("action", getString("act")); // 权限（精确查询）
 			paramMap.put("act", getString("act"));
 			paramMap.put("module", "pmsAction");
-			Page<PmsActionDTO> pageBean = pmsActionBiz.listPage(DwzUtils.getPageableInStruts2(), paramMap);
+			Page<PmsActionDTO> pageBean = pmsActionBiz.listPage(DwzUtils.getPageNumInStruts2(), DwzUtils.getNumPerPageInStruts2(), paramMap);
 			this.pushData(pageBean);
 			this.pushData(paramMap); // 回显查询条件值
 			return "pmsActionList";

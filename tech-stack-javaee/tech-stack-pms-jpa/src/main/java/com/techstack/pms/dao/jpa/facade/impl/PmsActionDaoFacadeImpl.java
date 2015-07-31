@@ -1,4 +1,4 @@
-package com.techstack.pms.dao.facade.impl;
+package com.techstack.pms.dao.jpa.facade.impl;
 
 import java.util.ArrayList;
 import java.util.List;

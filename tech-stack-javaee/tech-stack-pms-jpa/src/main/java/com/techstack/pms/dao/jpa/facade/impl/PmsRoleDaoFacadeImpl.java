@@ -1,4 +1,4 @@
-package com.techstack.pms.dao.facade.impl;
+package com.techstack.pms.dao.jpa.facade.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.stereotype.Component;
 
 import com.techstack.component.jpa.JpaPageUtils;
 import com.techstack.component.jpa.SearchFilter;
@@ -23,6 +24,7 @@ import com.techstack.pms.dao.jpa.repository.ActionDao;
 import com.techstack.pms.dao.jpa.repository.RoleDao;
 import com.techstack.pms.dao.jpa.repository.UserDao;
 
+@Component("pmsRoleDaoFacade")
 public class PmsRoleDaoFacadeImpl implements PmsRoleDaoFacade {
 	
 	@Autowired

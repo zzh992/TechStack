@@ -22,7 +22,7 @@
 			<version>3.2.4.RELEASE</version>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
@@ -33,25 +33,37 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.4</version>
+			<version>4.5</version>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>tech.stack.pms.dao</groupId>
 			<artifactId>tech-stack-pms-dao</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<dependency>
-			<groupId>tech.stack.pms.mybatis</groupId>
-			<artifactId>tech-stack-pms-mybatis</artifactId>
+			<groupId>tech.stack.pms.jpa</groupId>
+			<artifactId>tech-stack-pms-jpa</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
 		
-		
+		<dependency>
+			<groupId>tech.stack.component</groupId>
+			<artifactId>tech-stack-component</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>1.3.176</version>
+			<scope>test</scope>
+		</dependency>
 
 	</dependencies>
 

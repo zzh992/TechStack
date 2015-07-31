@@ -1,4 +1,4 @@
-package com.techstack.pms.dao.facade.impl;
+package com.techstack.pms.dao.mybatis.facade.impl;
 
 import java.util.HashMap;
 import java.util.List;

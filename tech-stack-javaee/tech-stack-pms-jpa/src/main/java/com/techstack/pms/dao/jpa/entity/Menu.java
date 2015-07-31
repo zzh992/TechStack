@@ -10,28 +10,21 @@ import javax.persistence.Table;
 @Table(name = "PMS_MENU")
 public class Menu extends BaseEntity {
 	
-	@Column(name="NAME")
 	private String name; 
 
-	@Column(name="URL")
 	private String url;
 
-	@ManyToOne
-	@JoinColumn(name = "PARENT_ID", referencedColumnName = "ID")
 	private Menu parentMenu;
 	
-	@Column(name="NUMBER")
 	private String number;
 	
-	@Column(name="IS_LEAF")
 	private Integer isLeaf;
 	
-	@Column(name="LEVEL")
 	private Integer level;
 	
-	@Column(name="TARGET_NAME")
 	private String targetName;
 
+	@Column(name="NAME")
 	public String getName() {
 		return name;
 	}
@@ -40,6 +33,7 @@ public class Menu extends BaseEntity {
 		this.name = name;
 	}
 
+	@Column(name="URL")
 	public String getUrl() {
 		return url;
 	}
@@ -48,6 +42,8 @@ public class Menu extends BaseEntity {
 		this.url = url;
 	}
 
+	@ManyToOne
+	@JoinColumn(name = "PARENT_ID", referencedColumnName = "ID")
 	public Menu getParentMenu() {
 		return parentMenu;
 	}
@@ -56,6 +52,7 @@ public class Menu extends BaseEntity {
 		this.parentMenu = parentMenu;
 	}
 
+	@Column(name="NUMBER")
 	public String getNumber() {
 		return number;
 	}
@@ -64,6 +61,7 @@ public class Menu extends BaseEntity {
 		this.number = number;
 	}
 
+	@Column(name="IS_LEAF")
 	public Integer getIsLeaf() {
 		return isLeaf;
 	}
@@ -72,6 +70,7 @@ public class Menu extends BaseEntity {
 		this.isLeaf = isLeaf;
 	}
 
+	@Column(name="LEVEL")
 	public Integer getLevel() {
 		return level;
 	}
@@ -80,6 +79,7 @@ public class Menu extends BaseEntity {
 		this.level = level;
 	}
 
+	@Column(name="TARGET_NAME")
 	public String getTargetName() {
 		return targetName;
 	}

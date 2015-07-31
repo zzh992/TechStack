@@ -1,6 +1,7 @@
-package com.techstack.pms.dao.facade.impl;
+package com.techstack.pms.dao.jpa.facade.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.techstack.component.mapper.BeanMapper;
 import com.techstack.pms.dao.dto.PmsRoleActionDTO;
@@ -10,6 +11,7 @@ import com.techstack.pms.dao.jpa.entity.Role;
 import com.techstack.pms.dao.jpa.repository.ActionDao;
 import com.techstack.pms.dao.jpa.repository.RoleDao;
 
+@Component("pmsRoleActionDaoFacade")
 public class PmsRoleActionDaoFacadeImpl implements PmsRoleActionDaoFacade {
 	
 	@Autowired

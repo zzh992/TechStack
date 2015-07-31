@@ -1,4 +1,4 @@
-package com.techstack.pms.dao.facade.impl;
+package com.techstack.pms.dao.mybatis.facade.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 

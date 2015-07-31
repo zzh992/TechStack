@@ -17,19 +17,19 @@ import javax.persistence.MappedSuperclass;
  */
 @MappedSuperclass
 public abstract class BaseEntity {
-	@Column(name = "ID")
+	
 	protected Long id; // 用包装类，初始化的值可以为null，如果是基本类型的话初始化可能有值，如0
 
-	@Column(name = "VERSION")
 	protected Integer version = 0;
 
-	@Column(name = "CREATE_TIME")
 	protected Date createTime = new Date();
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	// TABLE：使用一个特定的数据库表格来保存主键。 SEQUENCE：根据底层数据库的序列来生成主键，条件是数据库支持序列。
 	// IDENTITY：主键由数据库自动生成（主要是自动增长型） AUTO：主键由程序控制
+	//(建议不要在属性上引入注解，因为属性是private的，如果引入注解会破坏其封装特性，所以建议在getter方法上加入注解)
+	@Column(name = "ID")
 	public Long getId() {
 		return id;
 	}
@@ -38,6 +38,7 @@ public abstract class BaseEntity {
 		this.id = id;
 	}
 
+	@Column(name = "VERSION")
 	public Integer getVersion() {
 		return version;
 	}
@@ -46,6 +47,7 @@ public abstract class BaseEntity {
 		this.version = version;
 	}
 
+	@Column(name = "CREATE_TIME")
 	public Date getCreateTime() {
 		return createTime;
 	}
