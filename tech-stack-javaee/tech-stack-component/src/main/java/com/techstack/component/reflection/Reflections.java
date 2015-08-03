@@ -285,9 +285,8 @@ public class Reflections {
 		return new RuntimeException("Unexpected Checked Exception.", e);
 	}
 	
-	public static List<String> getAllFieldName(final Object model){
-		Class c = model.getClass();  
-        Field field[] = c.getDeclaredFields();  
+	public static List<String> getAllFieldName(Class clazz){
+        Field field[] = clazz.getDeclaredFields();  
         List<String> fieldNameList = new ArrayList<String>();
         for (Field f : field) {  
         	fieldNameList.add(f.getName());
