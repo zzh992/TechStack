@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Component;
 
+import com.techstack.component.jpa.DynamicSpecifications;
 import com.techstack.component.jpa.JpaPageUtils;
 import com.techstack.component.jpa.SearchFilter;
 import com.techstack.component.mapper.BeanMapper;
@@ -57,7 +58,8 @@ public class PmsRoleDaoFacadeImpl implements PmsRoleDaoFacade {
 	public <Model> void deleteByModel(Model model) {
 		PmsRoleDTO pmsRoleDTO = BeanMapper.map(model, PmsRoleDTO.class);
 		Role role = PmsRoleDTOMapper.toRole(pmsRoleDTO);
-		roleDao.delete(role);
+		List<Role> roleList = roleDao.findAll(DynamicSpecifications.bySearchModel(role));
+		roleDao.delete(roleList);
 	}
 
 	@Override

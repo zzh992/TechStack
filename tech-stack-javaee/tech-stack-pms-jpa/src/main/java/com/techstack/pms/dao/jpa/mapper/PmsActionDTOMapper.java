@@ -17,9 +17,11 @@ public class PmsActionDTOMapper {
 			action.setActionName(pmsActionDTO.getActionName());
 			action.setMenuName(pmsActionDTO.getMenuName());
 			action.setRemark(pmsActionDTO.getRemark());
-			Menu relevantMenu = new Menu();
-			relevantMenu.setId(pmsActionDTO.getMenuId());
-			action.setRelevantMenu(relevantMenu);
+			if(pmsActionDTO.getMenuId() != null){
+				Menu relevantMenu = new Menu();
+				relevantMenu.setId(pmsActionDTO.getMenuId());
+				action.setRelevantMenu(relevantMenu);
+			}
 		}
 		return action;
 	}
@@ -35,7 +37,9 @@ public class PmsActionDTOMapper {
 			pmsActionDTO.setActionName(action.getActionName());
 			pmsActionDTO.setMenuName(action.getMenuName());
 			pmsActionDTO.setRemark(action.getRemark());
-			pmsActionDTO.setMenuId(action.getRelevantMenu().getId());
+			if(action.getRelevantMenu()!=null){
+				pmsActionDTO.setMenuId(action.getRelevantMenu().getId());
+			}
 		}
 		return pmsActionDTO;
 	}

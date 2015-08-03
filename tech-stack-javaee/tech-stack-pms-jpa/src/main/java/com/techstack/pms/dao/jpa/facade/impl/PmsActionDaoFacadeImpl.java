@@ -56,7 +56,9 @@ public class PmsActionDaoFacadeImpl implements PmsActionDaoFacade {
 		PmsActionDTO pmsActionDTO = BeanMapper.map(model, PmsActionDTO.class);
 		Action action = PmsActionDTOMapper.toPmsAction(pmsActionDTO);
 		List<Action> actionList = actionDao.findAll(DynamicSpecifications.bySearchModel(action));
-		actionDao.deleteInBatch(actionList);
+		//actionDao.deleteInBatch(actionList);
+		//actionDao.flush();
+		actionDao.delete(actionList);
 	}
 
 	@Override

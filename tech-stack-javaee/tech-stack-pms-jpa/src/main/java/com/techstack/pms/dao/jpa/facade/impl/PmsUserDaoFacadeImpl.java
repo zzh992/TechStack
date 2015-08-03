@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Component;
 
+import com.techstack.component.jpa.DynamicSpecifications;
 import com.techstack.component.jpa.JpaPageUtils;
 import com.techstack.component.jpa.SearchFilter;
 import com.techstack.component.mapper.BeanMapper;
@@ -53,7 +54,8 @@ public class PmsUserDaoFacadeImpl implements PmsUserDaoFacade {
 	public <Model> void deleteByModel(Model model) {
 		PmsUserDTO pmsUserDTO = BeanMapper.map(model, PmsUserDTO.class);
 		User user = PmsUserDTOMapper.toUser(pmsUserDTO);
-		userDao.delete(user);
+		List<User> userList = userDao.findAll(DynamicSpecifications.bySearchModel(user));
+		userDao.delete(userList);
 	}
 
 	@Override

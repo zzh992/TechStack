@@ -5,6 +5,7 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.Assert;
 
@@ -15,7 +16,6 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 
 import com.techstack.pms.dao.dto.PmsActionDTO;
-import com.techstack.pms.dao.dto.PmsMenuDTO;
 import com.techstack.pms.dao.dto.PmsRoleActionDTO;
 import com.techstack.pms.dao.facade.utils.SpringTransactionalJunit4Test;
 
@@ -178,8 +178,11 @@ public class PmsActionDaoFacadeTest extends SpringTransactionalJunit4Test{
 	@Test
 	@Rollback(true)
 	public void testListPage() {
-		Page<PmsActionDTO> pageResult = pmsActionDaoFacade.listPage(1, 2, new HashMap<String, Object>());
-		Assert.assertEquals(2, pageResult.getContent().size());
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("actionName", "list");
+		paramMap.put("action", "pms:menu:view");
+		Page<PmsActionDTO> pageResult = pmsActionDaoFacade.listPage(1, 2, paramMap);
+		Assert.assertEquals(1, pageResult.getContent().size());
 	}
 
 	@Test

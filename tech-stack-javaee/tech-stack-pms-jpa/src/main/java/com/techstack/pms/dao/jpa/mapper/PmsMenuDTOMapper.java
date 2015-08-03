@@ -16,9 +16,11 @@ public class PmsMenuDTOMapper {
 			menu.setLevel(pmsMenuDTO.getLevel());
 			menu.setName(pmsMenuDTO.getName());
 			menu.setNumber(pmsMenuDTO.getNumber());
-			Menu parentMenu = new Menu();
-			parentMenu.setId(pmsMenuDTO.getParentId());
-			menu.setParentMenu(parentMenu);
+			if(pmsMenuDTO.getParentId() !=null){
+				Menu parentMenu = new Menu();
+				parentMenu.setId(pmsMenuDTO.getParentId());
+				menu.setParentMenu(parentMenu);
+			}
 			menu.setTargetName(pmsMenuDTO.getTargetName());
 			menu.setUrl(pmsMenuDTO.getUrl());
 		}
@@ -36,7 +38,9 @@ public class PmsMenuDTOMapper {
 			pmsMenuDTO.setLevel(menu.getLevel());
 			pmsMenuDTO.setName(menu.getName());
 			pmsMenuDTO.setNumber(menu.getNumber());
-			pmsMenuDTO.setParentId(menu.getParentMenu().getId());
+			if(menu.getParentMenu() != null){
+				pmsMenuDTO.setParentId(menu.getParentMenu().getId());
+			}
 			pmsMenuDTO.setTargetName(menu.getTargetName());
 			pmsMenuDTO.setUrl(menu.getUrl());
 		}

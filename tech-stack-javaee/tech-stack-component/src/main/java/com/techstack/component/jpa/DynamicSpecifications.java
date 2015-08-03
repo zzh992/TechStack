@@ -134,7 +134,8 @@ public class DynamicSpecifications {
 		List<String> fieldNameList = Reflections.getAllFieldName(model);
 		List<SearchFilter> filters = new ArrayList<SearchFilter>();
 		for(String fieldName : fieldNameList){
-			if(Reflections.getFieldValue(model, fieldName) != null){
+			//if(Reflections.getFieldValue(model, fieldName) != null){
+			if(Reflections.getFieldValue(model, fieldName) != null && !Collection.class.isAssignableFrom(Reflections.getFieldValue(model, fieldName).getClass())){
 				SearchFilter searchFilter = new SearchFilter(fieldName, Operator.EQ, Reflections.getFieldValue(model, fieldName), Logic.AND);
 				filters.add(searchFilter);
 			}

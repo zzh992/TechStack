@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.techstack.component.jpa.DynamicSpecifications;
 import com.techstack.component.mapper.BeanMapper;
 import com.techstack.pms.dao.dto.PmsActionDTO;
 import com.techstack.pms.dao.dto.PmsMenuDTO;
@@ -54,7 +55,8 @@ public class PmsMenuDaoFacadeImpl implements PmsMenuDaoFacade {
 	public <Model> void deleteByModel(Model model) {
 		PmsMenuDTO pmsMenuDTO = BeanMapper.map(model, PmsMenuDTO.class);
 		Menu menu = PmsMenuDTOMapper.toMenu(pmsMenuDTO);
-		menuDao.delete(menu);
+		List<Menu> menuList = menuDao.findAll(DynamicSpecifications.bySearchModel(menu));
+		menuDao.delete(menuList);
 	}
 
 	@Override
