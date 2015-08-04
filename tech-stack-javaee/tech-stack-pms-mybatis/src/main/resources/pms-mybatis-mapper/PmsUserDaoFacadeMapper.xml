@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.techstack.pms.dao.mybatis.facade.impl.PmsUserDaoFacadeImpl">
+
+	<resultMap id="UserMap" type="com.techstack.pms.dao.mybatis.entity.PmsUser">
+		<id column="ID" property="id" />
+		<result column="VERSION" property="version" />
+		<result column="LOGIN_NAME" property="loginName" />
+		<result column="LOGIN_PWD" property="loginPwd" />
+		<result column="CREATE_TIME" property="createTime" />
+		<result column="REMARK" property="remark" />
+		<result column="TYPE" property="type" />
+	</resultMap>
+	
+	<resultMap id="RoleUserMap" type="com.techstack.pms.dao.mybatis.entity.PmsRoleUser">
+	    <id column="ID" property="id" />
+		<result column="ROLE_ID" property="roleId" />
+		<result column="USER_ID" property="userId" />
+	</resultMap>
+	
+	<select id="findUserByLoginName" parameterType="string" resultMap="UserMap">
+    	select * from PMS_USER where LOGIN_NAME = #{loginName}
+  	</select>
+  	
+  	<select id="listUserByRoleId" parameterType="long" resultMap="UserMap">
+		select O.* from PMS_USER O LEFT JOIN  PMS_ROLE_USER RO ON
+			O.ID = RO.USER_ID WHERE RO.ROLE_ID = #{roleId}
+	</select>
+	
+	<select id="listRoleUserByUserId" parameterType="long" resultMap="RoleUserMap">
+		select * from PMS_ROLE_USER where USER_ID = #{userId}
+	</select>
+	
+	<select id="listRoleUserByRoleId" parameterType="long" resultMap="RoleUserMap">
+		select * from PMS_ROLE_USER where ROLE_ID = #{roleId}
+	</select>
+	
+</mapper>

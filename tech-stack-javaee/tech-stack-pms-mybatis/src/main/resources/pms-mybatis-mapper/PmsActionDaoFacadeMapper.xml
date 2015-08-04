@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.techstack.pms.dao.mybatis.facade.impl.PmsActionDaoFacadeImpl">
+
+	<resultMap id="RoleActionMap" type="com.techstack.pms.dao.mybatis.entity.PmsRoleAction">
+	    <id column="ID" property="id" />
+		<result column="ROLE_ID" property="roleId" />
+		<result column="ACTION_ID" property="actionId" />
+	</resultMap>
+
+	<select id="findActionByIds" resultType="com.techstack.pms.dao.mybatis.entity.PmsAction">
+    	select  
+    		D.ID AS "id",
+			D.VERSION AS "version",
+			D.ACTION_NAME AS "actionName",
+			D.ACTION AS "action",
+			D.REMARK AS "remark",
+			D.CREATE_TIME AS "createTime",
+			D.MENU_ID AS "menuId",
+			D.MENU_NAME as "menuName"
+    	 from PMS_ACTION D where D.ID in 
+    	<foreach item="item" index="index" collection="list" open="(" separator="," close=")">#{item}</foreach>
+  	</select>
+  	
+  	<select id="getActionByAction" parameterType="string" resultType="com.techstack.pms.dao.mybatis.entity.PmsAction">
+    	SELECT  
+    		ID AS "id",
+			VERSION AS "version",
+			ACTION_NAME AS "actionName",
+			ACTION AS "action",
+			REMARK AS "remark",
+			MENU_ID AS "menuId",
+			MENU_NAME as "menuName",
+			CREATE_TIME AS "createTime"
+    	FROM PMS_ACTION where ACTION = #{action}
+  	</select>
+  	
+  	<select id="getActionByActionName" parameterType="string" resultType="com.techstack.pms.dao.mybatis.entity.PmsAction">
+    	SELECT  
+    		ID AS "id",
+			VERSION AS "version",
+			ACTION_NAME AS "actionName",
+			ACTION AS "action",
+			REMARK AS "remark",
+			MENU_ID AS "menuId",
+			MENU_NAME as "menuName",
+			CREATE_TIME AS "createTime"
+    	FROM PMS_ACTION where ACTION_NAME = #{actionName}
+  	</select>
+	
+	<select id="getActionByActionNameNotEqId" parameterType="java.util.Map" resultType="com.techstack.pms.dao.mybatis.entity.PmsAction">
+    	SELECT  
+    		ID AS "id",
+			VERSION AS "version",
+			ACTION_NAME AS "actionName",
+			ACTION AS "action",
+			REMARK AS "remark",
+			MENU_ID AS "menuId",
+			MENU_NAME as "menuName",
+			CREATE_TIME AS "createTime"
+    	FROM PMS_ACTION where ACTION_NAME = #{actionName} and ID != #{id}
+  	</select>
+  	
+  	
+  	<select id="getActionByActionNotEqId" parameterType="java.util.Map" resultType="com.techstack.pms.dao.mybatis.entity.PmsAction">
+    	SELECT  
+    		ID AS "id",
+			VERSION AS "version",
+			ACTION_NAME AS "actionName",
+			ACTION AS "action",
+			REMARK AS "remark",
+			MENU_ID AS "menuId",
+			MENU_NAME as "menuName",
+			CREATE_TIME AS "createTime"
+    	FROM PMS_ACTION where ACTION = #{action} and ID != #{id}
+  	</select>
+  	
+  	<select id="listActionByMenuId" parameterType="long" resultType="com.techstack.pms.dao.mybatis.entity.PmsAction">
+    	SELECT  
+    		ID AS "id",
+			VERSION AS "version",
+			ACTION_NAME AS "actionName",
+			ACTION AS "action",
+			REMARK AS "remark",
+			CREATE_TIME AS "createTime",
+			MENU_NAME as "menuName",
+			MENU_ID AS "menuId"
+    	FROM PMS_ACTION where MENU_ID = #{menuId}
+  	</select>
+  	
+  	<select id="listRoleActionByRoleId" parameterType="long" resultMap="RoleActionMap">
+		select * from PMS_ROLE_ACTION where ROLE_ID = #{roleId}
+	</select>
+	
+	
+	<select id="listRoleActionByRoleIds" resultMap="RoleActionMap">
+    	<!-- select ra.ID,ra.ROLE_ID,ra.ACTION_ID from PMS_ROLE_ACTION ra  JOIN PMS_ROLE r ON ra.ROLE_ID = r.ID where ra.ROLE_ID in 
+    	<foreach item="item" index="index" collection="list" open="(" separator="," close=")">#{item}</foreach> -->
+    	
+    	<!-- 考虑超级管理员的角色 -->
+    	SELECT
+			ra.ID,
+			ra.ROLE_ID,
+			ra.ACTION_ID
+		FROM
+			PMS_ROLE_ACTION ra
+		JOIN PMS_ROLE r ON ra.ROLE_ID = r.ID
+		WHERE
+			ra.ROLE_ID IN <foreach item="item" index="index" collection="list" open="(" separator="," close=")">#{item}</foreach>
+		UNION
+		SELECT
+			a.ID AS ID,
+			r.ID AS ROLE_ID,
+			a.ID AS ACTION_ID
+		FROM
+			PMS_ACTION a,
+			PMS_ROLE r
+		WHERE
+			r.ID IN <foreach item="item" index="index" collection="list" open="(" separator="," close=")">#{item}</foreach>
+		AND r.ROLE_TYPE = 1
+  	</select>
+	
+</mapper>
