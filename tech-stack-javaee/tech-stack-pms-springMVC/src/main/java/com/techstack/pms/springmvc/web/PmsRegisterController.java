@@ -1,24 +1,23 @@
-package com.techstack.pms.struts2.web;
+package com.techstack.pms.springmvc.web;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
-import com.techstack.component.struts2.Struts2BaseController;
+import com.techstack.component.springmvc.SpringMVCBaseController;
 import com.techstack.pms.biz.PmsUserBiz;
 import com.techstack.pms.dao.dto.PmsUserDTO;
 import com.techstack.pms.enums.UserTypeEnum;
 
-/**
- * @Title: PmsRegisterAction.java 
- * @Description: 用户注册ACTION
- * @author zzh
- */
-public class PmsRegisterController extends Struts2BaseController{
+@Controller
+@RequestMapping("/register_")
+public class PmsRegisterController extends SpringMVCBaseController{
 
-	private static final long serialVersionUID = 1L;
-	
 	private static final Log log = LogFactory.getLog(PmsRegisterController.class);
 	
 	@Autowired
@@ -29,8 +28,9 @@ public class PmsRegisterController extends Struts2BaseController{
 	 * @param @return    
 	 * @return String
 	 */
+	@RequestMapping("register.action")
 	public String register(){
-		return "register";
+		return "register.jsp";
 	}
 	
 	/**
@@ -38,13 +38,18 @@ public class PmsRegisterController extends Struts2BaseController{
 	 * @param @return    
 	 * @return String
 	 */
-	public String userSave(){
+	@RequestMapping("userSave.action")
+	public ModelAndView userSave(){
+		ModelAndView mav = new ModelAndView("login.jsp");
+		ModelMap modelMap = new ModelMap();
 		String loginName = getString("loginName");
 		PmsUserDTO user  = pmsUserBiz.findUserByLoginName(loginName);
 		if(user!=null){
-			this.putData("loginNameMsg", "用户名已被注册");
+			modelMap.put("loginNameMsg", "用户名已被注册");
 			log.info("==== info ==== 用户【"+loginName+"】已被注册");
-			return "register";
+			mav.setViewName("register.jsp");
+			mav.addAllObjects(modelMap);
+			return mav;
 		}
 		user = new PmsUserDTO();
 		user.setLoginName(loginName);
@@ -54,6 +59,7 @@ public class PmsRegisterController extends Struts2BaseController{
 		//pmsUserBiz.create(user);
 		pmsUserBiz.saveUser(user, "4");
 		log.info("==== info ==== 用户【"+loginName+"】注册成功");
-		return "login";
+		mav.addAllObjects(modelMap);
+		return mav;
 	}
 }

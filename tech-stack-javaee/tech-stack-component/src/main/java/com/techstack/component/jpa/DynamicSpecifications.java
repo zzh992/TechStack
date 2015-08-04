@@ -173,20 +173,20 @@ public class DynamicSpecifications {
 	private static <T> void buildSearchFilterByModel(final T model, List<SearchFilter> filters, StringBuffer rootPath){
 		List<String> fieldNameList = Reflections.getAllFieldName(model.getClass());
 		for(String fieldName : fieldNameList){
-			StringBuffer namePath = new StringBuffer(rootPath.toString());
+			StringBuffer namePath = new StringBuffer(rootPath.toString()).append(".").append(fieldName);
 			if(Reflections.getFieldValue(model, fieldName) == null || Collection.class.isAssignableFrom(Reflections.getFieldValue(model, fieldName).getClass())){	//TODO: 目前由于获取不到collection的泛型class,先不支持这种类型的path构建，过滤掉
 				continue;
 			}
 			Object fieldValue = Reflections.getFieldValue(model, fieldName);
-			Boolean isTail = false;
+			Boolean isTail = true;
 			for(Field field : fieldValue.getClass().getDeclaredFields()){
 				if(field.getName().equals("id")){
-					isTail = true;
+					isTail = false;
 					break;
 				}
 			}
 			if(!isTail){
-				buildSearchFilterByModel(fieldValue, filters, namePath.append(".").append(fieldName));
+				buildSearchFilterByModel(fieldValue, filters, namePath);
 			}else{
 				namePath.deleteCharAt(0);
 				SearchFilter searchFilter = new SearchFilter(namePath.toString(), Operator.EQ, fieldValue, Logic.AND);

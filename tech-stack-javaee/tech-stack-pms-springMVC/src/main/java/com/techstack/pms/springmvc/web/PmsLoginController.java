@@ -1,4 +1,4 @@
-package com.techstack.pms.struts2.web;
+package com.techstack.pms.springmvc.web;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,9 +11,13 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.techstack.component.shiro.ShiroUser;
-import com.techstack.component.struts2.Struts2BaseController;
+import com.techstack.component.springmvc.SpringMVCBaseController;
 import com.techstack.pms.biz.PmsActionBiz;
 import com.techstack.pms.biz.PmsMenuBiz;
 import com.techstack.pms.biz.PmsRoleBiz;
@@ -21,13 +25,9 @@ import com.techstack.pms.biz.PmsUserBiz;
 import com.techstack.pms.dao.dto.PmsActionDTO;
 import com.techstack.pms.dao.dto.PmsUserDTO;
 
-/**
- * @Title: PmsLoginAction.java 
- * @Description: 用户登录ACTION
- * @author zzh
- */
-public class PmsLoginController extends Struts2BaseController {
-	private static final long serialVersionUID = 1L;
+@Controller
+@RequestMapping("/login_")
+public class PmsLoginController extends SpringMVCBaseController{
 
 	private static final Log log = LogFactory.getLog(PmsLoginController.class);
 
@@ -42,15 +42,18 @@ public class PmsLoginController extends Struts2BaseController {
 
 	/**
 	 * 进入登录页面.
-	 * 
 	 * @return
 	 */
-	public String loginPage() {
+	@RequestMapping("loginPage.action")
+	public ModelAndView loginPage() {
+		ModelAndView mav = new ModelAndView("login.jsp");
+		ModelMap modelMap = new ModelMap();
 		Object error = getHttpRequest().getAttribute(FormAuthenticationFilter.DEFAULT_ERROR_KEY_ATTRIBUTE_NAME);
 		if(error != null){
-			this.putData("loginInfo", "Login fail, please check the username or password");
+			modelMap.put("loginInfo", "Login fail, please check the username or password");
 		}
-		return "login";
+		mav.addAllObjects(modelMap);
+		return mav;
 	}
 
 	/**
@@ -123,8 +126,10 @@ public class PmsLoginController extends Struts2BaseController {
 			return "input";
 		}
 	}*/
-	
-	public String mainpage(){
+	@RequestMapping("mainpage.action")
+	public ModelAndView mainpage(){
+		ModelAndView mav = new ModelAndView("page/index.jsp");
+		ModelMap modelMap = new ModelMap();
 		// 用户信息，包括登录信息和权限
 		ShiroUser shiroUser = (ShiroUser) SecurityUtils.getSubject().getPrincipal();
 		Map<String, Object> userInfoMap = new HashMap<String, Object>();
@@ -132,19 +137,22 @@ public class PmsLoginController extends Struts2BaseController {
 		userInfoMap.put("pmsUser", user);
 		userInfoMap.put("pmsAction", getActions(user));
 
-		getSessionMap().put("userInfoMap", userInfoMap);
-		this.putData("loginName", shiroUser.getUsername());
+//		getSessionMap().put("userInfoMap", userInfoMap);
+		modelMap.put("loginName", shiroUser.getUsername());
 		
 		try {
-			this.putData("tree", buildUserPermissionMenu(user));
+			modelMap.put("tree", buildUserPermissionMenu(user));
 			pmsUserBiz.update(user);
 
 		} catch (Exception e) {
 			log.error("==== error ==== 登录出现异常",e);
-			return "input";
+			mav.setViewName("login.jsp");
+			mav.addAllObjects(modelMap);
+			return mav;
 		}
 		log.info("==== info ==== 用户"+shiroUser.getUsername()+"登录系统");
-		return "main";
+		mav.addAllObjects(modelMap);
+		return mav;
 	}
 
 	/**
@@ -152,8 +160,9 @@ public class PmsLoginController extends Struts2BaseController {
 	 * 
 	 * @return LogOutConfirm.
 	 */
+	@RequestMapping("logoutConfirm.action")
 	public String logoutConfirm() {
-		return "logoutConfirm";
+		return "page/logoutConfirm.jsp";
 	}
 
 	/**
@@ -162,9 +171,10 @@ public class PmsLoginController extends Struts2BaseController {
 	 * @return
 	 * @throws Exception
 	 */
+	@RequestMapping("logout.action")
 	public String logout() throws Exception {
-		getSessionMap().clear();
-		return "logout";
+		//getSessionMap().clear();
+		return "login.jsp";
 	}
 
 	/**
@@ -173,8 +183,9 @@ public class PmsLoginController extends Struts2BaseController {
 	 * @return LogOutConfirm.
 	 * @throws Exception
 	 */
+	@RequestMapping("timeoutConfirm.action")
 	public String timeoutConfirm() throws Exception {
-		return "timeoutConfirm";
+		return "page/timeoutConfirm.jsp";
 	}
 
 	/**

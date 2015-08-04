@@ -1,13 +1,18 @@
 package com.techstack.component.dwz;
 
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.struts2.ServletActionContext;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.opensymphony.xwork2.ActionContext;
+import com.techstack.component.mapper.BeanMapper;
 
 public class DwzUtils {
 	
@@ -16,19 +21,36 @@ public class DwzUtils {
 		return "operateSuccess";
 	}
 	
+	public static ModelAndView operateSuccessInSpringMVC(String message, HttpServletRequest req){
+		return ajaxDone("200", message, req);
+	}
+	
 	public static String operateErrorInStruts2(String message){
 		ajaxDone("300", message);
 		return "operateError";
 	}
 	
+	public static ModelAndView operateErrorInSpringMVC(String message, HttpServletRequest req){
+		return ajaxDone("300", message, req);
+	}
+	
 	private static void ajaxDone(String statusCode, String message) {
-		DwzParam param = getDwzParam(statusCode, message);
+		DwzParam param = getDwzParam(statusCode, message, ServletActionContext.getRequest());
 		ActionContext.getContext().getValueStack().push(param);
 	}
 	
-	private static DwzParam getDwzParam(String statusCode, String message){
+	private static ModelAndView ajaxDone(String statusCode, String message, HttpServletRequest req){
+		DwzParam param = getDwzParam(statusCode, message, req);
+		ModelMap modelMap = new ModelMap();
+		modelMap.putAll(BeanMapper.map(param, Map.class));
+		ModelAndView mav = new ModelAndView("dwz/operateResult.jsp");
+		mav.addAllObjects(modelMap);
+		return mav;
+	}
+	
+	private static DwzParam getDwzParam(String statusCode, String message, HttpServletRequest req){
 		// 获取DWZ Ajax响应参数值,并构造成参数对象
-		HttpServletRequest req = ServletActionContext.getRequest();
+		//HttpServletRequest req = ServletActionContext.getRequest();
 		String navTabId = req.getParameter("navTabId");
 		String dialogId = req.getParameter("dialogId");
 		String callbackType = req.getParameter("callbackType");
@@ -66,7 +88,7 @@ public class DwzUtils {
 	}
 	
 	public static Pageable getPageableInStruts2(){
-		Pageable pageable = new PageRequest(getPageNumInStruts2(), getNumPerPageInStruts2());
+		Pageable pageable = new PageRequest(getPageNum(ServletActionContext.getRequest()), getNumPerPage(ServletActionContext.getRequest()));
 		return pageable;
 	}
 	
@@ -75,9 +97,9 @@ public class DwzUtils {
 	 * 如果没有值则默认返回1.
 	 * 
 	 */
-	public static int getPageNumInStruts2() {
+	public static int getPageNum(HttpServletRequest req) {
 		// 当前页数
-		String pageNumStr = ServletActionContext.getRequest().getParameter("pageNum");
+		String pageNumStr = req.getParameter("pageNum");
 		int pageNum = 1;
 		if (StringUtils.isNotBlank(pageNumStr)) {
 			pageNum = Integer.valueOf(pageNumStr);
@@ -90,8 +112,8 @@ public class DwzUtils {
 	 * 如果没有值则默认返回15.
 	 * 
 	 */
-	public static int getNumPerPageInStruts2() {
-		String numPerPageStr = ServletActionContext.getRequest().getParameter("numPerPage");
+	public static int getNumPerPage(HttpServletRequest req) {
+		String numPerPageStr = req.getParameter("numPerPage");
 		int numPerPage = 20;
 		if (StringUtils.isNotBlank(numPerPageStr)) {
 			numPerPage = Integer.parseInt(numPerPageStr);

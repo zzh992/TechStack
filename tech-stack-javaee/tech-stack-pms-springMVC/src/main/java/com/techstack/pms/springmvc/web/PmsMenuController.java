@@ -1,4 +1,4 @@
-package com.techstack.pms.struts2.web;
+package com.techstack.pms.springmvc.web;
 
 import java.util.HashMap;
 import java.util.List;
@@ -7,23 +7,22 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.techstack.component.dwz.DwzUtils;
-import com.techstack.component.struts2.Struts2BaseController;
+import com.techstack.component.springmvc.SpringMVCBaseController;
 import com.techstack.pms.biz.PmsActionBiz;
 import com.techstack.pms.biz.PmsMenuBiz;
 import com.techstack.pms.dao.dto.PmsActionDTO;
 import com.techstack.pms.dao.dto.PmsMenuDTO;
 import com.techstack.pms.enums.NodeTypeEnum;
 
-/**
- * @Title: PmsMenuAction.java 
- * @Description: 菜单ACTION
- * @author zzh
- */
-public class PmsMenuController extends Struts2BaseController {
-
-	private static final long serialVersionUID = 1L;
+@Controller
+@RequestMapping("/pmsMenu_")
+public class PmsMenuController extends SpringMVCBaseController{
 
 	private static final Log log = LogFactory.getLog(PmsMenuController.class);
 	
@@ -48,10 +47,14 @@ public class PmsMenuController extends Struts2BaseController {
 	 * @return PmsMenuList .
 	 */
 	//@Permission("pms:menu:view")
-	public String pmsMenuList() {
+	@RequestMapping("pmsMenuList.action")
+	public ModelAndView pmsMenuList() {
+		ModelAndView mav = new ModelAndView("page/pms/pmsMenu/pmsMenuList.jsp");
+		ModelMap modelMap = new ModelMap();
 		String str = pmsMenuBiz.getTreeMenu(EDIT_MENU_ACTION);//构建树形菜单的HTML
-		this.putData("tree", str);
-		return "pmsMenuList";
+		modelMap.put("tree", str);
+		mav.addAllObjects(modelMap);
+		return mav;
 	}
 
 	/**
@@ -59,13 +62,17 @@ public class PmsMenuController extends Struts2BaseController {
 	 * @return PmsMenuAdd .
 	 */
 	//@Permission("pms:menu:add")
-	public String pmsMenuAdd() {
+	@RequestMapping("pmsMenuAdd.action")
+	public ModelAndView pmsMenuAdd() {
+		ModelAndView mav = new ModelAndView("page/pms/pmsMenu/pmsMenuAdd.jsp");
+		ModelMap modelMap = new ModelMap();
 		Long pid = getLong("pid");
 		if (null != pid) {
 			PmsMenuDTO parentMenu = pmsMenuBiz.getById(pid);
-			this.putData("parentMenu", parentMenu);
+			modelMap.put("parentMenu", parentMenu);
 		}
-		return "pmsMenuAdd";
+		mav.addAllObjects(modelMap);
+		return mav;
 	}
 
 	/**
@@ -73,7 +80,8 @@ public class PmsMenuController extends Struts2BaseController {
 	 * @return operateSuccess or operateError .
 	 */
 	//@Permission("pms:menu:add")
-	public String pmsMenuSave() {
+	@RequestMapping("pmsMenuSave.action")
+	public ModelAndView pmsMenuSave() {
 		try {
 			String name = getString("name");
 			Map<String, Object> map = new HashMap<String, Object>();
@@ -82,7 +90,7 @@ public class PmsMenuController extends Struts2BaseController {
 			List<PmsMenuDTO> list = pmsMenuBiz.getMenuByNameAndIsLeaf(map);
 			if (list.size() > 0) {
 				//return operateError("同级菜单名称不能重复");
-				return DwzUtils.operateErrorInStruts2("同级菜单名称不能重复");
+				return DwzUtils.operateErrorInSpringMVC("同级菜单名称不能重复", getHttpRequest());
 			}
 			PmsMenuDTO pmsMenu = new PmsMenuDTO();
 			pmsMenu.setName(name);
@@ -99,9 +107,9 @@ public class PmsMenuController extends Struts2BaseController {
 		} catch (Exception e) {
 			log.error("==== error ==== 添加菜单出错", e);
 			//return operateError("添加菜单出错");
-			return DwzUtils.operateErrorInStruts2("添加菜单出错");
+			return DwzUtils.operateErrorInSpringMVC("添加菜单出错", getHttpRequest());
 		}
-		return DwzUtils.operateSuccessInStruts2("操作成功");
+		return DwzUtils.operateErrorInSpringMVC("操作成功", getHttpRequest());
 	}
 
 	/**
@@ -109,15 +117,19 @@ public class PmsMenuController extends Struts2BaseController {
 	 * @return
 	 */
 //	@Permission("pms:menu:view")
-	public String pmsMenuEdit() {
+	@RequestMapping("pmsMenuSave.action")
+	public ModelAndView pmsMenuEdit() {
+		ModelAndView mav = new ModelAndView("page/pms/pmsMenu/pmsMenuEdit.jsp");
+		ModelMap modelMap = new ModelMap();
 		Long id = getLong("id");
 		if (null != id) {
 			PmsMenuDTO currentMenu = pmsMenuBiz.getById(id);
 			PmsMenuDTO parentMenu = pmsMenuBiz.getById(currentMenu.getParentId());
-			this.putData("currentMenu", currentMenu);
-			this.putData("parentMenu", parentMenu);
+			modelMap.put("currentMenu", currentMenu);
+			modelMap.put("parentMenu", parentMenu);
 		}
-		return "pmsMenuEdit";
+		mav.addAllObjects(modelMap);
+		return mav;
 	}
 
 	/**
@@ -125,7 +137,8 @@ public class PmsMenuController extends Struts2BaseController {
 	 * @return
 	 */
 	//@Permission("pms:menu:edit")
-	public String pmsMenuUpdate() {
+	@RequestMapping("pmsMenuUpdate.action")
+	public ModelAndView pmsMenuUpdate() {
 		try {
 			Long id = getLong("menuId");
 			PmsMenuDTO pmsMenu = pmsMenuBiz.getById(id);
@@ -136,10 +149,10 @@ public class PmsMenuController extends Struts2BaseController {
 			pmsMenuBiz.update(pmsMenu);
 			log.info("==== info ==== 修改菜单【"+pmsMenu.getName()+"】成功");
 			//return operateSuccess();
-			return DwzUtils.operateSuccessInStruts2("操作成功");
+			return DwzUtils.operateErrorInSpringMVC("操作成功", getHttpRequest());
 		} catch (Exception e) {
 			log.error("==== error ==== 修改菜单出错", e);
-			return DwzUtils.operateErrorInStruts2("保存菜单出错");
+			return DwzUtils.operateErrorInSpringMVC("保存菜单出错", getHttpRequest());
 		}
 
 	}

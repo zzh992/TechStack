@@ -22,14 +22,14 @@ import com.techstack.component.shiro.ShiroUser;
 
 
 @SuppressWarnings("serial")
-public class BaseController extends ActionSupport{
+public class Struts2BaseController extends ActionSupport{
 	private static ThreadLocal<Map<String, Object>> outPutMsg = new ThreadLocal<Map<String, Object>>();
 
 	public PageBean pageBean;
 
 	public Integer pageNum;
 	
-	private static final Log log = LogFactory.getLog(BaseController.class);
+	private static final Log log = LogFactory.getLog(Struts2BaseController.class);
 	
 	
 	
