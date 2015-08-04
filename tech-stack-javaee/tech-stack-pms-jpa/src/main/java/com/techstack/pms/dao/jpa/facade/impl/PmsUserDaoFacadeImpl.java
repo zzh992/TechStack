@@ -12,6 +12,8 @@ import org.springframework.stereotype.Component;
 import com.techstack.component.jpa.DynamicSpecifications;
 import com.techstack.component.jpa.JpaPageUtils;
 import com.techstack.component.jpa.SearchFilter;
+import com.techstack.component.jpa.SearchFilter.Logic;
+import com.techstack.component.jpa.SearchFilter.Operator;
 import com.techstack.component.mapper.BeanMapper;
 import com.techstack.pms.dao.dto.PmsRoleUserDTO;
 import com.techstack.pms.dao.dto.PmsUserDTO;
@@ -97,8 +99,8 @@ public class PmsUserDaoFacadeImpl implements PmsUserDaoFacade {
 	@Override
 	public Page<PmsUserDTO> listPage(int pageNum, int pageSize, Map<String, Object> paramMap) {
 		List<SearchFilter> searchFilterList = new ArrayList<SearchFilter>();
-		if(paramMap.get("tt") !=null){
-			SearchFilter searchFilter = new SearchFilter(null, null, null, null);
+		if(paramMap.get("loginName") !=null){
+			SearchFilter searchFilter = new SearchFilter("loginName", Operator.LIKE, paramMap.get("loginName"), Logic.AND);
 			searchFilterList.add(searchFilter);
 		}
 		Page<User> pageBean = userDao.findAll(JpaPageUtils.buildSpecification(searchFilterList), JpaPageUtils.buildPageRequest(pageNum, pageSize, null, null));

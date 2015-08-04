@@ -12,6 +12,8 @@ import org.springframework.stereotype.Component;
 import com.techstack.component.jpa.DynamicSpecifications;
 import com.techstack.component.jpa.JpaPageUtils;
 import com.techstack.component.jpa.SearchFilter;
+import com.techstack.component.jpa.SearchFilter.Logic;
+import com.techstack.component.jpa.SearchFilter.Operator;
 import com.techstack.component.mapper.BeanMapper;
 import com.techstack.pms.dao.dto.PmsRoleDTO;
 import com.techstack.pms.dao.dto.PmsRoleUserDTO;
@@ -107,8 +109,8 @@ public class PmsRoleDaoFacadeImpl implements PmsRoleDaoFacade {
 	@Override
 	public Page<PmsRoleDTO> listPage(int pageNum, int pageSize, Map<String, Object> paramMap) {
 		List<SearchFilter> searchFilterList = new ArrayList<SearchFilter>();
-		if(paramMap.get("tt") !=null){
-			SearchFilter searchFilter = new SearchFilter(null, null, null, null);
+		if(paramMap.get("roleName") !=null){
+			SearchFilter searchFilter = new SearchFilter("roleName", Operator.LIKE, paramMap.get("roleName"), Logic.AND);
 			searchFilterList.add(searchFilter);
 		}
 		Page<Role> pageBean = roleDao.findAll(JpaPageUtils.buildSpecification(searchFilterList), JpaPageUtils.buildPageRequest(pageNum, pageSize, null, null));

@@ -12,6 +12,8 @@ import org.springframework.stereotype.Component;
 import com.techstack.component.jpa.DynamicSpecifications;
 import com.techstack.component.jpa.JpaPageUtils;
 import com.techstack.component.jpa.SearchFilter;
+import com.techstack.component.jpa.SearchFilter.Logic;
+import com.techstack.component.jpa.SearchFilter.Operator;
 import com.techstack.component.mapper.BeanMapper;
 import com.techstack.pms.dao.dto.PmsActionDTO;
 import com.techstack.pms.dao.dto.PmsRoleActionDTO;
@@ -132,8 +134,12 @@ public class PmsActionDaoFacadeImpl implements PmsActionDaoFacade {
 	@Override
 	public Page<PmsActionDTO> listPage(int pageNum, int pageSize, Map<String, Object> paramMap) {
 		List<SearchFilter> searchFilterList = new ArrayList<SearchFilter>();
-		if(paramMap.get("tt") !=null){
-			SearchFilter searchFilter = new SearchFilter(null, null, null, null);
+		if(paramMap.get("actionName") !=null){
+			SearchFilter searchFilter = new SearchFilter("actionName", Operator.LIKE, paramMap.get("actionName"), Logic.AND);
+			searchFilterList.add(searchFilter);
+		}
+		if(paramMap.get("action") !=null){
+			SearchFilter searchFilter = new SearchFilter("action", Operator.EQ, paramMap.get("action"), Logic.AND);
 			searchFilterList.add(searchFilter);
 		}
 		Page<Action> pageBean = actionDao.findAll(JpaPageUtils.buildSpecification(searchFilterList), JpaPageUtils.buildPageRequest(pageNum, pageSize, null, null));
