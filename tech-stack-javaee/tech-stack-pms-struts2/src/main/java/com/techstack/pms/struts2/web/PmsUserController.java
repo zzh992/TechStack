@@ -9,6 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 
@@ -53,7 +54,7 @@ public class PmsUserController extends Struts2BaseController{
 			Map<String, Object> paramMap = new HashMap<String, Object>(); // 业务条件查询参数
 			paramMap.put("loginName", getString("loginName")); // 用户登录名（精确查询）
 
-			Page<PmsUserDTO> pageBean = pmsUserBiz.listPage(DwzUtils.getPageableInStruts2(), paramMap);
+			Page<PmsUserDTO> pageBean = pmsUserBiz.listPage(DwzUtils.getPageNum(ServletActionContext.getRequest()), DwzUtils.getNumPerPage(ServletActionContext.getRequest()), paramMap);
 			this.pushData(pageBean);
 			//PmsUser pmsUser = getLoginedUser();// 获取当前登录用户对象
 			//this.putData("currLoginName", pmsUser.getLoginName());

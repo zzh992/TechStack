@@ -7,6 +7,7 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 
@@ -51,7 +52,7 @@ public class PmsPermissionController extends Struts2BaseController {
 			paramMap.put("action", getString("act")); // 权限（精确查询）
 			paramMap.put("act", getString("act"));
 			paramMap.put("module", "pmsAction");
-			Page<PmsActionDTO> pageBean = pmsActionBiz.listPage(DwzUtils.getPageNumInStruts2(), DwzUtils.getNumPerPageInStruts2(), paramMap);
+			Page<PmsActionDTO> pageBean = pmsActionBiz.listPage(DwzUtils.getPageNum(ServletActionContext.getRequest()), DwzUtils.getNumPerPage(ServletActionContext.getRequest()), paramMap);
 			this.pushData(pageBean);
 			this.pushData(paramMap); // 回显查询条件值
 			return "pmsActionList";

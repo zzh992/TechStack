@@ -10,6 +10,7 @@ import net.sf.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 
@@ -60,7 +61,7 @@ public class PmsRoleController extends Struts2BaseController{
 			Map<String, Object> paramMap = new HashMap<String, Object>(); // 业务条件查询参数
 			paramMap.put("roleName", getString("roleName")); // 角色名称（模糊查询）
 			paramMap.put("module", "pmsRole");
-			Page<PmsRoleDTO> pageBean = pmsRoleBiz.listPage(DwzUtils.getPageableInStruts2(), paramMap);
+			Page<PmsRoleDTO> pageBean = pmsRoleBiz.listPage(DwzUtils.getPageNum(ServletActionContext.getRequest()), DwzUtils.getNumPerPage(ServletActionContext.getRequest()), paramMap);
 
 			ShiroUser user = this.getCurrentUser();
 			this.pushData(user);
