@@ -10,7 +10,7 @@
            http://www.springframework.org/schema/context  http://www.springframework.org/schema/context/spring-context-3.2.xsd"
 	default-lazy-init="true">
 
-	<context:component-scan base-package="com.techstack.pms.dao.mybatis" />
+	<context:component-scan base-package="com.techstack.component, com.techstack.pms.dao.mybatis" />
 	
 	<!-- 将数据源映射到sqlSessionFactory中 -->
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
@@ -19,14 +19,17 @@
 	</bean>
 
 	<!-- SqlSession模板类实例 -->
-	<bean id="sessionTemplate" class="org.mybatis.spring.SqlSessionTemplate" destroy-method="close">
+	<bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate" destroy-method="close">
 		<constructor-arg index="0" ref="sqlSessionFactory" />
 	</bean>
 	
-	<!-- Jpa 事务配置 -->
-	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
-		<property name="entityManagerFactory" ref="entityManagerFactory" />
+	<!--======= 事务配置 Begin ================= -->
+	<!-- 事务管理器（由Spring管理MyBatis的事务） -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<!-- 关联数据源 -->
+		<property name="dataSource" ref="dataSource"></property>
 	</bean>
+	<!--======= 事务配置 End =================== -->
 
 	<!-- 使用annotation定义事务 -->
 	<tx:annotation-driven transaction-manager="transactionManager"

@@ -33,15 +33,14 @@ public class BaseDaoImpl extends SqlSessionDaoSupport implements BaseDao{
 	private static final Log log = LogFactory.getLog(BaseDaoImpl.class);
 	
 	@Autowired
-	private SqlSessionTemplate sessionTemplate;
+	private SqlSessionTemplate sqlSessionTemplate;
 	
-	
-	public SqlSessionTemplate getSessionTemplate() {
-		return sessionTemplate;
+	public SqlSessionTemplate getSqlSessionTemplate() {
+		return sqlSessionTemplate;
 	}
 
-	public void setSessionTemplate(SqlSessionTemplate sessionTemplate) {
-		this.sessionTemplate = sessionTemplate;
+	public void setSqlSessionTemplate(SqlSessionTemplate sqlSessionTemplate) {
+		this.sqlSessionTemplate = sqlSessionTemplate;
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -111,7 +110,7 @@ public class BaseDaoImpl extends SqlSessionDaoSupport implements BaseDao{
 					log.info("==== info ==== INSERT SQL:"+sql);
 				}
 				
-				Connection connection = sessionTemplate.getSqlSessionFactory().openSession().getConnection();
+				Connection connection = sqlSessionTemplate.getSqlSessionFactory().openSession().getConnection();
 				Statement statement = connection.createStatement();
 				statement.executeUpdate(sql.toString(),Statement.RETURN_GENERATED_KEYS);
 				
@@ -143,7 +142,7 @@ public class BaseDaoImpl extends SqlSessionDaoSupport implements BaseDao{
 				String tableName = model.getClass().getAnnotation(Table.class).name();
 				StringBuffer sql = new StringBuffer();
 				sql.append("SELECT * FROM "+tableName+" WHERE ID='"+id+"'");
-				Connection connection = sessionTemplate.getSqlSessionFactory().openSession().getConnection();
+				Connection connection = sqlSessionTemplate.getSqlSessionFactory().openSession().getConnection();
 				Statement statement = connection.createStatement();
 				ResultSet resultSet = statement.executeQuery(sql.toString());
 				ResultSetMetaData metaData =  resultSet.getMetaData();
@@ -214,7 +213,7 @@ public class BaseDaoImpl extends SqlSessionDaoSupport implements BaseDao{
 					}
 				}
 				
-				Connection connection = sessionTemplate.getSqlSessionFactory().openSession().getConnection();
+				Connection connection = sqlSessionTemplate.getSqlSessionFactory().openSession().getConnection();
 				Statement statement = connection.createStatement();
 				System.out.println("==== info ===  getByModel SQL："+sql.toString());
 				ResultSet resultSet = statement.executeQuery(sql.toString());
@@ -245,7 +244,7 @@ public class BaseDaoImpl extends SqlSessionDaoSupport implements BaseDao{
 				String tableName = model.getClass().getAnnotation(Table.class).name();
 				StringBuffer sql = new StringBuffer();
 				sql.append("DELETE FROM "+tableName+" WHERE ID = '"+id+"'" );
-				Connection connection = sessionTemplate.getSqlSessionFactory().openSession().getConnection();
+				Connection connection = sqlSessionTemplate.getSqlSessionFactory().openSession().getConnection();
 				Statement statement = connection.createStatement();
 				statement.executeUpdate(sql.toString());
 				connection.close(); 
@@ -291,7 +290,7 @@ public class BaseDaoImpl extends SqlSessionDaoSupport implements BaseDao{
 					}
 				}
 				
-				Connection connection = sessionTemplate.getSqlSessionFactory().openSession().getConnection();
+				Connection connection = sqlSessionTemplate.getSqlSessionFactory().openSession().getConnection();
 				Statement statement = connection.createStatement();
 				statement.executeUpdate(sql.toString());
 				connection.close(); 
@@ -305,7 +304,7 @@ public class BaseDaoImpl extends SqlSessionDaoSupport implements BaseDao{
 	@SuppressWarnings("rawtypes")
 	@Override
 	public List<Map> query(String statement, Map params) {
-		List<Map> resultList = sessionTemplate.selectList(statement, params);
+		List<Map> resultList = sqlSessionTemplate.selectList(statement, params);
 		return resultList;
 	}
 	
@@ -345,7 +344,7 @@ public class BaseDaoImpl extends SqlSessionDaoSupport implements BaseDao{
 		// 统计总记录数
 		//Long count = sessionTemplate.selectOne("BaseDao.listPageCount", paramMap);
 		// 获取分页数据集
-		List<Object> resultList = sessionTemplate.selectList(statment, paramMap);
+		List<Object> resultList = sqlSessionTemplate.selectList(statment, paramMap);
 		
 		List<Object> list = new ArrayList<Object>();
 		int pageBeginNum = (pageParam.getPageNum() - 1) * pageParam.getNumPerPage();	//此页开始记录索引
@@ -389,7 +388,7 @@ public class BaseDaoImpl extends SqlSessionDaoSupport implements BaseDao{
 			paramMap.put("startRowNum", (pageParam.getPageNum() - 1) * pageParam.getNumPerPage());
 			paramMap.put("endRowNum", pageParam.getPageNum() * pageParam.getNumPerPage());
 			// 获取分页数据集
-			List<Map> resultList = sessionTemplate.selectList("BaseDao.listPage", paramMap);
+			List<Map> resultList = sqlSessionTemplate.selectList("BaseDao.listPage", paramMap);
 			List<Object> list = new ArrayList<Object>();
 			
 			int pageBeginNum = (pageParam.getPageNum() - 1) * pageParam.getNumPerPage();	//此页开始记录索引
@@ -422,7 +421,7 @@ public class BaseDaoImpl extends SqlSessionDaoSupport implements BaseDao{
 
 	@Override
 	public <Model> Model selectOne(String statement, Object parameter) {
-		return sessionTemplate.selectOne(statement, parameter);
+		return sqlSessionTemplate.selectOne(statement, parameter);
 	}
 	
 	/**
@@ -436,7 +435,7 @@ public class BaseDaoImpl extends SqlSessionDaoSupport implements BaseDao{
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public <Model> Model selectOne(Class<Model> modelClass,String statement, Object parameter) {
 		try {
-			Map resultMap = sessionTemplate.selectOne(statement, parameter);
+			Map resultMap = sqlSessionTemplate.selectOne(statement, parameter);
 			if(resultMap == null){
 				return null;
 			}
@@ -450,7 +449,7 @@ public class BaseDaoImpl extends SqlSessionDaoSupport implements BaseDao{
 
 	@Override
 	public <Model> List<Model> selectList(String statement, Object parameter) {
-		return sessionTemplate.selectList(statement, parameter);
+		return sqlSessionTemplate.selectList(statement, parameter);
 	}
 
 

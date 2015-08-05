@@ -8,9 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 @ActiveProfiles("test")
-@ContextConfiguration(locations={"classpath:/applicationContext-test-jpa.xml"})
+//@ContextConfiguration(locations={"classpath:/applicationContext-test-jpa.xml"})
+@ContextConfiguration(locations={"classpath:/applicationContext-test-mybatis.xml"})
 @Transactional
-//@ContextConfiguration(locations={"classpath:/applicationContext-test-mybatis.xml"})
 public abstract class SpringTransactionalJunit4Test extends AbstractTransactionalJUnit4SpringContextTests{
 
 	
