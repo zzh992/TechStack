@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.stereotype.Component;
 
 import com.techstack.component.mapper.BeanMapper;
 import com.techstack.component.mybatis.dao.BaseDao;
@@ -17,6 +18,7 @@ import com.techstack.pms.dao.facade.PmsUserDaoFacade;
 import com.techstack.pms.dao.mybatis.entity.PmsRoleUser;
 import com.techstack.pms.dao.mybatis.entity.PmsUser;
 
+@Component("pmsUserDaoFacade")
 public class PmsUserDaoFacadeImpl implements PmsUserDaoFacade {
 	
 	@Autowired

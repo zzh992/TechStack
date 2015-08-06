@@ -21,11 +21,11 @@
     	select * from PMS_ROLE order by ID
   	</select>
   	
-  	<select id="getRoleByRoleName" parameterType="string" resultType="com.techstack.pms.dao.mybatis.entity.PmsRole">
+  	<select id="getRoleByRoleName" parameterType="string" resultMap="RoleMap">
     	select * from PMS_ROLE where ROLE_NAME = #{roleName}
   	</select>
   	
-  	<select id="findRoleByRoleNameNotEqId" parameterType="java.util.Map" resultType="com.techstack.pms.dao.mybatis.entity.PmsRole">
+  	<select id="findRoleByRoleNameNotEqId" parameterType="java.util.Map" resultMap="RoleMap">
     	select * from PMS_ROLE where ID != #{id} and ROLE_NAME = #{roleName}
   	</select>
 	

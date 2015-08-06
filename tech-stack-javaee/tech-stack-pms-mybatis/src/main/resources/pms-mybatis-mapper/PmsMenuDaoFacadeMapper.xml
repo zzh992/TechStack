@@ -8,7 +8,7 @@
 		<result column="MENU_ID" property="menuId" />
 	</resultMap>
 
-	<select id="listMenuByParent" parameterType="string" resultType="com.techstack.pms.dao.mybatis.entity.PmsMenu">
+	<select id="listMenuByParent" parameterType="Long" resultType="com.techstack.pms.dao.mybatis.entity.PmsMenu">
 		select 
 			M.ID AS "id", 
 			M.VERSION AS "version", 
@@ -19,9 +19,9 @@
 			M.TARGET_NAME AS "targetName" 
 		FROM PMS_MENU M
 		<where>
-			<if test="parentId!=null and parentId!=''">
+			<!-- <if test="parentId!=null and parentId!=''"> -->
 				And M.PARENT_ID = #{parentId}
-			</if>
+			<!-- </if> -->
 		</where>
 		ORDER BY M.NUMBER ASC
 	</select>
@@ -82,11 +82,11 @@
 		AND r.ROLE_TYPE = 1
 	</select>
 	
-	<select id="listRoleMenuByRoleId" parameterType="long" resultMap="RoleMenuMap">
+	<select id="listRoleMenuByRoleId" parameterType="Long" resultMap="RoleMenuMap">
 		select * from PMS_ROLE_MENU where ROLE_ID = #{roleId}
 	</select>
 	
-	<select id="listAllActionByMenuId" parameterType="java.util.Map" resultType="com.techstack.pms.dao.mybatis.entity.PmsAction">
+	<select id="listAllActionByMenuId" parameterType="Long" resultType="com.techstack.pms.dao.mybatis.entity.PmsAction">
     	select  
     		D.ID AS "id",
 			D.VERSION AS "version",
@@ -98,12 +98,12 @@
 			D.MENU_NAME as "menuName"
     	from PMS_ACTION D
     	where 1=1
-    	<if test="menuId!=null and menuId!=''">
+    	<!-- <if test="menuId!=null and menuId!=''"> 把if判断标签去掉就可以了，标签是针对JAVABEAN或者MAP的，其他不能用标签 -->
     	    and  D.MENU_ID = #{menuId}
-    	</if>
+    	<!-- </if> -->
   	</select>
   	
-  	<select id="listMenuByParentId" parameterType="long" resultType="com.techstack.pms.dao.mybatis.entity.PmsMenu">
+  	<select id="listMenuByParentId" parameterType="Long" resultType="com.techstack.pms.dao.mybatis.entity.PmsMenu">
 		SELECT
 		ID AS "id" ,
 		VERSION AS "version",

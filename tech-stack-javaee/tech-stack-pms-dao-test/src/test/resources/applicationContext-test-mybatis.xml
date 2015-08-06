@@ -10,7 +10,7 @@
            http://www.springframework.org/schema/context  http://www.springframework.org/schema/context/spring-context-3.2.xsd"
 	default-lazy-init="true">
 
-	<context:component-scan base-package="com.techstack.component, com.techstack.pms.dao.mybatis" />
+	<context:component-scan base-package="com.techstack.pms.dao.mybatis" />
 	
 	<!-- 将数据源映射到sqlSessionFactory中 -->
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
@@ -22,6 +22,11 @@
 	<bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate" destroy-method="close">
 		<constructor-arg index="0" ref="sqlSessionFactory" />
 	</bean>
+	
+	<!-- 采用注解方式会报找不到 sqlSessionTemplate or sqlSessionFactory的异常-->
+	<bean id="baseDao" class="com.techstack.component.mybatis.dao.BaseDaoImpl">
+		<property name="sqlSessionTemplate" ref="sqlSessionTemplate" />
+	</bean> 
 	
 	<!--======= 事务配置 Begin ================= -->
 	<!-- 事务管理器（由Spring管理MyBatis的事务） -->

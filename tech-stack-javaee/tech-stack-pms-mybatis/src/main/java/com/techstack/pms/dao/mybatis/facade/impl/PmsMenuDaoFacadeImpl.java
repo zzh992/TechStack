@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.techstack.component.mapper.BeanMapper;
 import com.techstack.component.mybatis.dao.BaseDao;
@@ -16,6 +17,7 @@ import com.techstack.pms.dao.mybatis.entity.PmsAction;
 import com.techstack.pms.dao.mybatis.entity.PmsMenu;
 import com.techstack.pms.dao.mybatis.entity.PmsRoleMenu;
 
+@Component("pmsMenuDaoFacade")
 public class PmsMenuDaoFacadeImpl implements PmsMenuDaoFacade {
 	
 	@Autowired
@@ -65,8 +67,6 @@ public class PmsMenuDaoFacadeImpl implements PmsMenuDaoFacade {
 
 	@Override
 	public List<PmsActionDTO> listAllActionByMenuId(Long menuId) {
-		Map<String, Object> param = new HashMap<String, Object>();
-		param.put("menuId", Long.valueOf(menuId));
 		List<PmsAction> actionList = baseDao.selectList(getStatement("listAllActionByMenuId"), menuId);
 		return BeanMapper.mapList(actionList, PmsActionDTO.class);
 	}

@@ -15,34 +15,23 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.mybatis.spring.SqlSessionTemplate;
 import org.mybatis.spring.support.SqlSessionDaoSupport;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
 
+import com.techstack.component.mapper.BeanMapper;
 import com.techstack.component.mybatis.annotation.Column;
 import com.techstack.component.mybatis.annotation.Table;
 import com.techstack.component.mybatis.page.PageBean;
 import com.techstack.component.mybatis.page.PageParam;
-import com.techstack.component.mybatis.utils.MyBatisBeanUtils;
 import com.techstack.component.mybatis.utils.MybatisMapUtils;
 
-@Repository("baseDao")
+//@Repository("baseDao")
 public class BaseDaoImpl extends SqlSessionDaoSupport implements BaseDao{
 	
 	private static final Log log = LogFactory.getLog(BaseDaoImpl.class);
 	
-	@Autowired
-	private SqlSessionTemplate sqlSessionTemplate;
+	//@Autowired
+	//private SqlSessionTemplate sqlSessionTemplate;
 	
-	public SqlSessionTemplate getSqlSessionTemplate() {
-		return sqlSessionTemplate;
-	}
-
-	public void setSqlSessionTemplate(SqlSessionTemplate sqlSessionTemplate) {
-		this.sqlSessionTemplate = sqlSessionTemplate;
-	}
-
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public <Model>Model saveOrUpdate(Model model) {
@@ -110,7 +99,8 @@ public class BaseDaoImpl extends SqlSessionDaoSupport implements BaseDao{
 					log.info("==== info ==== INSERT SQL:"+sql);
 				}
 				
-				Connection connection = sqlSessionTemplate.getSqlSessionFactory().openSession().getConnection();
+				//Connection connection = sqlSessionTemplate.getSqlSessionFactory().openSession().getConnection();
+				Connection connection = getSqlSession().getConnection();
 				Statement statement = connection.createStatement();
 				statement.executeUpdate(sql.toString(),Statement.RETURN_GENERATED_KEYS);
 				
@@ -124,7 +114,7 @@ public class BaseDaoImpl extends SqlSessionDaoSupport implements BaseDao{
 				}
 				
 				statement.close();
-				connection.close(); 
+				//connection.close(); TODO : 一关闭的话事务没法交给spring管理，会回滚不了
 			}
 			
 		}catch(Exception e){
@@ -142,7 +132,8 @@ public class BaseDaoImpl extends SqlSessionDaoSupport implements BaseDao{
 				String tableName = model.getClass().getAnnotation(Table.class).name();
 				StringBuffer sql = new StringBuffer();
 				sql.append("SELECT * FROM "+tableName+" WHERE ID='"+id+"'");
-				Connection connection = sqlSessionTemplate.getSqlSessionFactory().openSession().getConnection();
+				//Connection connection = sqlSessionTemplate.getSqlSessionFactory().openSession().getConnection();
+				Connection connection = getSqlSession().getConnection();
 				Statement statement = connection.createStatement();
 				ResultSet resultSet = statement.executeQuery(sql.toString());
 				ResultSetMetaData metaData =  resultSet.getMetaData();
@@ -159,9 +150,10 @@ public class BaseDaoImpl extends SqlSessionDaoSupport implements BaseDao{
 				}
 				resultMap = MybatisMapUtils.mapKeyFormat(resultMap);
 				resultSet.close();
-				connection.close(); 
+//				connection.close(); 
 				log.info("==== info ==== getById SQL:"+sql);
-				return MyBatisBeanUtils.convertMap(modelClass, resultMap);
+				//return MyBatisBeanUtils.convertMap(modelClass, resultMap);
+				return BeanMapper.map(resultMap, modelClass);
 			}
 			
 		}	
@@ -213,7 +205,8 @@ public class BaseDaoImpl extends SqlSessionDaoSupport implements BaseDao{
 					}
 				}
 				
-				Connection connection = sqlSessionTemplate.getSqlSessionFactory().openSession().getConnection();
+				//Connection connection = sqlSessionTemplate.getSqlSessionFactory().openSession().getConnection();
+				Connection connection = getSqlSession().getConnection();
 				Statement statement = connection.createStatement();
 				System.out.println("==== info ===  getByModel SQL："+sql.toString());
 				ResultSet resultSet = statement.executeQuery(sql.toString());
@@ -224,10 +217,11 @@ public class BaseDaoImpl extends SqlSessionDaoSupport implements BaseDao{
 						resultMap.put(metaData.getColumnName(i), resultSet.getObject(i));
 					}
 					resultMap = MybatisMapUtils.mapKeyFormat(resultMap);
-					modelList.add((Model) MyBatisBeanUtils.convertMap(model.getClass(), resultMap));
+					//modelList.add((Model) MyBatisBeanUtils.convertMap(model.getClass(), resultMap));
+					modelList.add((Model)BeanMapper.map(resultMap, model.getClass()));
 				}
 				resultSet.close();
-				connection.close(); 
+				//connection.close(); 
 				
 			}
 		}catch(Exception e){
@@ -244,10 +238,11 @@ public class BaseDaoImpl extends SqlSessionDaoSupport implements BaseDao{
 				String tableName = model.getClass().getAnnotation(Table.class).name();
 				StringBuffer sql = new StringBuffer();
 				sql.append("DELETE FROM "+tableName+" WHERE ID = '"+id+"'" );
-				Connection connection = sqlSessionTemplate.getSqlSessionFactory().openSession().getConnection();
+				//Connection connection = sqlSessionTemplate.getSqlSessionFactory().openSession().getConnection();
+				Connection connection = getSqlSession().getConnection();
 				Statement statement = connection.createStatement();
 				statement.executeUpdate(sql.toString());
-				connection.close(); 
+				//connection.close(); 
 				log.info("==== info ==== deleteById SQL:"+sql);
 			}
 		}catch(Exception e){
@@ -290,10 +285,11 @@ public class BaseDaoImpl extends SqlSessionDaoSupport implements BaseDao{
 					}
 				}
 				
-				Connection connection = sqlSessionTemplate.getSqlSessionFactory().openSession().getConnection();
+				//Connection connection = sqlSessionTemplate.getSqlSessionFactory().openSession().getConnection();
+				Connection connection = getSqlSession().getConnection();
 				Statement statement = connection.createStatement();
 				statement.executeUpdate(sql.toString());
-				connection.close(); 
+				//connection.close(); 
 				log.info("==== info ==== deleteByModel SQL:"+sql);
 			}
 		}catch(Exception e){
@@ -304,7 +300,7 @@ public class BaseDaoImpl extends SqlSessionDaoSupport implements BaseDao{
 	@SuppressWarnings("rawtypes")
 	@Override
 	public List<Map> query(String statement, Map params) {
-		List<Map> resultList = sqlSessionTemplate.selectList(statement, params);
+		List<Map> resultList = getSqlSession().selectList(statement, params);
 		return resultList;
 	}
 	
@@ -344,7 +340,7 @@ public class BaseDaoImpl extends SqlSessionDaoSupport implements BaseDao{
 		// 统计总记录数
 		//Long count = sessionTemplate.selectOne("BaseDao.listPageCount", paramMap);
 		// 获取分页数据集
-		List<Object> resultList = sqlSessionTemplate.selectList(statment, paramMap);
+		List<Object> resultList = getSqlSession().selectList(statment, paramMap);
 		
 		List<Object> list = new ArrayList<Object>();
 		int pageBeginNum = (pageParam.getPageNum() - 1) * pageParam.getNumPerPage();	//此页开始记录索引
@@ -388,7 +384,7 @@ public class BaseDaoImpl extends SqlSessionDaoSupport implements BaseDao{
 			paramMap.put("startRowNum", (pageParam.getPageNum() - 1) * pageParam.getNumPerPage());
 			paramMap.put("endRowNum", pageParam.getPageNum() * pageParam.getNumPerPage());
 			// 获取分页数据集
-			List<Map> resultList = sqlSessionTemplate.selectList("BaseDao.listPage", paramMap);
+			List<Map> resultList = getSqlSession().selectList("BaseDao.listPage", paramMap);
 			List<Object> list = new ArrayList<Object>();
 			
 			int pageBeginNum = (pageParam.getPageNum() - 1) * pageParam.getNumPerPage();	//此页开始记录索引
@@ -421,7 +417,7 @@ public class BaseDaoImpl extends SqlSessionDaoSupport implements BaseDao{
 
 	@Override
 	public <Model> Model selectOne(String statement, Object parameter) {
-		return sqlSessionTemplate.selectOne(statement, parameter);
+		return getSqlSession().selectOne(statement, parameter);
 	}
 	
 	/**
@@ -435,12 +431,13 @@ public class BaseDaoImpl extends SqlSessionDaoSupport implements BaseDao{
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public <Model> Model selectOne(Class<Model> modelClass,String statement, Object parameter) {
 		try {
-			Map resultMap = sqlSessionTemplate.selectOne(statement, parameter);
+			Map resultMap = getSqlSession().selectOne(statement, parameter);
 			if(resultMap == null){
 				return null;
 			}
 			resultMap = MybatisMapUtils.mapKeyFormat(resultMap);
-			return  MyBatisBeanUtils.convertMap(modelClass, resultMap);
+			//return  MyBatisBeanUtils.convertMap(modelClass, resultMap);
+			return BeanMapper.map(resultMap, modelClass);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -449,7 +446,7 @@ public class BaseDaoImpl extends SqlSessionDaoSupport implements BaseDao{
 
 	@Override
 	public <Model> List<Model> selectList(String statement, Object parameter) {
-		return sqlSessionTemplate.selectList(statement, parameter);
+		return getSqlSession().selectList(statement, parameter);
 	}
 
 

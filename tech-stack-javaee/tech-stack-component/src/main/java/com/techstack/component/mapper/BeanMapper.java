@@ -25,7 +25,11 @@ public class BeanMapper {
 	 * 基于Dozer转换对象的类型.
 	 */
 	public static <T> T map(Object source, Class<T> destinationClass) {
-		return dozer.map(source, destinationClass);
+		if(source != null){
+			return dozer.map(source, destinationClass);
+		}else {
+			return null;
+		}
 	}
 
 	/**
@@ -36,8 +40,10 @@ public class BeanMapper {
 			Class<T> destinationClass) {
 		List<T> destinationList = Lists.newArrayList();
 		for (Object sourceObject : sourceList) {
-			T destinationObject = dozer.map(sourceObject, destinationClass);
-			destinationList.add(destinationObject);
+			if(sourceObject!=null){
+				T destinationObject = dozer.map(sourceObject, destinationClass);
+				destinationList.add(destinationObject);
+			}
 		}
 		return destinationList;
 	}
