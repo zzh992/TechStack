@@ -15,7 +15,9 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.mybatis.spring.SqlSessionTemplate;
 import org.mybatis.spring.support.SqlSessionDaoSupport;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.techstack.component.mapper.BeanMapper;
 import com.techstack.component.mybatis.annotation.Column;
@@ -29,8 +31,8 @@ public class BaseDaoImpl extends SqlSessionDaoSupport implements BaseDao{
 	
 	private static final Log log = LogFactory.getLog(BaseDaoImpl.class);
 	
-	//@Autowired
-	//private SqlSessionTemplate sqlSessionTemplate;
+	@Autowired
+	private SqlSessionTemplate sqlSessionTemplate;
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
@@ -99,8 +101,8 @@ public class BaseDaoImpl extends SqlSessionDaoSupport implements BaseDao{
 					log.info("==== info ==== INSERT SQL:"+sql);
 				}
 				
-				//Connection connection = sqlSessionTemplate.getSqlSessionFactory().openSession().getConnection();
-				Connection connection = getSqlSession().getConnection();
+				Connection connection = sqlSessionTemplate.getSqlSessionFactory().openSession().getConnection();
+				//Connection connection = getSqlSession().getConnection();	TODO: 拿到的是关闭的connection?
 				Statement statement = connection.createStatement();
 				statement.executeUpdate(sql.toString(),Statement.RETURN_GENERATED_KEYS);
 				
@@ -132,8 +134,8 @@ public class BaseDaoImpl extends SqlSessionDaoSupport implements BaseDao{
 				String tableName = model.getClass().getAnnotation(Table.class).name();
 				StringBuffer sql = new StringBuffer();
 				sql.append("SELECT * FROM "+tableName+" WHERE ID='"+id+"'");
-				//Connection connection = sqlSessionTemplate.getSqlSessionFactory().openSession().getConnection();
-				Connection connection = getSqlSession().getConnection();
+				Connection connection = sqlSessionTemplate.getSqlSessionFactory().openSession().getConnection();
+				//Connection connection = getSqlSession().getConnection();
 				Statement statement = connection.createStatement();
 				ResultSet resultSet = statement.executeQuery(sql.toString());
 				ResultSetMetaData metaData =  resultSet.getMetaData();
@@ -205,8 +207,8 @@ public class BaseDaoImpl extends SqlSessionDaoSupport implements BaseDao{
 					}
 				}
 				
-				//Connection connection = sqlSessionTemplate.getSqlSessionFactory().openSession().getConnection();
-				Connection connection = getSqlSession().getConnection();
+				Connection connection = sqlSessionTemplate.getSqlSessionFactory().openSession().getConnection();
+				//Connection connection = getSqlSession().getConnection();
 				Statement statement = connection.createStatement();
 				System.out.println("==== info ===  getByModel SQL："+sql.toString());
 				ResultSet resultSet = statement.executeQuery(sql.toString());
@@ -238,8 +240,8 @@ public class BaseDaoImpl extends SqlSessionDaoSupport implements BaseDao{
 				String tableName = model.getClass().getAnnotation(Table.class).name();
 				StringBuffer sql = new StringBuffer();
 				sql.append("DELETE FROM "+tableName+" WHERE ID = '"+id+"'" );
-				//Connection connection = sqlSessionTemplate.getSqlSessionFactory().openSession().getConnection();
-				Connection connection = getSqlSession().getConnection();
+				Connection connection = sqlSessionTemplate.getSqlSessionFactory().openSession().getConnection();
+				//Connection connection = getSqlSession().getConnection();
 				Statement statement = connection.createStatement();
 				statement.executeUpdate(sql.toString());
 				//connection.close(); 
@@ -285,8 +287,8 @@ public class BaseDaoImpl extends SqlSessionDaoSupport implements BaseDao{
 					}
 				}
 				
-				//Connection connection = sqlSessionTemplate.getSqlSessionFactory().openSession().getConnection();
-				Connection connection = getSqlSession().getConnection();
+				Connection connection = sqlSessionTemplate.getSqlSessionFactory().openSession().getConnection();
+				//Connection connection = getSqlSession().getConnection();
 				Statement statement = connection.createStatement();
 				statement.executeUpdate(sql.toString());
 				//connection.close(); 

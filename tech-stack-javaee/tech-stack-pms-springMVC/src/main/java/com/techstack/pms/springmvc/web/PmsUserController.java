@@ -30,7 +30,7 @@ import com.techstack.pms.enums.UserStatusEnum;
 import com.techstack.pms.enums.UserTypeEnum;
 
 @Controller
-@RequestMapping("/pmsUser_")
+//@RequestMapping("/pmsUser_")
 public class PmsUserController extends SpringMVCBaseController{
 
 	private static Log log = LogFactory.getLog(PmsUserController.class);
@@ -48,7 +48,7 @@ public class PmsUserController extends SpringMVCBaseController{
 	 */
 	//@Permission("pms:user:view")
 	@RequiresPermissions("pms:user:view")
-	@RequestMapping("pmsUserList.action")
+	@RequestMapping("/pmsUser_pmsUserList.action")
 	public ModelAndView pmsUserList() {
 		try {
 			ModelAndView mav = new ModelAndView("page/pms/pmsUser/pmsUserList.jsp");
@@ -57,7 +57,8 @@ public class PmsUserController extends SpringMVCBaseController{
 			paramMap.put("loginName", getString("loginName")); // 用户登录名（精确查询）
 
 			Page<PmsUserDTO> pageBean = pmsUserBiz.listPage(DwzUtils.getPageNum(getHttpRequest()), DwzUtils.getNumPerPage(getHttpRequest()), paramMap);
-			modelMap.putAll(BeanMapper.map(pageBean, Map.class));
+			//modelMap.putAll(BeanMapper.map(pageBean, Map.class));
+			modelMap.addAttribute(pageBean);
 			modelMap.putAll(paramMap);
 			//this.pushData(pageBean);
 			//PmsUser pmsUser = getLoginedUser();// 获取当前登录用户对象
@@ -73,7 +74,7 @@ public class PmsUserController extends SpringMVCBaseController{
 			return mav;
 		} catch (Exception e) {
 			log.error("==== error ==== 查询用户失败：", e);
-			return DwzUtils.operateErrorInSpringMVC("获取数据失败", getHttpRequest());
+			return DwzUtils.operateErrorInSpringMVC("获取数据失败", getHttpRequest(), "page/common/operateResult.jsp");
 		}
 	}
 
@@ -83,7 +84,7 @@ public class PmsUserController extends SpringMVCBaseController{
 	 * @return String
 	 */
 	//@Permission("pms:user:view")
-	@RequestMapping("pmsUserView.action")
+	@RequestMapping("/pmsUser_pmsUserView.action")
 	public ModelAndView pmsUserView() {
 		try {
 			ModelAndView mav = new ModelAndView("page/pms/pmsUser/pmsUserView.jsp");
@@ -91,7 +92,7 @@ public class PmsUserController extends SpringMVCBaseController{
 			Long userId = getLong("id");
 			PmsUserDTO pmsUser = pmsUserBiz.getById(userId);
 			if (pmsUser == null) {
-				return DwzUtils.operateErrorInSpringMVC("无法获取要查看的数据", getHttpRequest());
+				return DwzUtils.operateErrorInSpringMVC("无法获取要查看的数据", getHttpRequest(), "page/common/operateResult.jsp");
 			}
 
 			// 普通用户没有查看超级管理员的权限
@@ -120,7 +121,7 @@ public class PmsUserController extends SpringMVCBaseController{
 			return mav;
 		} catch (Exception e) {
 			log.error("==== error ==== 查看用户详情失败：", e);
-			return DwzUtils.operateErrorInSpringMVC("获取数据失败", getHttpRequest());
+			return DwzUtils.operateErrorInSpringMVC("获取数据失败", getHttpRequest(), "page/common/operateResult.jsp");
 		}
 	}
 
@@ -130,7 +131,7 @@ public class PmsUserController extends SpringMVCBaseController{
 	 * @return String
 	 */
 	//@Permission("pms:user:add")
-	@RequestMapping("pmsUserAdd.action")
+	@RequestMapping("/pmsUser_pmsUserAdd.action")
 	public ModelAndView pmsUserAdd() {
 		try {
 			ModelAndView mav = new ModelAndView("page/pms/pmsUser/pmsUserAdd.jsp");
@@ -142,7 +143,7 @@ public class PmsUserController extends SpringMVCBaseController{
 			return mav;
 		} catch (Exception e) {
 			log.error("==== error ==== 进入添加用户页面失败：", e);
-			return DwzUtils.operateErrorInSpringMVC("获取角色列表数据失败", getHttpRequest());
+			return DwzUtils.operateErrorInSpringMVC("获取角色列表数据失败", getHttpRequest(), "page/common/operateResult.jsp");
 		}
 	}
 
@@ -152,7 +153,7 @@ public class PmsUserController extends SpringMVCBaseController{
 	 * @return String
 	 */
 	//@Permission("pms:user:add")
-	@RequestMapping("pmsUserSave.action")
+	@RequestMapping("/pmsUser_pmsUserSave.action")
 	public ModelAndView pmsUserSave() {
 		try {
 			String loginPwd = getString("loginPwdss"); // 初始登录密码
@@ -175,23 +176,23 @@ public class PmsUserController extends SpringMVCBaseController{
 			// }
 
 			if (StringUtils.isNotBlank(validateMsg)) {
-				return DwzUtils.operateErrorInSpringMVC(validateMsg, getHttpRequest()); // 返回错误信息
+				return DwzUtils.operateErrorInSpringMVC(validateMsg, getHttpRequest(), "page/common/operateResult.jsp"); // 返回错误信息
 			}
 
 			// 校验用户登录名是否已存在
 			PmsUserDTO loginNameCheck = pmsUserBiz.findUserByLoginName(loginName);
 			if (loginNameCheck != null) {
-				return DwzUtils.operateErrorInSpringMVC("登录名【" + loginName + "】已存在", getHttpRequest());
+				return DwzUtils.operateErrorInSpringMVC("登录名【" + loginName + "】已存在", getHttpRequest(), "page/common/operateResult.jsp");
 			}
 
 			pmsUser.setLoginPwd(DigestUtils.sha1Hex(loginPwd)); // 存存前对密码进行加密
 
 			pmsUserBiz.saveUser(pmsUser, roleUserStr);
 			log.info("==== info ==== 用户【"+loginName+"】保存成功");
-			return DwzUtils.operateErrorInSpringMVC("操作成功", getHttpRequest());
+			return DwzUtils.operateErrorInSpringMVC("操作成功", getHttpRequest(), "page/common/operateResult.jsp");
 		} catch (Exception e) {
 			log.error("==== error ==== 保存用户信息失败：", e);
-			return DwzUtils.operateErrorInSpringMVC("保存用户信息失败", getHttpRequest());
+			return DwzUtils.operateErrorInSpringMVC("保存用户信息失败", getHttpRequest(), "page/common/operateResult.jsp");
 		}
 	}
 
@@ -284,11 +285,11 @@ public class PmsUserController extends SpringMVCBaseController{
 	 * @return String
 	 */
 	//@Permission("pms:user:delete")
-	@RequestMapping("pmsUserDel.action")
+	@RequestMapping("/pmsUser_pmsUserDel.action")
 	public ModelAndView pmsUserDel() {
 		long id = getLong("id");
 		pmsUserBiz.deleteUserById(id);
-		return DwzUtils.operateErrorInSpringMVC("操作成功", getHttpRequest());
+		return DwzUtils.operateErrorInSpringMVC("操作成功", getHttpRequest(), "page/common/operateResult.jsp");
 	}
 
 	/**
@@ -297,7 +298,7 @@ public class PmsUserController extends SpringMVCBaseController{
 	 * @return String
 	 */
 	//@Permission("pms:user:edit")
-	@RequestMapping("pmsUserEdit.action")
+	@RequestMapping("/pmsUser_pmsUserEdit.action")
 	public ModelAndView pmsUserEdit() {
 		try {
 			ModelAndView mav = new ModelAndView("page/pms/pmsUser/pmsUserEdit.jsp");
@@ -305,13 +306,13 @@ public class PmsUserController extends SpringMVCBaseController{
 			Long id = getLong("id");
 			PmsUserDTO pmsUser = pmsUserBiz.getById(id);
 			if (pmsUser == null) {
-				return DwzUtils.operateErrorInSpringMVC("无法获取要修改的数据", getHttpRequest());
+				return DwzUtils.operateErrorInSpringMVC("无法获取要修改的数据", getHttpRequest(), "page/common/operateResult.jsp");
 			}
 
 			// 普通用户没有修改超级管理员的权限
 			if (UserTypeEnum.USER.getValue().equals(this.getCurrentUser().getType()) 
 			 && UserTypeEnum.ADMIN.getValue().equals(pmsUser.getType())) {
-				return DwzUtils.operateErrorInSpringMVC("权限不足", getHttpRequest());
+				return DwzUtils.operateErrorInSpringMVC("权限不足", getHttpRequest(), "page/common/operateResult.jsp");
 			}
 
 			modelMap.putAll(BeanMapper.map(pmsUser, Map.class));
@@ -339,7 +340,7 @@ public class PmsUserController extends SpringMVCBaseController{
 			return mav;
 		} catch (Exception e) {
 			log.error("==== error ==== 进入用户修改页面失败：", e);
-			return DwzUtils.operateErrorInSpringMVC("获取修改数据失败", getHttpRequest());
+			return DwzUtils.operateErrorInSpringMVC("获取修改数据失败", getHttpRequest(), "page/common/operateResult.jsp");
 		}
 	}
 
@@ -349,19 +350,19 @@ public class PmsUserController extends SpringMVCBaseController{
 	 * @return String
 	 */
 	//@Permission("pms:user:edit")
-	@RequestMapping("pmsUserUpdate.action")
+	@RequestMapping("/pmsUser_pmsUserUpdate.action")
 	public ModelAndView pmsUserUpdate() {
 		try {
 			Long id = getLong("id");
 
 			PmsUserDTO pmsUser = pmsUserBiz.getById(id);
 			if (pmsUser == null) {
-				return DwzUtils.operateErrorInSpringMVC("无法获取要修改的用户信息", getHttpRequest());
+				return DwzUtils.operateErrorInSpringMVC("无法获取要修改的用户信息", getHttpRequest(), "page/common/operateResult.jsp");
 			}
 
 			// 普通用户没有修改超级管理员的权限
 			if (UserTypeEnum.USER.getValue() == this.getCurrentUser().getType() && UserTypeEnum.ADMIN.getValue()==pmsUser.getType()) {
-				return DwzUtils.operateErrorInSpringMVC("权限不足", getHttpRequest());
+				return DwzUtils.operateErrorInSpringMVC("权限不足", getHttpRequest(), "page/common/operateResult.jsp");
 			}
 
 			pmsUser.setRemark(getString("remark"));
@@ -393,15 +394,15 @@ public class PmsUserController extends SpringMVCBaseController{
 			// 表单数据校验
 			String validateMsg = validatePmsUser(pmsUser, roleUserStr);
 			if (StringUtils.isNotBlank(validateMsg)) {
-				return DwzUtils.operateErrorInSpringMVC(validateMsg, getHttpRequest()); // 返回错误信息
+				return DwzUtils.operateErrorInSpringMVC(validateMsg, getHttpRequest(), "page/common/operateResult.jsp"); // 返回错误信息
 			}
 
 			pmsUserBiz.updateUser(pmsUser, roleUserStr);
 			log.info("==== info ==== 修改用户【"+pmsUser.getLoginName()+"】成功");
-			return DwzUtils.operateErrorInSpringMVC("操作成功", getHttpRequest());
+			return DwzUtils.operateErrorInSpringMVC("操作成功", getHttpRequest(), "page/common/operateResult.jsp");
 		} catch (Exception e) {
 			log.error("==== error ==== 修改用户失败", e);
-			return DwzUtils.operateErrorInSpringMVC("更新用户信息失败", getHttpRequest());
+			return DwzUtils.operateErrorInSpringMVC("更新用户信息失败", getHttpRequest(), "page/common/operateResult.jsp");
 		}
 	}
 
@@ -412,18 +413,18 @@ public class PmsUserController extends SpringMVCBaseController{
 	 * @return String
 	 */
 	//@Permission("pms:user:edit")
-	@RequestMapping("pmsUserResetPwd.action")
+	@RequestMapping("/pmsUser_pmsUserResetPwd.action")
 	public ModelAndView pmsUserResetPwd() {
 		ModelAndView mav = new ModelAndView("page/pms/pmsUser/pmsUserResetPwd.jsp");
 		ModelMap modelMap = new ModelMap();
 		PmsUserDTO user = pmsUserBiz.getById(getLong("id"));
 		if (user == null) {
-			return DwzUtils.operateErrorInSpringMVC("无法获取要重置的信息", getHttpRequest());
+			return DwzUtils.operateErrorInSpringMVC("无法获取要重置的信息", getHttpRequest(), "page/common/operateResult.jsp");
 		}
 
 		// 普通用户没有修改超级管理员的权限
 		if (UserTypeEnum.USER.getValue() == this.getCurrentUser().getType() && UserTypeEnum.ADMIN.getValue() == user.getType()) {
-			return DwzUtils.operateErrorInSpringMVC("你没有修改超级管理员的权限", getHttpRequest());
+			return DwzUtils.operateErrorInSpringMVC("你没有修改超级管理员的权限", getHttpRequest(), "page/common/operateResult.jsp");
 		}
 
 		modelMap.put("userId", user.getId());
@@ -439,18 +440,18 @@ public class PmsUserController extends SpringMVCBaseController{
 	 * @return String
 	 */
 	//@Permission("pms:user:edit")
-	@RequestMapping("resetUserPwd.action")
+	@RequestMapping("/pmsUser_resetUserPwd.action")
 	public ModelAndView resetUserPwd() {
 		try {
 			Long userId = getLong("userId");
 			PmsUserDTO user = pmsUserBiz.getById(userId);
 			if (user == null) {
-				return DwzUtils.operateErrorInSpringMVC("无法获取要重置密码的用户信息", getHttpRequest());
+				return DwzUtils.operateErrorInSpringMVC("无法获取要重置密码的用户信息", getHttpRequest(), "page/common/operateResult.jsp");
 			}
 
 			// 普通用户没有修改超级管理员的权限
 			if ("0".equals(this.getCurrentUser().getType()) && "1".equals(user.getType())) {
-				return DwzUtils.operateErrorInSpringMVC("你没有修改超级管理员的权限", getHttpRequest());
+				return DwzUtils.operateErrorInSpringMVC("你没有修改超级管理员的权限", getHttpRequest(), "page/common/operateResult.jsp");
 			}
 
 			String newPwd = getString("newPwd");
@@ -462,15 +463,15 @@ public class PmsUserController extends SpringMVCBaseController{
 
 			String validateMsg = validatePassword(newPwd, newPwd2);
 			if (StringUtils.isNotBlank(validateMsg)) {
-				return DwzUtils.operateErrorInSpringMVC(validateMsg, getHttpRequest()); // 返回错误信息
+				return DwzUtils.operateErrorInSpringMVC(validateMsg, getHttpRequest(), "page/common/operateResult.jsp"); // 返回错误信息
 			}
 			
 			pmsUserBiz.updateUserPwd(userId, DigestUtils.sha1Hex(newPwd), 101);
 
-			return DwzUtils.operateErrorInSpringMVC("操作成功", getHttpRequest());
+			return DwzUtils.operateErrorInSpringMVC("操作成功", getHttpRequest(), "page/common/operateResult.jsp");
 		} catch (Exception e) {
 			log.error("==== error ==== 重置用户密码失败：", e);
-			return DwzUtils.operateErrorInSpringMVC("密码重置出错:" + e.getMessage(), getHttpRequest());
+			return DwzUtils.operateErrorInSpringMVC("密码重置出错:" + e.getMessage(), getHttpRequest(), "page/common/operateResult.jsp");
 		}
 	}
 
@@ -479,7 +480,7 @@ public class PmsUserController extends SpringMVCBaseController{
 	 * @param @return    
 	 * @return String
 	 */
-	@RequestMapping("pmsUserChangeOwnPwd.action")
+	@RequestMapping("/pmsUser_pmsUserChangeOwnPwd.action")
 	public String pmsUserChangeOwnPwd() {
 		return "page/pms/pmsUser/pmsUserChangeOwnPwd.jsp";
 	}
@@ -489,29 +490,29 @@ public class PmsUserController extends SpringMVCBaseController{
 	 * @param @return    
 	 * @return String
 	 */
-	@RequestMapping("userChangeOwnPwd.action")
+	@RequestMapping("/pmsUser_userChangeOwnPwd.action")
 	public ModelAndView userChangeOwnPwd() {
 		try {
 
 			ShiroUser user = this.getCurrentUser();
 			if (user == null) {
-				return DwzUtils.operateErrorInSpringMVC("无法从会话中获取用户信息", getHttpRequest());
+				return DwzUtils.operateErrorInSpringMVC("无法从会话中获取用户信息", getHttpRequest(), "page/common/operateResult.jsp");
 			}
 
 			// 判断旧密码是否正确
 			String oldPwd = getString("oldPwd");
 			if (StringUtils.isBlank(oldPwd)) {
-				return DwzUtils.operateErrorInSpringMVC("请输入旧密码", getHttpRequest());
+				return DwzUtils.operateErrorInSpringMVC("请输入旧密码", getHttpRequest(), "page/common/operateResult.jsp");
 			}
 			// 旧密码要判空，否则sha1Hex会出错
 			if (!user.getPassword().equals(DigestUtils.sha1Hex(oldPwd))) {
-				return DwzUtils.operateErrorInSpringMVC("旧密码不正确", getHttpRequest());
+				return DwzUtils.operateErrorInSpringMVC("旧密码不正确", getHttpRequest(), "page/common/operateResult.jsp");
 			}
 
 			// 校验新密码
 			String newPwd = getString("newPwd");
 			if (oldPwd.equals(newPwd)) {
-				return DwzUtils.operateErrorInSpringMVC("新密码不能与旧密码相同", getHttpRequest());
+				return DwzUtils.operateErrorInSpringMVC("新密码不能与旧密码相同", getHttpRequest(), "page/common/operateResult.jsp");
 			}
 
 			/*if (!loginPwdFormat(newPwd)) {
@@ -521,7 +522,7 @@ public class PmsUserController extends SpringMVCBaseController{
 			String newPwd2 = getString("newPwd2");
 			String validateMsg = validatePassword(newPwd, newPwd2);
 			if (StringUtils.isNotBlank(validateMsg)) {
-				return DwzUtils.operateErrorInSpringMVC(validateMsg, getHttpRequest()); // 返回错误信息
+				return DwzUtils.operateErrorInSpringMVC(validateMsg, getHttpRequest(), "page/common/operateResult.jsp"); // 返回错误信息
 			}
 
 			// 更新密码
@@ -533,10 +534,10 @@ public class PmsUserController extends SpringMVCBaseController{
 			// getSessionMap().clear();
 
 
-			return DwzUtils.operateErrorInSpringMVC("密码修改成功，请重新登录!", getHttpRequest());
+			return DwzUtils.operateErrorInSpringMVC("密码修改成功，请重新登录!", getHttpRequest(), "page/common/operateResult.jsp");
 		} catch (Exception e) {
 			log.error("==== error ==== 用户重置自己的密码失败：", e);
-			return DwzUtils.operateErrorInSpringMVC("修改密码出错:" + e.getMessage(), getHttpRequest());
+			return DwzUtils.operateErrorInSpringMVC("修改密码出错:" + e.getMessage(), getHttpRequest(), "page/common/operateResult.jsp");
 		}
 	}
 
@@ -545,19 +546,19 @@ public class PmsUserController extends SpringMVCBaseController{
 	 * @param @return    
 	 * @return String
 	 */
-	@RequestMapping("pmsUserViewOwnInfo.action")
+	@RequestMapping("/pmsUser_pmsUserViewOwnInfo.action")
 	public ModelAndView pmsUserViewOwnInfo() {
 		try {
 			ModelAndView mav = new ModelAndView("page/pms/pmsUser/pmsUserViewOwnInfo.jsp");
 			ModelMap modelMap = new ModelMap();
 			ShiroUser pmsUser = this.getCurrentUser();
 			if (pmsUser == null) {
-				return DwzUtils.operateErrorInSpringMVC("无法从会话中获取用户信息", getHttpRequest());
+				return DwzUtils.operateErrorInSpringMVC("无法从会话中获取用户信息", getHttpRequest(), "page/common/operateResult.jsp");
 			}
 
 			PmsUserDTO user = pmsUserBiz.getById(pmsUser.getId());
 			if (user == null) {
-				return DwzUtils.operateErrorInSpringMVC("无法获取用户信息", getHttpRequest());
+				return DwzUtils.operateErrorInSpringMVC("无法获取用户信息", getHttpRequest(), "page/common/operateResult.jsp");
 			}
 
 			//this.pushData(user);
@@ -566,7 +567,7 @@ public class PmsUserController extends SpringMVCBaseController{
 			return mav;
 		} catch (Exception e) {
 			log.error("==== error ==== 查看自己的用户信息失败", e);
-			return DwzUtils.operateErrorInSpringMVC("无法获取要修改的用户信息失败", getHttpRequest());
+			return DwzUtils.operateErrorInSpringMVC("无法获取要修改的用户信息失败", getHttpRequest(), "page/common/operateResult.jsp");
 		}
 	}
 

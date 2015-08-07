@@ -26,7 +26,7 @@ import com.techstack.pms.dao.dto.PmsActionDTO;
 import com.techstack.pms.dao.dto.PmsUserDTO;
 
 @Controller
-@RequestMapping("/login_")
+//@RequestMapping("/login_")
 public class PmsLoginController extends SpringMVCBaseController{
 
 	private static final Log log = LogFactory.getLog(PmsLoginController.class);
@@ -44,7 +44,7 @@ public class PmsLoginController extends SpringMVCBaseController{
 	 * 进入登录页面.
 	 * @return
 	 */
-	@RequestMapping("loginPage.action")
+	@RequestMapping("login_loginPage.action")
 	public ModelAndView loginPage() {
 		ModelAndView mav = new ModelAndView("login.jsp");
 		ModelMap modelMap = new ModelMap();
@@ -126,7 +126,7 @@ public class PmsLoginController extends SpringMVCBaseController{
 			return "input";
 		}
 	}*/
-	@RequestMapping("mainpage.action")
+	@RequestMapping("login_mainpage.action")
 	public ModelAndView mainpage(){
 		ModelAndView mav = new ModelAndView("page/index.jsp");
 		ModelMap modelMap = new ModelMap();
@@ -142,7 +142,7 @@ public class PmsLoginController extends SpringMVCBaseController{
 		
 		try {
 			modelMap.put("tree", buildUserPermissionMenu(user));
-			pmsUserBiz.update(user);
+			//pmsUserBiz.update(user);
 
 		} catch (Exception e) {
 			log.error("==== error ==== 登录出现异常",e);
@@ -160,7 +160,7 @@ public class PmsLoginController extends SpringMVCBaseController{
 	 * 
 	 * @return LogOutConfirm.
 	 */
-	@RequestMapping("logoutConfirm.action")
+	@RequestMapping("login_logoutConfirm.action")
 	public String logoutConfirm() {
 		return "page/logoutConfirm.jsp";
 	}
@@ -171,7 +171,7 @@ public class PmsLoginController extends SpringMVCBaseController{
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("logout.action")
+	@RequestMapping("login_logout.action")
 	public String logout() throws Exception {
 		//getSessionMap().clear();
 		return "login.jsp";
@@ -183,7 +183,7 @@ public class PmsLoginController extends SpringMVCBaseController{
 	 * @return LogOutConfirm.
 	 * @throws Exception
 	 */
-	@RequestMapping("timeoutConfirm.action")
+	@RequestMapping("login_timeoutConfirm.action")
 	public String timeoutConfirm() throws Exception {
 		return "page/timeoutConfirm.jsp";
 	}

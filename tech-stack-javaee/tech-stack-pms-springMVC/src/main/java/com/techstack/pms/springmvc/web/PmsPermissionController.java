@@ -26,7 +26,7 @@ import com.techstack.pms.dao.dto.PmsRoleDTO;
 import com.techstack.pms.dao.mybatis.entity.PmsMenu;
 
 @Controller
-@RequestMapping("/pmsPermission_")
+//@RequestMapping("/pmsPermission_")
 public class PmsPermissionController extends SpringMVCBaseController{
 
 	private static Log log = LogFactory.getLog(PmsPermissionController.class);
@@ -44,10 +44,10 @@ public class PmsPermissionController extends SpringMVCBaseController{
 	 * @return String
 	 */
 	//@Permission("pms:action:view")
-	@RequestMapping("pmsActionList.action")
+	@RequestMapping("/pmsPermission_pmsActionList.action")
 	public ModelAndView pmsActionList() {
 		try {
-			ModelAndView mav = new ModelAndView("page/pms/pmsMenu/pmsMenuList.jsp");
+			ModelAndView mav = new ModelAndView("page/pms/pmsAction/pmsActionList.jsp");
 			ModelMap modelMap = new ModelMap();
 			Map<String, Object> paramMap = new HashMap<String, Object>(); // 业务条件查询参数
 			paramMap.put("actionName", getString("actionName")); // 权限名称（模糊查询）
@@ -55,7 +55,8 @@ public class PmsPermissionController extends SpringMVCBaseController{
 			paramMap.put("act", getString("act"));
 			paramMap.put("module", "pmsAction");
 			Page<PmsActionDTO> pageBean = pmsActionBiz.listPage(DwzUtils.getPageNum(getHttpRequest()), DwzUtils.getNumPerPage(getHttpRequest()), paramMap);
-			modelMap.putAll(BeanMapper.map(pageBean, Map.class));
+			//modelMap.putAll(BeanMapper.map(pageBean, Map.class));
+			modelMap.addAttribute(pageBean);
 			modelMap.putAll(BeanMapper.map(paramMap, Map.class));
 			//this.pushData(pageBean);
 			//this.pushData(paramMap); // 回显查询条件值
@@ -63,7 +64,7 @@ public class PmsPermissionController extends SpringMVCBaseController{
 			return mav;
 		} catch (Exception e) {
 			log.error("==== error ==== 查询权限失败：", e);
-			return DwzUtils.operateErrorInSpringMVC("获取数据失败", getHttpRequest());
+			return DwzUtils.operateErrorInSpringMVC("获取数据失败", getHttpRequest(), "page/common/operateResult.jsp");
 		}
 	}
 
@@ -73,7 +74,7 @@ public class PmsPermissionController extends SpringMVCBaseController{
 	 * @return String
 	 */
 	//@Permission("pms:action:add")
-	@RequestMapping("pmsActionAdd.action")
+	@RequestMapping("/pmsPermission_pmsActionAdd.action")
 	public String pmsActionAdd() {
 		return "page/pms/pmsAction/pmsActionAdd.jsp";
 	}
@@ -84,7 +85,7 @@ public class PmsPermissionController extends SpringMVCBaseController{
 	 * @return String
 	 */
 	//@Permission("pms:action:add")
-	@RequestMapping("pmsActionSave.action")
+	@RequestMapping("/pmsPermission_pmsActionSave.action")
 	public ModelAndView pmsActionSave() {
 		try {
 			String actionName = getString("actionName"); // 权限名称
@@ -106,25 +107,25 @@ public class PmsPermissionController extends SpringMVCBaseController{
 			// 表单数据校验
 			String validateMsg = validatePmsAction(act);
 			if (StringUtils.isNotBlank(validateMsg)) {
-				return DwzUtils.operateErrorInSpringMVC(validateMsg, getHttpRequest()); // 返回错误信息
+				return DwzUtils.operateErrorInSpringMVC(validateMsg, getHttpRequest(), "page/common/operateResult.jsp"); // 返回错误信息
 			}
 			// 检查权限名称是否已存在
 			PmsActionDTO checkName = pmsActionBiz.getByActionName(actionName.trim());
 			if (checkName != null) {
-				return DwzUtils.operateErrorInSpringMVC("权限名称【" + actionName + "】已存在", getHttpRequest());
+				return DwzUtils.operateErrorInSpringMVC("权限名称【" + actionName + "】已存在", getHttpRequest(), "page/common/operateResult.jsp");
 			}
 			// 检查权限是否已存在
 			PmsActionDTO checkAction = pmsActionBiz.getByAction(action.trim());
 			if (checkAction != null) {
-				return DwzUtils.operateErrorInSpringMVC("权限【" + action + "】已存在", getHttpRequest());
+				return DwzUtils.operateErrorInSpringMVC("权限【" + action + "】已存在", getHttpRequest(), "page/common/operateResult.jsp");
 			}
 
 			pmsActionBiz.saveAction(act);
 			log.info("==== info ==== 权限【"+action+"】添加成功");
-			return DwzUtils.operateErrorInSpringMVC("操作成功", getHttpRequest()); // 返回operateSuccess视图,并提示“操作成功”
+			return DwzUtils.operateErrorInSpringMVC("操作成功", getHttpRequest(), "page/common/operateResult.jsp"); // 返回operateSuccess视图,并提示“操作成功”
 		} catch (Exception e) {
 			log.error("==== error ==== 权限添加失败", e);
-			return DwzUtils.operateErrorInSpringMVC("保存失败", getHttpRequest());
+			return DwzUtils.operateErrorInSpringMVC("保存失败", getHttpRequest(), "page/common/operateResult.jsp");
 		}
 	}
 
@@ -133,7 +134,7 @@ public class PmsPermissionController extends SpringMVCBaseController{
 	 * @param @return    
 	 * @return String
 	 */
-	@RequestMapping("pmsMenuLookUpUI.action")
+	@RequestMapping("/pmsPermission_pmsMenuLookUpUI.action")
 	public ModelAndView pmsMenuLookUpUI() {
 		ModelAndView mav = new ModelAndView("page/pms/pmsAction/pmsMenuLookUp.jsp");
 		ModelMap modelMap = new ModelMap();
@@ -177,7 +178,7 @@ public class PmsPermissionController extends SpringMVCBaseController{
 	 * @return String
 	 */
 	//@Permission("pms:action:edit")
-	@RequestMapping("pmsActionEdit.action")
+	@RequestMapping("/pmsPermission_pmsActionEdit.action")
 	public ModelAndView pmsActionEdit() {
 		ModelAndView mav = new ModelAndView("page/pms/pmsAction/pmsActionEdit.jsp");
 		ModelMap modelMap = new ModelMap();
@@ -189,7 +190,7 @@ public class PmsPermissionController extends SpringMVCBaseController{
 			return mav;
 		} catch (Exception e) {
 			log.error("==== error ==== 进入权限修改页面失败：", e);
-			return DwzUtils.operateErrorInSpringMVC("获取数据失败", getHttpRequest());
+			return DwzUtils.operateErrorInSpringMVC("获取数据失败", getHttpRequest(), "page/common/operateResult.jsp");
 		}
 	}
 
@@ -199,13 +200,13 @@ public class PmsPermissionController extends SpringMVCBaseController{
 	 * @return String
 	 */
 	//@Permission("pms:action:edit")
-	@RequestMapping("pmsActionUpdate.action")
+	@RequestMapping("/pmsPermission_pmsActionUpdate.action")
 	public ModelAndView pmsActionUpdate() {
 		try {
 			Long id = getLong("actionId");
 			PmsActionDTO pmsAction = pmsActionBiz.getById(id);
 			if (pmsAction == null) {
-				return DwzUtils.operateErrorInSpringMVC("无法获取要修改的数据", getHttpRequest());
+				return DwzUtils.operateErrorInSpringMVC("无法获取要修改的数据", getHttpRequest(), "page/common/operateResult.jsp");
 			} else {
 
 				String actionName = getString("actionName");
@@ -219,13 +220,13 @@ public class PmsPermissionController extends SpringMVCBaseController{
 				// 表单数据校验
 				String validateMsg = validatePmsAction(pmsAction);
 				if (StringUtils.isNotBlank(validateMsg)) {
-					return DwzUtils.operateErrorInSpringMVC(validateMsg, getHttpRequest()); // 返回错误信息
+					return DwzUtils.operateErrorInSpringMVC(validateMsg, getHttpRequest(), "page/common/operateResult.jsp"); // 返回错误信息
 				}
 
 				// 检查权限名称是否已存在
 				PmsActionDTO checkName = pmsActionBiz.getByActionNameNotEqId(actionName, id);
 				if (checkName != null) {
-					return DwzUtils.operateErrorInSpringMVC("权限名称【" + actionName + "】已存在", getHttpRequest());
+					return DwzUtils.operateErrorInSpringMVC("权限名称【" + actionName + "】已存在", getHttpRequest(), "page/common/operateResult.jsp");
 				}
 				// 检查权限是否已存在
 				// PmsAction checkAction =
@@ -236,11 +237,11 @@ public class PmsPermissionController extends SpringMVCBaseController{
 
 				pmsActionBiz.updateAction(pmsAction);
 				log.info("==== info ==== 权限【"+actionName+"】修改成功");
-				return DwzUtils.operateErrorInSpringMVC("操作成功", getHttpRequest());
+				return DwzUtils.operateErrorInSpringMVC("操作成功", getHttpRequest(), "page/common/operateResult.jsp");
 			}
 		} catch (Exception e) {
 			log.error("==== error ==== 权限修改失败", e);
-			return DwzUtils.operateErrorInSpringMVC("修改失败", getHttpRequest());
+			return DwzUtils.operateErrorInSpringMVC("修改失败", getHttpRequest(), "page/common/operateResult.jsp");
 		}
 	}
 
@@ -250,25 +251,25 @@ public class PmsPermissionController extends SpringMVCBaseController{
 	 * @return String
 	 */
 	//@Permission("pms:action:delete")
-	@RequestMapping("pmsActionDel.action")
+	@RequestMapping("/pmsPermission_pmsActionDel.action")
 	public ModelAndView pmsActionDel() {
 		try {
 			Long actionId = getLong("id");
 			PmsActionDTO act = pmsActionBiz.getById(actionId);
 			if (act == null) {
-				return DwzUtils.operateErrorInSpringMVC("无法获取要删除的数据", getHttpRequest());
+				return DwzUtils.operateErrorInSpringMVC("无法获取要删除的数据", getHttpRequest(), "page/common/operateResult.jsp");
 			}
 			// 判断此权限是否关联有角色，要先解除与角色的关联后才能删除该权限
 			List<PmsRoleDTO> roleList = pmsRoleBiz.listByActionId(actionId);
 			if (roleList != null && !roleList.isEmpty()) {
-				return DwzUtils.operateErrorInSpringMVC("权限【" + act.getAction() + "】关联了【" + roleList.size() + "】个角色，要解除所有关联后才能删除。其中一个角色名为:" + roleList.get(0).getRoleName(), getHttpRequest());
+				return DwzUtils.operateErrorInSpringMVC("权限【" + act.getAction() + "】关联了【" + roleList.size() + "】个角色，要解除所有关联后才能删除。其中一个角色名为:" + roleList.get(0).getRoleName(), getHttpRequest(), "page/common/operateResult.jsp");
 			}
 			pmsActionBiz.deleteActionById(actionId);
 			log.info("==== info ==== 删除权限【"+act.getAction()+"】成功");
-			return DwzUtils.operateErrorInSpringMVC("操作成功", getHttpRequest()); // 返回operateSuccess视图,并提示“操作成功”
+			return DwzUtils.operateErrorInSpringMVC("操作成功", getHttpRequest(), "page/common/operateResult.jsp"); // 返回operateSuccess视图,并提示“操作成功”
 		} catch (Exception e) {
 			log.error("==== error ==== 删除权限失败", e);
-			return DwzUtils.operateErrorInSpringMVC("删除限权异常", getHttpRequest());
+			return DwzUtils.operateErrorInSpringMVC("删除限权异常", getHttpRequest(), "page/common/operateResult.jsp");
 		}
 	}
 

@@ -73,7 +73,8 @@ public class PmsMenuBiz {
 	private List getTreeData(String parentId) {
 		//return pmsMenuDao.listByParent(parentId);
 		//return getBaseDao().selectList(getStatement("listMenuByParent"), parentId);
-		return pmsMenuDaoFacade.listMenuByParentId(Long.parseLong(parentId));
+		//return pmsMenuDaoFacade.listMenuByParentId(Long.parseLong(parentId));
+		return pmsMenuDaoFacade.listMenuBy(null, null, parentId==null? null : Long.parseLong(parentId));
 	}
 
 	/**

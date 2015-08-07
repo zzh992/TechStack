@@ -31,7 +31,7 @@ import com.techstack.pms.enums.RoleTypeEnum;
 import com.techstack.pms.enums.UserTypeEnum;
 
 @Controller
-@RequestMapping("/pmsRole_")
+//@RequestMapping("/pmsRole_")
 public class PmsRoleController extends SpringMVCBaseController{
 
 	private static Log log = LogFactory.getLog(PmsRoleController.class);
@@ -52,7 +52,7 @@ public class PmsRoleController extends SpringMVCBaseController{
 	 * @return String
 	 */
 	//@Permission("pms:role:view")
-	@RequestMapping("pmsRoleList.action")
+	@RequestMapping("/pmsRole_pmsRoleList.action")
 	public ModelAndView pmsRoleList() {
 		try {
 			ModelAndView mav = new ModelAndView("page/pms/pmsRole/pmsRoleList.jsp");
@@ -64,7 +64,8 @@ public class PmsRoleController extends SpringMVCBaseController{
 
 			ShiroUser user = this.getCurrentUser();
 			modelMap.putAll(BeanMapper.map(user, Map.class));
-			modelMap.putAll(BeanMapper.map(pageBean, Map.class));
+			//modelMap.putAll(BeanMapper.map(pageBean, Map.class)); TODO: pageBean转map会出错
+			modelMap.addAttribute(pageBean);
 			modelMap.putAll(BeanMapper.map(paramMap, Map.class));
 			//this.pushData(user);
 			//this.pushData(pageBean);
@@ -78,7 +79,7 @@ public class PmsRoleController extends SpringMVCBaseController{
 			return mav;
 		} catch (Exception e) {
 			log.error("==== error ==== 查询角色失败：", e);
-			return DwzUtils.operateErrorInSpringMVC("获取数据失败", getHttpRequest());
+			return DwzUtils.operateErrorInSpringMVC("获取数据失败", getHttpRequest(), "page/common/operateResult.jsp");
 		}
 	}
 
@@ -88,14 +89,14 @@ public class PmsRoleController extends SpringMVCBaseController{
 	 * @return String
 	 */
 	//@Permission("pms:role:add")
-	@RequestMapping("pmsRoleAdd.action")
+	@RequestMapping("/pmsRole_pmsRoleAdd.action")
 	public ModelAndView pmsRoleAdd() {
 		try {
 			ModelAndView mav = new ModelAndView("page/pms/pmsRole/pmsRoleAdd.jsp");
 			return mav;
 		} catch (Exception e) {
 			log.error("==== error ==== 进入角色添加页面失败", e);
-			return DwzUtils.operateErrorInSpringMVC("获取数据失败", getHttpRequest());
+			return DwzUtils.operateErrorInSpringMVC("获取数据失败", getHttpRequest(), "page/common/operateResult.jsp");
 		}
 	}
 
@@ -105,13 +106,13 @@ public class PmsRoleController extends SpringMVCBaseController{
 	 * @return String
 	 */
 	//@Permission("pms:role:add")
-	@RequestMapping("pmsRoleSave.action")
+	@RequestMapping("/pmsRole_pmsRoleSave.action")
 	public ModelAndView pmsRoleSave() {
 		try {
 			String roleName = getString("roleName");
 			PmsRoleDTO roleCheck = pmsRoleBiz.getByRoleName(roleName);
 			if (roleCheck != null) {
-				return DwzUtils.operateErrorInSpringMVC("角色名【" + roleName + "】已存在", getHttpRequest());
+				return DwzUtils.operateErrorInSpringMVC("角色名【" + roleName + "】已存在", getHttpRequest(), "page/common/operateResult.jsp");
 			}
 
 			// 保存基本角色信息
@@ -124,15 +125,15 @@ public class PmsRoleController extends SpringMVCBaseController{
 			// 表单数据校验
 			String validateMsg = validatePmsRole(pmsRole);
 			if (StringUtils.isNotBlank(validateMsg)) {
-				return DwzUtils.operateErrorInSpringMVC(validateMsg, getHttpRequest()); // 返回错误信息
+				return DwzUtils.operateErrorInSpringMVC(validateMsg, getHttpRequest(), "page/common/operateResult.jsp"); // 返回错误信息
 			}
 
 			pmsRoleBiz.saveRole(pmsRole);
 			log.info("==== info ==== 添加角色【"+roleName+"】成功");
-			return DwzUtils.operateErrorInSpringMVC("操作成功", getHttpRequest());
+			return DwzUtils.operateErrorInSpringMVC("操作成功", getHttpRequest(), "page/common/operateResult.jsp");
 		} catch (Exception e) {
 			log.error("==== error ==== 添加角色失败：", e);
-			return DwzUtils.operateErrorInSpringMVC("保存数据失败", getHttpRequest());
+			return DwzUtils.operateErrorInSpringMVC("保存数据失败", getHttpRequest(), "page/common/operateResult.jsp");
 		}
 	}
 
@@ -159,7 +160,7 @@ public class PmsRoleController extends SpringMVCBaseController{
 	 * @return String
 	 */
 	//@Permission("pms:role:edit")
-	@RequestMapping("pmsRoleEdit.action")
+	@RequestMapping("/pmsRole_pmsRoleEdit.action")
 	public ModelAndView pmsRoleEdit() {
 		try {
 			ModelAndView mav = new ModelAndView("page/pms/pmsRole/pmsRoleEdit.jsp");
@@ -167,13 +168,13 @@ public class PmsRoleController extends SpringMVCBaseController{
 			Long roleId = getLong("roleId");
 			PmsRoleDTO pmsRole = pmsRoleBiz.getById(roleId);
 			if (pmsRole == null) {
-				return DwzUtils.operateErrorInSpringMVC("获取数据失败", getHttpRequest());
+				return DwzUtils.operateErrorInSpringMVC("获取数据失败", getHttpRequest(), "page/common/operateResult.jsp");
 			}
 
 			// 普通用户没有修改超级管理员角色的权限
 			if (UserTypeEnum.USER.getValue().equals(this.getCurrentUser().getType()) 
 			 && RoleTypeEnum.ADMIN.getValue().equals(pmsRole.getRoleType())) {
-				return DwzUtils.operateErrorInSpringMVC("你没有修改超级管理员角色的权限", getHttpRequest());
+				return DwzUtils.operateErrorInSpringMVC("你没有修改超级管理员角色的权限", getHttpRequest(), "page/common/operateResult.jsp");
 			}
 
 			//this.pushData(pmsRole);
@@ -182,7 +183,7 @@ public class PmsRoleController extends SpringMVCBaseController{
 			return mav;
 		} catch (Exception e) {
 			log.error("==== error ==== 进入修改角色页面失败：", e);
-			return DwzUtils.operateErrorInSpringMVC("获取数据失败", getHttpRequest());
+			return DwzUtils.operateErrorInSpringMVC("获取数据失败", getHttpRequest(), "page/common/operateResult.jsp");
 		}
 	}
 
@@ -192,26 +193,26 @@ public class PmsRoleController extends SpringMVCBaseController{
 	 * @return String
 	 */
 	//@Permission("pms:role:edit")
-	@RequestMapping("pmsRoleUpdate.action")
+	@RequestMapping("/pmsRole_pmsRoleUpdate.action")
 	public ModelAndView pmsRoleUpdate() {
 		try {
 			Long id = getLong("id");
 
 			PmsRoleDTO pmsRole = pmsRoleBiz.getById(id);
 			if (pmsRole == null) {
-				return DwzUtils.operateErrorInSpringMVC("无法获取要修改的数据", getHttpRequest());
+				return DwzUtils.operateErrorInSpringMVC("无法获取要修改的数据", getHttpRequest(), "page/common/operateResult.jsp");
 			}
 
 			// 普通用户没有修改超级管理员角色的权限
 			if (UserTypeEnum.USER.getValue().equals(this.getCurrentUser().getType()) 
 			 && RoleTypeEnum.ADMIN.getValue().equals(pmsRole.getRoleType())) {
-				return DwzUtils.operateErrorInSpringMVC("你没有修改超级管理员角色的权限", getHttpRequest());
+				return DwzUtils.operateErrorInSpringMVC("你没有修改超级管理员角色的权限", getHttpRequest(), "page/common/operateResult.jsp");
 			}
 
 			String roleName = getString("roleName");
 			PmsRoleDTO roleCheck = pmsRoleBiz.findByRoleNameNotEqId(id, roleName);
 			if (roleCheck != null) {
-				return DwzUtils.operateErrorInSpringMVC("角色名【" + roleName + "】已存在", getHttpRequest());
+				return DwzUtils.operateErrorInSpringMVC("角色名【" + roleName + "】已存在", getHttpRequest(), "page/common/operateResult.jsp");
 			}
 
 			pmsRole.setRoleName(roleName);
@@ -220,15 +221,15 @@ public class PmsRoleController extends SpringMVCBaseController{
 			// 表单数据校验
 			String validateMsg = validatePmsRole(pmsRole);
 			if (StringUtils.isNotBlank(validateMsg)) {
-				return DwzUtils.operateErrorInSpringMVC(validateMsg, getHttpRequest()); // 返回错误信息
+				return DwzUtils.operateErrorInSpringMVC(validateMsg, getHttpRequest(), "page/common/operateResult.jsp"); // 返回错误信息
 			}
 
 			pmsRoleBiz.updateRole(pmsRole);
 			log.info("==== info ==== 修改角色【"+roleName+"】成功");
-			return DwzUtils.operateErrorInSpringMVC("操作成功", getHttpRequest());
+			return DwzUtils.operateErrorInSpringMVC("操作成功", getHttpRequest(), "page/common/operateResult.jsp");
 		} catch (Exception e) {
 			log.error("==== error ==== 修改角色失败", e);
-			return DwzUtils.operateErrorInSpringMVC("保存失败", getHttpRequest());
+			return DwzUtils.operateErrorInSpringMVC("保存失败", getHttpRequest(), "page/common/operateResult.jsp");
 		}
 	}
 
@@ -238,17 +239,17 @@ public class PmsRoleController extends SpringMVCBaseController{
 	 * @return String
 	 */
 	//@Permission("pms:role:delete")
-	@RequestMapping("pmsRoleDel.action")
+	@RequestMapping("/pmsRole_pmsRoleDel.action")
 	public ModelAndView pmsRoleDel() {
 		try {
 			Long roleId = getLong("roleId");
 
 			PmsRoleDTO role = pmsRoleBiz.getById(roleId);
 			if (role == null) {
-				return DwzUtils.operateErrorInSpringMVC("无法获取要删除的角色", getHttpRequest());
+				return DwzUtils.operateErrorInSpringMVC("无法获取要删除的角色", getHttpRequest(), "page/common/operateResult.jsp");
 			}
 			if (RoleTypeEnum.ADMIN.getValue().equals(role.getRoleType())) {
-				return DwzUtils.operateErrorInSpringMVC("超级管理员角色不可删除", getHttpRequest());
+				return DwzUtils.operateErrorInSpringMVC("超级管理员角色不可删除", getHttpRequest(), "page/common/operateResult.jsp");
 			}
 
 			String msg = "";
@@ -270,15 +271,15 @@ public class PmsRoleController extends SpringMVCBaseController{
 
 			if (StringUtils.isNotBlank(msg)) {
 				msg += "关联到此角色，要先解除所有关联后才能删除!";
-				return DwzUtils.operateErrorInSpringMVC("有" + msg, getHttpRequest());
+				return DwzUtils.operateErrorInSpringMVC("有" + msg, getHttpRequest(), "page/common/operateResult.jsp");
 			}
 			
 			pmsRoleBiz.deleteRoleById(roleId);
 			log.info("==== info ==== 删除角色成功");
-			return DwzUtils.operateErrorInSpringMVC("操作成功", getHttpRequest());
+			return DwzUtils.operateErrorInSpringMVC("操作成功", getHttpRequest(), "page/common/operateResult.jsp");
 		} catch (Exception e) {
 			log.error("==== error ==== 删除角色失败", e);
-			return DwzUtils.operateErrorInSpringMVC("删除失败", getHttpRequest());
+			return DwzUtils.operateErrorInSpringMVC("删除失败", getHttpRequest(), "page/common/operateResult.jsp");
 		}
 	}
 
@@ -289,7 +290,7 @@ public class PmsRoleController extends SpringMVCBaseController{
 	 */
 	@SuppressWarnings("unchecked")
 	//@Permission("pms:role:edit")
-	@RequestMapping("assignPermissionUI.action")
+	@RequestMapping("/pmsRole_assignPermissionUI.action")
 	public String assignPermissionUI() {
 		ModelAndView mav = new ModelAndView("page/pms/pmsRole/assignPermissionUI.jsp");
 		ModelMap modelMap = new ModelMap();
@@ -334,7 +335,7 @@ public class PmsRoleController extends SpringMVCBaseController{
 	 * @return void
 	 */
 	//@Permission("pms:role:edit")
-	@RequestMapping("assignPermission.action")
+	@RequestMapping("/pmsRole_assignPermission.action")
 	public Map<String, Object> assignPermission() {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		try {

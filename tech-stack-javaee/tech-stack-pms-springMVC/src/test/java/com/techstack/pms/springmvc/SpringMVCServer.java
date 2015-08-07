@@ -1,4 +1,4 @@
-package com.techstack.sms2;
+package com.techstack.pms.springmvc;
 
 import org.eclipse.jetty.server.Server;
 import com.techstack.component.jetty.JettyFactory;
@@ -8,10 +8,10 @@ import com.techstack.component.jetty.JettyFactory;
  * 在Console输入回车快速重新加载应用.
  * 
  */
-public class AppServer {
+public class SpringMVCServer {
 
 	public static final int PORT = 9556;
-	public static final String CONTEXT = "/tech-stack-sms2";
+	public static final String CONTEXT = "/tech-stack-pms-springMVC";
 	public static final String[] TLD_JAR_NAMES = new String[] { "sitemesh", "spring-webmvc", "shiro-web",
 			"springside-core" };
 

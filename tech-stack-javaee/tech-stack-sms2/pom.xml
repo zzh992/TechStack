@@ -144,11 +144,13 @@
             <groupId>org.eclipse.jetty.aggregate</groupId> 
             <artifactId>jetty-webapp</artifactId> 
             <version>8.1.16.v20140903</version>
+            <scope>test</scope>
         </dependency> 
         <dependency> 
             <groupId>org.eclipse.jetty</groupId> 
             <artifactId>jetty-jsp</artifactId> 
             <version>8.1.16.v20140903</version>
+            <scope>test</scope>
         </dependency>
         
         <!-- shiro -->

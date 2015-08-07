@@ -15,7 +15,7 @@ import com.techstack.pms.dao.dto.PmsUserDTO;
 import com.techstack.pms.enums.UserTypeEnum;
 
 @Controller
-@RequestMapping("/register_")
+//@RequestMapping("/register_")
 public class PmsRegisterController extends SpringMVCBaseController{
 
 	private static final Log log = LogFactory.getLog(PmsRegisterController.class);
@@ -28,7 +28,7 @@ public class PmsRegisterController extends SpringMVCBaseController{
 	 * @param @return    
 	 * @return String
 	 */
-	@RequestMapping("register.action")
+	@RequestMapping("/register_register.action")
 	public String register(){
 		return "register.jsp";
 	}
@@ -38,7 +38,7 @@ public class PmsRegisterController extends SpringMVCBaseController{
 	 * @param @return    
 	 * @return String
 	 */
-	@RequestMapping("userSave.action")
+	@RequestMapping("/register_userSave.action")
 	public ModelAndView userSave(){
 		ModelAndView mav = new ModelAndView("login.jsp");
 		ModelMap modelMap = new ModelMap();

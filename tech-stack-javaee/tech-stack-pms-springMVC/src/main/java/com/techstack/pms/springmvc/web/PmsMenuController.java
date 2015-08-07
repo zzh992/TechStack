@@ -21,7 +21,7 @@ import com.techstack.pms.dao.dto.PmsMenuDTO;
 import com.techstack.pms.enums.NodeTypeEnum;
 
 @Controller
-@RequestMapping("/pmsMenu_")
+//@RequestMapping("/pmsMenu_")
 public class PmsMenuController extends SpringMVCBaseController{
 
 	private static final Log log = LogFactory.getLog(PmsMenuController.class);
@@ -47,7 +47,7 @@ public class PmsMenuController extends SpringMVCBaseController{
 	 * @return PmsMenuList .
 	 */
 	//@Permission("pms:menu:view")
-	@RequestMapping("pmsMenuList.action")
+	@RequestMapping("/pmsMenu_pmsMenuList.action")
 	public ModelAndView pmsMenuList() {
 		ModelAndView mav = new ModelAndView("page/pms/pmsMenu/pmsMenuList.jsp");
 		ModelMap modelMap = new ModelMap();
@@ -62,7 +62,7 @@ public class PmsMenuController extends SpringMVCBaseController{
 	 * @return PmsMenuAdd .
 	 */
 	//@Permission("pms:menu:add")
-	@RequestMapping("pmsMenuAdd.action")
+	@RequestMapping("/pmsMenu_pmsMenuAdd.action")
 	public ModelAndView pmsMenuAdd() {
 		ModelAndView mav = new ModelAndView("page/pms/pmsMenu/pmsMenuAdd.jsp");
 		ModelMap modelMap = new ModelMap();
@@ -80,7 +80,7 @@ public class PmsMenuController extends SpringMVCBaseController{
 	 * @return operateSuccess or operateError .
 	 */
 	//@Permission("pms:menu:add")
-	@RequestMapping("pmsMenuSave.action")
+	@RequestMapping("/pmsMenu_pmsMenuSave.action")
 	public ModelAndView pmsMenuSave() {
 		try {
 			String name = getString("name");
@@ -90,7 +90,7 @@ public class PmsMenuController extends SpringMVCBaseController{
 			List<PmsMenuDTO> list = pmsMenuBiz.getMenuByNameAndIsLeaf(map);
 			if (list.size() > 0) {
 				//return operateError("同级菜单名称不能重复");
-				return DwzUtils.operateErrorInSpringMVC("同级菜单名称不能重复", getHttpRequest());
+				return DwzUtils.operateErrorInSpringMVC("同级菜单名称不能重复", getHttpRequest(),"page/common/operateResult.jsp");
 			}
 			PmsMenuDTO pmsMenu = new PmsMenuDTO();
 			pmsMenu.setName(name);
@@ -107,9 +107,9 @@ public class PmsMenuController extends SpringMVCBaseController{
 		} catch (Exception e) {
 			log.error("==== error ==== 添加菜单出错", e);
 			//return operateError("添加菜单出错");
-			return DwzUtils.operateErrorInSpringMVC("添加菜单出错", getHttpRequest());
+			return DwzUtils.operateErrorInSpringMVC("添加菜单出错", getHttpRequest(), "page/common/operateResult.jsp");
 		}
-		return DwzUtils.operateErrorInSpringMVC("操作成功", getHttpRequest());
+		return DwzUtils.operateErrorInSpringMVC("操作成功", getHttpRequest(), "page/common/operateResult.jsp");
 	}
 
 	/**
@@ -117,7 +117,7 @@ public class PmsMenuController extends SpringMVCBaseController{
 	 * @return
 	 */
 //	@Permission("pms:menu:view")
-	@RequestMapping("pmsMenuEdit.action")
+	@RequestMapping("/pmsMenu_pmsMenuEdit.action")
 	public ModelAndView pmsMenuEdit() {
 		ModelAndView mav = new ModelAndView("page/pms/pmsMenu/pmsMenuEdit.jsp");
 		ModelMap modelMap = new ModelMap();
@@ -137,7 +137,7 @@ public class PmsMenuController extends SpringMVCBaseController{
 	 * @return
 	 */
 	//@Permission("pms:menu:edit")
-	@RequestMapping("pmsMenuUpdate.action")
+	@RequestMapping("/pmsMenu_pmsMenuUpdate.action")
 	public ModelAndView pmsMenuUpdate() {
 		try {
 			Long id = getLong("menuId");
@@ -149,10 +149,10 @@ public class PmsMenuController extends SpringMVCBaseController{
 			pmsMenuBiz.update(pmsMenu);
 			log.info("==== info ==== 修改菜单【"+pmsMenu.getName()+"】成功");
 			//return operateSuccess();
-			return DwzUtils.operateErrorInSpringMVC("操作成功", getHttpRequest());
+			return DwzUtils.operateErrorInSpringMVC("操作成功", getHttpRequest(), "page/common/operateResult.jsp");
 		} catch (Exception e) {
 			log.error("==== error ==== 修改菜单出错", e);
-			return DwzUtils.operateErrorInSpringMVC("保存菜单出错", getHttpRequest());
+			return DwzUtils.operateErrorInSpringMVC("保存菜单出错", getHttpRequest(), "page/common/operateResult.jsp");
 		}
 
 	}

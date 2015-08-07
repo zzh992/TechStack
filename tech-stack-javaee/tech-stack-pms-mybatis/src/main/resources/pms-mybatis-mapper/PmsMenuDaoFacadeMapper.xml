@@ -15,8 +15,10 @@
 			M.PARENT_ID AS "parentId", 
 			M.NAME as "name", 
 			M.IS_LEAF AS "isLeaf", 
-			M.LEVEL AS "level", 
-			M.TARGET_NAME AS "targetName" 
+			M.LEVEL AS "level",
+			M.URL as "url", 
+			M.TARGET_NAME AS "targetName",
+			M.NUMBER as "number" 
 		FROM PMS_MENU M
 		<where>
 			<!-- <if test="parentId!=null and parentId!=''"> -->
@@ -105,18 +107,30 @@
   	
   	<select id="listMenuByParentId" parameterType="Long" resultType="com.techstack.pms.dao.mybatis.entity.PmsMenu">
 		SELECT
+		ID AS "id", 
+		VERSION AS "version", 
+		PARENT_ID AS "parentId", 
+		NAME as "name", 
+		IS_LEAF AS "isLeaf", 
+		LEVEL AS "level",
+		URL as "url", 
+		TARGET_NAME AS "targetName",
+		NUMBER as "number" 
+		FROM PMS_MENU where PARENT_ID = #{parentId}
+	</select>
+	
+	<select id="listMenuBy" parameterType="java.util.Map" resultType="com.techstack.pms.dao.mybatis.entity.PmsMenu">
+		select 
 		ID AS "id" ,
 		VERSION AS "version",
 		PARENT_ID AS "parentId",
 		NAME as "name",
 		IS_LEAF AS "isLeaf",
 		LEVEL AS "level",
-		TARGET_NAME AS "targetName"
-		FROM PMS_MENU where PARENT_ID = #{parentId}
-	</select>
-	
-	<select id="listMenuBy" parameterType="java.util.Map" resultType="com.techstack.pms.dao.mybatis.entity.PmsMenu">
-		select * from PMS_MENU
+		URL as "url", 
+		TARGET_NAME AS "targetName",
+		NUMBER as "number" 
+		FROM PMS_MENU
 		<where>
 			<if test="isLeaf != null and isLeaf != ''"> and IS_LEAF = #{isLeaf}</if>
 			<if test="name != null and name != ''"> and NAME = #{name}</if>

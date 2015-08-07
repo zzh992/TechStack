@@ -21,8 +21,8 @@ public class DwzUtils {
 		return "operateSuccess";
 	}
 	
-	public static ModelAndView operateSuccessInSpringMVC(String message, HttpServletRequest req){
-		return ajaxDone("200", message, req);
+	public static ModelAndView operateSuccessInSpringMVC(String message, HttpServletRequest req, String url){
+		return ajaxDone("200", message, req, url);
 	}
 	
 	public static String operateErrorInStruts2(String message){
@@ -30,8 +30,8 @@ public class DwzUtils {
 		return "operateError";
 	}
 	
-	public static ModelAndView operateErrorInSpringMVC(String message, HttpServletRequest req){
-		return ajaxDone("300", message, req);
+	public static ModelAndView operateErrorInSpringMVC(String message, HttpServletRequest req, String url){
+		return ajaxDone("300", message, req, url);
 	}
 	
 	private static void ajaxDone(String statusCode, String message) {
@@ -39,11 +39,12 @@ public class DwzUtils {
 		ActionContext.getContext().getValueStack().push(param);
 	}
 	
-	private static ModelAndView ajaxDone(String statusCode, String message, HttpServletRequest req){
+	private static ModelAndView ajaxDone(String statusCode, String message, HttpServletRequest req, String url){
 		DwzParam param = getDwzParam(statusCode, message, req);
 		ModelMap modelMap = new ModelMap();
 		modelMap.putAll(BeanMapper.map(param, Map.class));
-		ModelAndView mav = new ModelAndView("dwz/operateResult.jsp");
+		//ModelAndView mav = new ModelAndView("dwz/operateResult.jsp");
+		ModelAndView mav = new ModelAndView(url);
 		mav.addAllObjects(modelMap);
 		return mav;
 	}
