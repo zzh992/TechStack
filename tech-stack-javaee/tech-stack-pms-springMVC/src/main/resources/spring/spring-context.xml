@@ -6,7 +6,7 @@
            http://www.springframework.org/schema/aop   
            http://www.springframework.org/schema/aop/spring-aop-3.2.xsd  
            http://www.springframework.org/schema/tx  
-           http://www.springframework.org/schema/tx/spring-tx-3.2.xsd 
+           http://www.springframework.org/schema/tx/spring-tx-3.2.xsd  
            http://www.springframework.org/schema/context  
            http://www.springframework.org/schema/context/spring-context-3.2.xsd"
 	default-autowire="byName" default-lazy-init="false">
@@ -15,7 +15,7 @@
 	<context:annotation-config />
 
 	<!-- 配置要扫描的包 -->
-	<context:component-scan base-package="com.techstack.sms2" />
+	<context:component-scan base-package="com.techstack.pms, com.techstack.component" />
 
 	<!-- 读入配置属性文件 -->
 	<context:property-placeholder location="classpath:db.properties" />
@@ -23,20 +23,8 @@
 	<!-- proxy-target-class默认"false",更改为"ture"使用CGLib动态代理 -->
 	<aop:aspectj-autoproxy proxy-target-class="true" />
 
-	<!-- AOP权限拦截，作用：允许AspecJ拦截Action -->
-	<!-- <bean id="permissionInterceptor" class="com.techstack.sms2.base.interceptor.PermissionInterceptor"></bean>
-	<aop:config>
-		<aop:pointcut id="strutsActions" expression="execution(* com.techstack.sms2.course.action.*.*(..))" />
-		<aop:advisor pointcut-ref="strutsActions" advice-ref="permissionInterceptor" />
-	</aop:config>
-	<aop:config>
-		<aop:pointcut id="strutsActionsPms" expression="execution(* com.techstack.sms2.permission.action.*.*(..))" />
-		<aop:advisor pointcut-ref="strutsActionsPms" advice-ref="permissionInterceptor" />
-	</aop:config> -->
-
-
-	<import resource="spring-mybatis.xml" />
 	
 	<!-- 加载shiro组件的配置 -->
 	<import resource="classpath:shiro/applicationContext-shiro.xml" />
+	<import resource="spring-mybatis.xml" />
 </beans>

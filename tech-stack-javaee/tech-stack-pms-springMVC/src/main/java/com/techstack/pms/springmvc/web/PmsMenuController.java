@@ -117,7 +117,7 @@ public class PmsMenuController extends SpringMVCBaseController{
 	 * @return
 	 */
 //	@Permission("pms:menu:view")
-	@RequestMapping("pmsMenuSave.action")
+	@RequestMapping("pmsMenuEdit.action")
 	public ModelAndView pmsMenuEdit() {
 		ModelAndView mav = new ModelAndView("page/pms/pmsMenu/pmsMenuEdit.jsp");
 		ModelMap modelMap = new ModelMap();
