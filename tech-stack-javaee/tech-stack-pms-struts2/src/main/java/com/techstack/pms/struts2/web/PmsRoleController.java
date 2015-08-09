@@ -24,7 +24,7 @@ import com.techstack.pms.biz.PmsUserBiz;
 import com.techstack.pms.dao.dto.PmsActionDTO;
 import com.techstack.pms.dao.dto.PmsMenuDTO;
 import com.techstack.pms.dao.dto.PmsRoleDTO;
-import com.techstack.pms.dao.mybatis.entity.PmsUser;
+import com.techstack.pms.dao.dto.PmsUserDTO;
 import com.techstack.pms.enums.RoleTypeEnum;
 import com.techstack.pms.enums.UserTypeEnum;
 
@@ -307,7 +307,7 @@ public class PmsRoleController extends Struts2BaseController{
 		this.putData("menuActionTree", pmsMenuBiz.buildMenuActionTree(menuIds, actionIds));
 
 		// 查询角色对应的用户
-		List<PmsUser> userList = (List<PmsUser>) pmsUserBiz.listUserByRoleId(roleId);
+		List<PmsUserDTO> userList = (List<PmsUserDTO>) pmsUserBiz.listUserByRoleId(roleId);
 		this.putData("userList", userList);
 
 		this.putData("roleId", roleId);

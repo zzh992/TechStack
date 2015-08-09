@@ -32,6 +32,7 @@ node_modules
 target/
 tech-stack-javaee/tech-stack-sms2/src/main/webapp/js/dwz/
 tech-stack-javaee/tech-stack-pms-springMVC/src/main/webapp/js/dwz/
+tech-stack-javaee/tech-stack-pms-struts2/src/main/webapp/js/dwz/
 .classpath
 .project
 

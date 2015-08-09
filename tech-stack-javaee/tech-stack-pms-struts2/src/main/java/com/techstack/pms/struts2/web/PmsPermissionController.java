@@ -19,7 +19,6 @@ import com.techstack.pms.biz.PmsRoleBiz;
 import com.techstack.pms.dao.dto.PmsActionDTO;
 import com.techstack.pms.dao.dto.PmsMenuDTO;
 import com.techstack.pms.dao.dto.PmsRoleDTO;
-import com.techstack.pms.dao.mybatis.entity.PmsMenu;
 
 /**
  * @Title: PmsPermissionAction.java 
@@ -91,7 +90,7 @@ public class PmsPermissionController extends Struts2BaseController {
 			act.setAction(action);
 			act.setRemark(desc);
 			// 菜单
-			PmsMenu menu = new PmsMenu();
+			PmsMenuDTO menu = new PmsMenuDTO();
 			menu.setId(menuId);
 			act.setMenuId(menuId); // 设置菜单ID
 			act.setMenuName(menuName);
