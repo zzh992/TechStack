@@ -546,7 +546,10 @@ public class PmsMenuBiz {
 	public List<PmsMenuDTO> getMenuByNameAndIsLeaf(Map<String, Object> map) {
 		//return pmsMenuDao.getMenuByNameAndIsLeaf(map);
 		//return getBaseDao().selectList(getStatement("listMenuBy"), map);
-		return pmsMenuDaoFacade.listMenuBy(Integer.parseInt(map.get("isLeaf").toString()), map.get("name").toString(), Long.parseLong(map.get("parentId").toString()));
+		Integer isLeaf = map.get("isLeaf")==null? null:Integer.parseInt(map.get("isLeaf").toString());
+		String name = map.get("name")==null? null : map.get("name").toString();
+		Long parentId = map.get("parentId")==null? null : Long.parseLong(map.get("parentId").toString());
+		return pmsMenuDaoFacade.listMenuBy(isLeaf, name, parentId);
 	}
 
 	/**

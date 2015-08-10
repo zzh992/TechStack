@@ -130,7 +130,7 @@ public class PmsRoleController extends SpringMVCBaseController{
 
 			pmsRoleBiz.saveRole(pmsRole);
 			log.info("==== info ==== 添加角色【"+roleName+"】成功");
-			return DwzUtils.operateErrorInSpringMVC("操作成功", getHttpRequest(), "page/common/operateResult.jsp");
+			return DwzUtils.operateSuccessInSpringMVC("操作成功", getHttpRequest(), "page/common/operateResult.jsp");
 		} catch (Exception e) {
 			log.error("==== error ==== 添加角色失败：", e);
 			return DwzUtils.operateErrorInSpringMVC("保存数据失败", getHttpRequest(), "page/common/operateResult.jsp");
@@ -226,7 +226,7 @@ public class PmsRoleController extends SpringMVCBaseController{
 
 			pmsRoleBiz.updateRole(pmsRole);
 			log.info("==== info ==== 修改角色【"+roleName+"】成功");
-			return DwzUtils.operateErrorInSpringMVC("操作成功", getHttpRequest(), "page/common/operateResult.jsp");
+			return DwzUtils.operateSuccessInSpringMVC("操作成功", getHttpRequest(), "page/common/operateResult.jsp");
 		} catch (Exception e) {
 			log.error("==== error ==== 修改角色失败", e);
 			return DwzUtils.operateErrorInSpringMVC("保存失败", getHttpRequest(), "page/common/operateResult.jsp");
@@ -276,7 +276,7 @@ public class PmsRoleController extends SpringMVCBaseController{
 			
 			pmsRoleBiz.deleteRoleById(roleId);
 			log.info("==== info ==== 删除角色成功");
-			return DwzUtils.operateErrorInSpringMVC("操作成功", getHttpRequest(), "page/common/operateResult.jsp");
+			return DwzUtils.operateSuccessInSpringMVC("操作成功", getHttpRequest(), "page/common/operateResult.jsp");
 		} catch (Exception e) {
 			log.error("==== error ==== 删除角色失败", e);
 			return DwzUtils.operateErrorInSpringMVC("删除失败", getHttpRequest(), "page/common/operateResult.jsp");
@@ -291,18 +291,18 @@ public class PmsRoleController extends SpringMVCBaseController{
 	@SuppressWarnings("unchecked")
 	//@Permission("pms:role:edit")
 	@RequestMapping("/pmsRole_assignPermissionUI.action")
-	public String assignPermissionUI() {
+	public ModelAndView assignPermissionUI() {
 		ModelAndView mav = new ModelAndView("page/pms/pmsRole/assignPermissionUI.jsp");
 		ModelMap modelMap = new ModelMap();
 		Long roleId = getLong("roleId");
 		PmsRoleDTO role = pmsRoleBiz.getById(roleId);
 		if (role == null) {
-			return DwzUtils.operateErrorInStruts2("无法获取角色信息");
+			return DwzUtils.operateErrorInSpringMVC("无法获取角色信息", getHttpRequest(), "page/common/operateResult.jsp");
 		}
 		// 普通用户没有修改超级管理员角色的权限
 		if (UserTypeEnum.USER.getValue().equals(this.getCurrentUser().getType()) 
 		 && RoleTypeEnum.ADMIN.getValue().equals(role.getRoleType())) {
-			return DwzUtils.operateErrorInStruts2("你没有修改超级管理员角色的权限");
+			return DwzUtils.operateErrorInSpringMVC("你没有修改超级管理员角色的权限", getHttpRequest(), "page/common/operateResult.jsp");
 		}
 
 		String menuIds = "";
@@ -326,7 +326,7 @@ public class PmsRoleController extends SpringMVCBaseController{
 
 		modelMap.put("roleId", roleId);
 		mav.addAllObjects(modelMap);
-		return "assignPermissionUI";
+		return mav;
 	}
 
 	/**

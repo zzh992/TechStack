@@ -109,7 +109,7 @@ public class PmsMenuController extends SpringMVCBaseController{
 			//return operateError("添加菜单出错");
 			return DwzUtils.operateErrorInSpringMVC("添加菜单出错", getHttpRequest(), "page/common/operateResult.jsp");
 		}
-		return DwzUtils.operateErrorInSpringMVC("操作成功", getHttpRequest(), "page/common/operateResult.jsp");
+		return DwzUtils.operateSuccessInSpringMVC("操作成功", getHttpRequest(), "page/common/operateResult.jsp");
 	}
 
 	/**
@@ -149,7 +149,7 @@ public class PmsMenuController extends SpringMVCBaseController{
 			pmsMenuBiz.update(pmsMenu);
 			log.info("==== info ==== 修改菜单【"+pmsMenu.getName()+"】成功");
 			//return operateSuccess();
-			return DwzUtils.operateErrorInSpringMVC("操作成功", getHttpRequest(), "page/common/operateResult.jsp");
+			return DwzUtils.operateSuccessInSpringMVC("操作成功", getHttpRequest(), "page/common/operateResult.jsp");
 		} catch (Exception e) {
 			log.error("==== error ==== 修改菜单出错", e);
 			return DwzUtils.operateErrorInSpringMVC("保存菜单出错", getHttpRequest(), "page/common/operateResult.jsp");
@@ -162,28 +162,29 @@ public class PmsMenuController extends SpringMVCBaseController{
 	 * @return
 	 */
 	//@Permission("pms:menu:delete")
-	public String pmsMenuDel() {
+	@RequestMapping("/pmsMenu_pmsMenuDel.action")
+	public ModelAndView pmsMenuDel() {
 		try {
 			Long menuId = getLong("id");
 			if (menuId == null || menuId.longValue() == 0) {
-				return DwzUtils.operateErrorInStruts2("无法获取要删除的数据");
+				return DwzUtils.operateErrorInSpringMVC("无法获取要删除的数据", getHttpRequest(), "page/common/operateResult.jsp");
 			}
 			PmsMenuDTO menu = pmsMenuBiz.getById(menuId);
 			if (menu == null) {
-				return DwzUtils.operateErrorInStruts2("无法获取要删除的数据");
+				return DwzUtils.operateErrorInSpringMVC("无法获取要删除的数据", getHttpRequest(), "page/common/operateResult.jsp");
 			}
 			Long parentId = menu.getParentId(); // 获取父菜单ID
 
 			// 先判断此菜单下是否有子菜单
 			List<PmsMenuDTO> childMenuList = pmsMenuBiz.listByParentId(menuId);
 			if (childMenuList != null && !childMenuList.isEmpty()) {
-				return DwzUtils.operateErrorInStruts2("此菜单下关联有【" + childMenuList.size() + "】个子菜单，不能支接删除!");
+				return DwzUtils.operateErrorInSpringMVC("此菜单下关联有【" + childMenuList.size() + "】个子菜单，不能支接删除!", getHttpRequest(), "page/common/operateResult.jsp");
 			}
 
 			// 判断是否有权限关联到此菜单上，如有则不能删除
 			List<PmsActionDTO> actionList = pmsActionBiz.listByMenuId(menuId);
 			if (actionList != null && !actionList.isEmpty()) {
-				return DwzUtils.operateErrorInStruts2("此菜单下关联有【" + actionList.size() + "】个权限，要先解除关联后才能删除此菜单!");
+				return DwzUtils.operateErrorInSpringMVC("此菜单下关联有【" + actionList.size() + "】个权限，要先解除关联后才能删除此菜单!", getHttpRequest(), "page/common/operateResult.jsp");
 			}
 
 			// 删除掉菜单
@@ -198,10 +199,10 @@ public class PmsMenuController extends SpringMVCBaseController{
 				pmsMenuBiz.update(parent);
 			}
 			log.info("==== info ==== 删除菜单【"+menu.getName()+"】成功");
-			return DwzUtils.operateSuccessInStruts2("操作成功");
+			return DwzUtils.operateSuccessInSpringMVC("操作成功", getHttpRequest(), "page/common/operateResult.jsp");
 		} catch (Exception e) {
 			log.error("==== error ==== 删除菜单出错", e);
-			return DwzUtils.operateErrorInStruts2("删除菜单出错");
+			return DwzUtils.operateErrorInSpringMVC("删除菜单出错", getHttpRequest(), "page/common/operateResult.jsp");
 		}
 	}
 

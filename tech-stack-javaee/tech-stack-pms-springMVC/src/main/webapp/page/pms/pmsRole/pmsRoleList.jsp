@@ -45,35 +45,40 @@
 			</tr>
 		</thead>
 		<tbody>
-		    <s:iterator value="recordList" status="st">
+		    <!-- <s:iterator value="recordList" status="st"> -->
+		    <c:forEach items="${pageImpl.content}" var="pmsRole" varStatus="status">
 		    	<%-- 普通操作员看不到超级管理员角色 --%>
-		    	<c:if test="${(roleType eq RoleTypeEnum.ADMIN.value && type eq UserTypeEnum.ADMIN.value) || (roleType eq RoleTypeEnum.USER.value)}">
-				<tr target="sid_user" rel="${id}">
-				    <td>${st.index+1}</td>
-					<td>${roleName }</td>
+		    	<c:if test="${(pmsRole.roleType eq RoleTypeEnum.ADMIN.value && type eq UserTypeEnum.ADMIN.value) || (pmsRole.roleType eq RoleTypeEnum.USER.value)}">
+				<tr target="sid_user" rel="${pmsRole.id}">
+				    <td>${status.count}</td>
+					<td>${pmsRole.roleName }</td>
 					<td>
 						<c:forEach items="${RoleTypeEnumList}" var="roleTypeEnum">
-							<c:if test="${roleType ne null and roleType eq roleTypeEnum.value}">${roleTypeEnum.desc}</c:if>
+							<c:if test="${pmsRole.roleType ne null and pmsRole.roleType eq roleTypeEnum.value}">${roleTypeEnum.desc}</c:if>
 						</c:forEach>
 					</td>
-					<td>${remark}</td>
-					<td><s:date name="createTime" format="yyyy-MM-dd HH:mm:ss" /></td>
+					<td>${pmsRole.remark}</td>
+					<td>
+						<!-- <s:date name="pmsRole.createTime" format="yyyy-MM-dd HH:mm:ss" /> -->
+						<fmt:formatDate value="${pmsRole.createTime}" pattern="yyyy-MM-dd HH:mm:ss"/>
+					</td>
 					<td>
 						<p:permission value="pms:role:edit">
-							[<a href="pmsRole_assignPermissionUI.action?roleId=${id}" title="为角色【${roleName}】分配权限" target="dialog" width="950" style="color:blue">分配权限</a>]
+							[<a href="pmsRole_assignPermissionUI.action?roleId=${pmsRole.id}" title="为角色【${pmsRole.roleName}】分配权限" target="dialog" width="950" style="color:blue">分配权限</a>]
 						</p:permission>
 						<p:permission value="pms:role:edit">
-							&nbsp;[<a href="pmsRole_pmsRoleEdit.action?roleId=${id}" title="修改角色【${roleName}】" target="dialog" width="550" height="300" rel="input" style="color:blue">修改</a>]
+							&nbsp;[<a href="pmsRole_pmsRoleEdit.action?roleId=${pmsRole.id}" title="修改角色【${pmsRole.roleName}】" target="dialog" width="550" height="300" rel="input" style="color:blue">修改</a>]
 						</p:permission>
 						<p:permission value="pms:role:delete">
-							<c:if test="${roleType eq RoleTypeEnum.USER.value}">
-							&nbsp;[<a href="pmsRole_pmsRoleDel.action?roleId=${id}" title="删除角色【${roleName}】" target="ajaxTodo" style="color:blue">删除</a>]
+							<c:if test="${pmsRole.roleType eq RoleTypeEnum.USER.value}">
+							&nbsp;[<a href="pmsRole_pmsRoleDel.action?roleId=${pmsRole.id}" title="删除角色【${pmsRole.roleName}】" target="ajaxTodo" style="color:blue">删除</a>]
 							</c:if>
 						</p:permission>
 					</td>
 				</tr>
 				</c:if>
-			</s:iterator>
+			<!-- </s:iterator> -->
+			</c:forEach>
 		</tbody>
 	</table>
     <!-- 分页条 -->

@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
 import com.techstack.component.mapper.BeanMapper;
@@ -95,7 +96,7 @@ public class PmsRoleDaoFacadeImpl implements PmsRoleDaoFacade {
 	public Page<PmsRoleDTO> listPage(int pageNum, int pageSize, Map<String, Object> paramMap) {
 		PageParam pageParam = new PageParam(pageNum, pageSize);
 		PageBean pageBean = baseDao.listPage(PmsRole.class, pageParam, paramMap);
-		Page<PmsRoleDTO> page = new PageImpl<PmsRoleDTO>(BeanMapper.mapList(pageBean.getRecordList(), PmsRoleDTO.class));
+		Page<PmsRoleDTO> page = new PageImpl<PmsRoleDTO>(BeanMapper.mapList(pageBean.getRecordList(), PmsRoleDTO.class), new PageRequest(pageNum, pageSize), pageBean.getTotalCount());
 		return page;
 	}
 

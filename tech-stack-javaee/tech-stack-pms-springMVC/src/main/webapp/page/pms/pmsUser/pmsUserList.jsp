@@ -43,38 +43,40 @@
 			</tr>
 		</thead>
 		<tbody>
-		    <s:iterator value="recordList" status="st">
+		   <!--  <s:iterator value="recordList" status="st"> -->
+		   <c:forEach items="${pageImpl.content}" var="pmsUser" varStatus="status">
 		    	<%-- 普通操作员看不到超级管理员信息 --%>
-		    	<c:if test="${(type eq UserTypeEnum.ADMIN.value && type eq UserTypeEnum.ADMIN.value) || (type eq UserTypeEnum.USER.value)}"> 
-				<tr target="sid_user" rel="${id}">
-				    <td>${st.index+1}</td>
-					<td>${loginName }</td>
+		    	<c:if test="${(pmsUser.type eq UserTypeEnum.ADMIN.value && pmsUser.type eq UserTypeEnum.ADMIN.value) || (pmsUser.type eq UserTypeEnum.USER.value)}"> 
+				<tr target="sid_user" rel="${pmsUser.id}">
+				    <td>${status.count}</td>
+					<td>${pmsUser.loginName }</td>
 					<td>
 						<c:forEach items="${UserTypeEnumList}" var="userType">
-							<c:if test="${type ne null and type eq userType.value}">${userType.desc}</c:if>
+							<c:if test="${pmsUser.type ne null and pmsUser.type eq userType.value}">${userType.desc}</c:if>
 						</c:forEach>
 					</td>
 					<td>
 						<p:permission value="pms:user:view">
-							[<a href="pmsUser_pmsUserView.action?id=${id}" title="查看【${loginName }】详情" target="dialog" width="600" height="400" style="color:blue">查看</a>]
+							[<a href="pmsUser_pmsUserView.action?id=${pmsUser.id}" title="查看【${pmsUser.loginName }】详情" target="dialog" width="600" height="400" style="color:blue">查看</a>]
 						</p:permission>
 						<%-- <c:if test="${type eq UserTypeEnum.USER.value }"> --%>
 							<p:permission value="pms:user:edit">
-								&nbsp;[<a href="pmsUser_pmsUserEdit.action?id=${id}" title="修改【${loginName }】" target="dialog" width="600" height="400" rel="userUpdate" style="color:blue">修改</a>]
+								&nbsp;[<a href="pmsUser_pmsUserEdit.action?id=${pmsUser.id}" title="修改【${pmsUser.loginName }】" target="dialog" width="600" height="400" rel="userUpdate" style="color:blue">修改</a>]
 							</p:permission>
 							<p:permission value="pms:user:edit">
-								&nbsp;[<a href="pmsUser_pmsUserResetPwd.action?id=${id}" title="重置【${loginName }】的密码" target="dialog" width="550" height="300" style="color:blue">重置密码</a>]
+								&nbsp;[<a href="pmsUser_pmsUserResetPwd.action?id=${pmsUser.id}" title="重置【${pmsUser.loginName }】的密码" target="dialog" width="550" height="300" style="color:blue">重置密码</a>]
 							</p:permission>
 							<p:permission value="pms:user:delete">
-								<c:if test="${type eq UserTypeEnum.USER.value }">
-								&nbsp;[<a href="pmsUser_pmsUserDel.action?id=${id}" target="ajaxTodo" title="确定要删除吗？" style="color:blue">删除</a>]
+								<c:if test="${pmsUser.type eq UserTypeEnum.USER.value }">
+								&nbsp;[<a href="pmsUser_pmsUserDel.action?id=${pmsUser.id}" target="ajaxTodo" title="确定要删除吗？" style="color:blue">删除</a>]
 								</c:if>
 							</p:permission>
 						<%-- </c:if> --%>
 					</td>
 				</tr>
 				</c:if> 
-			</s:iterator>
+			<!-- </s:iterator> -->
+			</c:forEach>
 		</tbody>
 	</table>
      <!-- 分页条 -->

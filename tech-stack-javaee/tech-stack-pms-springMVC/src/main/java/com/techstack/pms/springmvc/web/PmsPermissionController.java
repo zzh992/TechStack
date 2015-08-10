@@ -123,7 +123,7 @@ public class PmsPermissionController extends SpringMVCBaseController{
 
 			pmsActionBiz.saveAction(act);
 			log.info("==== info ==== 权限【"+action+"】添加成功");
-			return DwzUtils.operateErrorInSpringMVC("操作成功", getHttpRequest(), "page/common/operateResult.jsp"); // 返回operateSuccess视图,并提示“操作成功”
+			return DwzUtils.operateSuccessInSpringMVC("操作成功", getHttpRequest(), "page/common/operateResult.jsp"); // 返回operateSuccess视图,并提示“操作成功”
 		} catch (Exception e) {
 			log.error("==== error ==== 权限添加失败", e);
 			return DwzUtils.operateErrorInSpringMVC("保存失败", getHttpRequest(), "page/common/operateResult.jsp");
@@ -238,7 +238,7 @@ public class PmsPermissionController extends SpringMVCBaseController{
 
 				pmsActionBiz.updateAction(pmsAction);
 				log.info("==== info ==== 权限【"+actionName+"】修改成功");
-				return DwzUtils.operateErrorInSpringMVC("操作成功", getHttpRequest(), "page/common/operateResult.jsp");
+				return DwzUtils.operateSuccessInSpringMVC("操作成功", getHttpRequest(), "page/common/operateResult.jsp");
 			}
 		} catch (Exception e) {
 			log.error("==== error ==== 权限修改失败", e);
@@ -267,7 +267,7 @@ public class PmsPermissionController extends SpringMVCBaseController{
 			}
 			pmsActionBiz.deleteActionById(actionId);
 			log.info("==== info ==== 删除权限【"+act.getAction()+"】成功");
-			return DwzUtils.operateErrorInSpringMVC("操作成功", getHttpRequest(), "page/common/operateResult.jsp"); // 返回operateSuccess视图,并提示“操作成功”
+			return DwzUtils.operateSuccessInSpringMVC("操作成功", getHttpRequest(), "page/common/operateResult.jsp"); // 返回operateSuccess视图,并提示“操作成功”
 		} catch (Exception e) {
 			log.error("==== error ==== 删除权限失败", e);
 			return DwzUtils.operateErrorInSpringMVC("删除限权异常", getHttpRequest(), "page/common/operateResult.jsp");

@@ -189,7 +189,7 @@ public class PmsUserController extends SpringMVCBaseController{
 
 			pmsUserBiz.saveUser(pmsUser, roleUserStr);
 			log.info("==== info ==== 用户【"+loginName+"】保存成功");
-			return DwzUtils.operateErrorInSpringMVC("操作成功", getHttpRequest(), "page/common/operateResult.jsp");
+			return DwzUtils.operateSuccessInSpringMVC("操作成功", getHttpRequest(), "page/common/operateResult.jsp");
 		} catch (Exception e) {
 			log.error("==== error ==== 保存用户信息失败：", e);
 			return DwzUtils.operateErrorInSpringMVC("保存用户信息失败", getHttpRequest(), "page/common/operateResult.jsp");
@@ -289,7 +289,7 @@ public class PmsUserController extends SpringMVCBaseController{
 	public ModelAndView pmsUserDel() {
 		long id = getLong("id");
 		pmsUserBiz.deleteUserById(id);
-		return DwzUtils.operateErrorInSpringMVC("操作成功", getHttpRequest(), "page/common/operateResult.jsp");
+		return DwzUtils.operateSuccessInSpringMVC("操作成功", getHttpRequest(), "page/common/operateResult.jsp");
 	}
 
 	/**
@@ -399,7 +399,7 @@ public class PmsUserController extends SpringMVCBaseController{
 
 			pmsUserBiz.updateUser(pmsUser, roleUserStr);
 			log.info("==== info ==== 修改用户【"+pmsUser.getLoginName()+"】成功");
-			return DwzUtils.operateErrorInSpringMVC("操作成功", getHttpRequest(), "page/common/operateResult.jsp");
+			return DwzUtils.operateSuccessInSpringMVC("操作成功", getHttpRequest(), "page/common/operateResult.jsp");
 		} catch (Exception e) {
 			log.error("==== error ==== 修改用户失败", e);
 			return DwzUtils.operateErrorInSpringMVC("更新用户信息失败", getHttpRequest(), "page/common/operateResult.jsp");
@@ -468,7 +468,7 @@ public class PmsUserController extends SpringMVCBaseController{
 			
 			pmsUserBiz.updateUserPwd(userId, DigestUtils.sha1Hex(newPwd), 101);
 
-			return DwzUtils.operateErrorInSpringMVC("操作成功", getHttpRequest(), "page/common/operateResult.jsp");
+			return DwzUtils.operateSuccessInSpringMVC("操作成功", getHttpRequest(), "page/common/operateResult.jsp");
 		} catch (Exception e) {
 			log.error("==== error ==== 重置用户密码失败：", e);
 			return DwzUtils.operateErrorInSpringMVC("密码重置出错:" + e.getMessage(), getHttpRequest(), "page/common/operateResult.jsp");
@@ -534,7 +534,7 @@ public class PmsUserController extends SpringMVCBaseController{
 			// getSessionMap().clear();
 
 
-			return DwzUtils.operateErrorInSpringMVC("密码修改成功，请重新登录!", getHttpRequest(), "page/common/operateResult.jsp");
+			return DwzUtils.operateSuccessInSpringMVC("密码修改成功，请重新登录!", getHttpRequest(), "page/common/operateResult.jsp");
 		} catch (Exception e) {
 			log.error("==== error ==== 用户重置自己的密码失败：", e);
 			return DwzUtils.operateErrorInSpringMVC("修改密码出错:" + e.getMessage(), getHttpRequest(), "page/common/operateResult.jsp");

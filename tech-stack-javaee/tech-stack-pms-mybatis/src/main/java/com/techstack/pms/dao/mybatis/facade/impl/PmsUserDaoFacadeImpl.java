@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
 import com.techstack.component.mapper.BeanMapper;
@@ -85,7 +86,7 @@ public class PmsUserDaoFacadeImpl implements PmsUserDaoFacade {
 	public Page<PmsUserDTO> listPage(int pageNum, int pageSize, Map<String, Object> paramMap) {
 		PageParam pageParam = new PageParam(pageNum, pageSize);
 		PageBean pageBean = baseDao.listPage(PmsUser.class, pageParam, paramMap);
-		Page<PmsUserDTO> page = new PageImpl<PmsUserDTO>(BeanMapper.mapList(pageBean.getRecordList(), PmsUserDTO.class));
+		Page<PmsUserDTO> page = new PageImpl<PmsUserDTO>(BeanMapper.mapList(pageBean.getRecordList(), PmsUserDTO.class), new PageRequest(pageNum, pageSize), pageBean.getTotalCount());
 		return page;
 	}
 
