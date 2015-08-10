@@ -136,8 +136,9 @@ public class PmsLoginController extends Struts2BaseController {
 		this.putData("loginName", shiroUser.getUsername());
 		
 		try {
+			String tree = buildUserPermissionMenu(user);
 			this.putData("tree", buildUserPermissionMenu(user));
-			pmsUserBiz.update(user);
+			//pmsUserBiz.update(user); TODO:为什么update
 
 		} catch (Exception e) {
 			log.error("==== error ==== 登录出现异常",e);

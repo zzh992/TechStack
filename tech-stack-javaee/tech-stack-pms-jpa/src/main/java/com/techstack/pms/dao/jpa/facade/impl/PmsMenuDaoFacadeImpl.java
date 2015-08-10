@@ -72,12 +72,22 @@ public class PmsMenuDaoFacadeImpl implements PmsMenuDaoFacade {
 	}
 
 	@Override
-	public List<PmsMenuDTO> listMenuByRoleIds(List<Long> roleIds) {
+	public List<PmsMenuDTO> listMenuByRoleIds(List<Long> roleIds) {	//TODO: need refactor: 参考mybatis的实现
 		List<Role> roleList = roleDao.findByIdIn(roleIds);
 		List<PmsMenuDTO> pmsMenuDTOList = new ArrayList<PmsMenuDTO>();
 		for(Role role : roleList){
+			if(role.getRoleType() == 1){
+				List<Menu> menus = menuDao.findAll();
+				for(Menu menu : menus){
+					if(!pmsMenuDTOList.contains(PmsMenuDTOMapper.toPmsMenuDTO(menu))){
+						pmsMenuDTOList.add(PmsMenuDTOMapper.toPmsMenuDTO(menu));
+					}
+				}
+			}
 			for(Menu menu : role.getMenus()){
-				pmsMenuDTOList.add(PmsMenuDTOMapper.toPmsMenuDTO(menu));
+				if(!pmsMenuDTOList.contains(PmsMenuDTOMapper.toPmsMenuDTO(menu))){
+					pmsMenuDTOList.add(PmsMenuDTOMapper.toPmsMenuDTO(menu));
+				}
 			}
 		}
 		return pmsMenuDTOList;

@@ -8,14 +8,14 @@
 	<package name="pms" extends="loginPackage">
 	
 		<!-- 权限菜单管理 -->
-		<action name="pmsMenu_*" class="com.techstack.sms2.permission.action.PmsMenuAction" method="{1}">
+		<action name="pmsMenu_*" class="com.techstack.pms.struts2.web.PmsMenuController" method="{1}">
 			<result name="pmsMenuList">page/pms/pmsMenu/pmsMenuList.jsp</result>
 			<result name="pmsMenuAdd">page/pms/pmsMenu/pmsMenuAdd.jsp</result>
 			<result name="pmsMenuEdit">page/pms/pmsMenu/pmsMenuEdit.jsp</result>
 		</action>
 	
 		<!-- 权限管理，包括权限点、角色、操作员和管理 -->
-		<action name="pmsPermission_*" class="com.techstack.sms2.permission.action.PmsPermissionAction" method="{1}">
+		<action name="pmsPermission_*" class="com.techstack.pms.struts2.web.PmsPermissionController" method="{1}">
 			<result name="pmsActionList">page/pms/pmsAction/pmsActionList.jsp</result>
 			<result name="pmsActionAdd">page/pms/pmsAction/pmsActionAdd.jsp</result>
 			<result name="pmsActionEdit">page/pms/pmsAction/pmsActionEdit.jsp</result>
@@ -35,7 +35,7 @@
 		</action>
 		
 		<!-- 角色管理 -->
-		<action name="pmsRole_*"  class="com.techstack.sms2.permission.action.PmsRoleAction" method="{1}">
+		<action name="pmsRole_*"  class="com.techstack.pms.struts2.web.PmsRoleController" method="{1}">
 			<result name="pmsRoleList">page/pms/pmsRole/pmsRoleList.jsp</result>
 			<result name="pmsRoleAdd">page/pms/pmsRole/pmsRoleAdd.jsp</result>
 			<result name="pmsRoleEdit">page/pms/pmsRole/pmsRoleEdit.jsp</result>
@@ -43,7 +43,7 @@
 		</action>
 		
 		<!-- 用户管理 -->
-		<action name="pmsUser_*"  class="com.techstack.sms2.permission.action.PmsUserAction" method="{1}">
+		<action name="pmsUser_*"  class="com.techstack.pms.struts2.web.PmsUserController" method="{1}">
 			<result name="pmsUserList">page/pms/pmsUser/pmsUserList.jsp</result>
 			<result name="pmsUserView">page/pms/pmsUser/pmsUserView.jsp</result>
 			<result name="pmsUserViewOwnInfo">page/pms/pmsUser/pmsUserViewOwnInfo.jsp</result>

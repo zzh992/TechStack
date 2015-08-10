@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -71,7 +72,7 @@ public class User extends BaseEntity {
 	 * :属性referencedColumnName标注的是所关联表中的字段名,若不指定则使用的所关联表的主键字段名作为外键
 	 * 
 	 */
-	@ManyToMany
+	@ManyToMany(fetch=FetchType.EAGER )
 	@JoinTable(name = "PMS_ROLE_USER", joinColumns = { @JoinColumn(name = "USER_ID", referencedColumnName = "ID") }, inverseJoinColumns = { @JoinColumn(name = "ROLE_ID", referencedColumnName = "ID") })
 	public List<Role> getRoles() {
 		return roles;

@@ -16,7 +16,4 @@
 	</package>
 
 	<include file="struts/struts-pms.xml" />
-	<include file="struts/struts-major.xml" />
-	<include file="struts/struts-course.xml" />
-	<include file="struts/struts-student.xml" />
 </struts>

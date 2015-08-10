@@ -40,6 +40,8 @@ public class PmsMenuDTOMapper {
 			pmsMenuDTO.setNumber(menu.getNumber());
 			if(menu.getParentMenu() != null){
 				pmsMenuDTO.setParentId(menu.getParentMenu().getId());
+			}else{
+				pmsMenuDTO.setParentId(0L);	//TODO: 目前根菜单的ParentId为0,但是jpa没法级联
 			}
 			pmsMenuDTO.setTargetName(menu.getTargetName());
 			pmsMenuDTO.setUrl(menu.getUrl());
