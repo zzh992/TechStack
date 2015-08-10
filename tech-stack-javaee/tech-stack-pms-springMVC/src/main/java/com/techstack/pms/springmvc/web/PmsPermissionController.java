@@ -55,9 +55,10 @@ public class PmsPermissionController extends SpringMVCBaseController{
 			paramMap.put("act", getString("act"));
 			paramMap.put("module", "pmsAction");
 			Page<PmsActionDTO> pageBean = pmsActionBiz.listPage(DwzUtils.getPageNum(getHttpRequest()), DwzUtils.getNumPerPage(getHttpRequest()), paramMap);
-			//modelMap.putAll(BeanMapper.map(pageBean, Map.class));
+			//modelMap.putAll(BeanMapper.map(pageBean, Map.class,"pageable"));
 			modelMap.addAttribute(pageBean);
-			modelMap.putAll(BeanMapper.map(paramMap, Map.class));
+			modelMap.putAll(paramMap);
+			//modelMap.putAll(BeanMapper.map(paramMap, Map.class));
 			//this.pushData(pageBean);
 			//this.pushData(paramMap); // 回显查询条件值
 			mav.addAllObjects(modelMap);

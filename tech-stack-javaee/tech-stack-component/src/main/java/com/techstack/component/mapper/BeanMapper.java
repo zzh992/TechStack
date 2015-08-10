@@ -1,7 +1,11 @@
 package com.techstack.component.mapper;
 
+import java.lang.reflect.Field;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.dozer.DozerBeanMapper;
 
@@ -28,6 +32,35 @@ public class BeanMapper {
 		if(source != null){
 			return dozer.map(source, destinationClass);
 		}else {
+			return null;
+		}
+	}
+	
+	public static <T> T map(Object source, Class<T> destinationClass, String... ignoreProperties) {
+		if(source != null){
+			Map<String, Object> resultMap = new HashMap<String, Object>();  
+			Field[] fields = source.getClass().getDeclaredFields();
+			for (Field field : fields) {  
+				Object value = null;  
+		        try {  
+		            value = field.get(source);  
+		        } catch (Exception e) {  
+		            e.printStackTrace();  
+		        }  
+		        boolean flag = true;  
+		        String key = field.getName();  
+		        for (String ignoreProperty:ignoreProperties) {  
+		            if (key.equals(ignoreProperty)) {  
+		                flag = false;  
+		                break;  
+		            }  
+		        }  
+		        if (flag) {  
+		            resultMap.put(key, value);  
+		        }  
+		    }  
+	        return map(resultMap, destinationClass);  
+	    } else {
 			return null;
 		}
 	}
