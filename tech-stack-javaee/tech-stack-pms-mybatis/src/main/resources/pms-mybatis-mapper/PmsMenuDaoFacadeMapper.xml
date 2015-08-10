@@ -49,39 +49,40 @@
 			WHERE R.ID in
 			<foreach item="item" index="index" collection="list" open="(" separator="," close=")">#{item}</foreach>
 		) AS MT ORDER BY MT.number ASC -->
-		
-		SELECT
-			m.ID AS "id",
-			m.VERSION AS "version",
-			m.PARENT_ID AS "parentId",
-			m. NAME AS "name",
-			m.IS_LEAF AS "isLeaf",
-			m. LEVEL AS "level",
-			m.URL AS "url",
-			m.TARGET_NAME AS "targetName",
-			m.NUMBER AS "number"
-		FROM
-			PMS_MENU m
-		JOIN PMS_ROLE_MENU rm ON m.ID = rm.MENU_ID
-		WHERE
-			rm.ROLE_ID IN <foreach item="item" index="index" collection="list" open="(" separator="," close=")">#{item}</foreach>
-		UNION
-		SELECT
-			m.ID AS "id",
-			m.VERSION AS "version",
-			m.PARENT_ID AS "parentId",
-			m. NAME AS "name",
-			m.IS_LEAF AS "isLeaf",
-			m. LEVEL AS "level",
-			m.URL AS "url",
-			m.TARGET_NAME AS "targetName",
-			m.NUMBER AS "number"
-		FROM
-			PMS_MENU m,
-			PMS_ROLE r
-		WHERE
-			r.ID IN <foreach item="item" index="index" collection="list" open="(" separator="," close=")">#{item}</foreach>
-		AND r.ROLE_TYPE = 1
+		SELECT DISTINCT * FROM (
+			SELECT
+				m.ID AS "id",
+				m.VERSION AS "version",
+				m.PARENT_ID AS "parentId",
+				m. NAME AS "name",
+				m.IS_LEAF AS "isLeaf",
+				m. LEVEL AS "level",
+				m.URL AS "url",
+				m.TARGET_NAME AS "targetName",
+				m.NUMBER AS "number"
+			FROM
+				PMS_MENU m
+			JOIN PMS_ROLE_MENU rm ON m.ID = rm.MENU_ID
+			WHERE
+				rm.ROLE_ID IN <foreach item="item" index="index" collection="list" open="(" separator="," close=")">#{item}</foreach>
+			UNION
+			SELECT
+				m.ID AS "id",
+				m.VERSION AS "version",
+				m.PARENT_ID AS "parentId",
+				m. NAME AS "name",
+				m.IS_LEAF AS "isLeaf",
+				m. LEVEL AS "level",
+				m.URL AS "url",
+				m.TARGET_NAME AS "targetName",
+				m.NUMBER AS "number"
+			FROM
+				PMS_MENU m,
+				PMS_ROLE r
+			WHERE
+				r.ID IN <foreach item="item" index="index" collection="list" open="(" separator="," close=")">#{item}</foreach>
+			AND r.ROLE_TYPE = 1
+		) AS MT ORDER BY MT."number" ASC
 	</select>
 	
 	<select id="listRoleMenuByRoleId" parameterType="Long" resultMap="RoleMenuMap">
