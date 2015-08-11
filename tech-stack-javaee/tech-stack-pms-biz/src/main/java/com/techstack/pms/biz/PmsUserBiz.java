@@ -58,9 +58,6 @@ public class PmsUserBiz {
 			if ("1".equals(pmsUser.getType())) {
 				throw new RuntimeException("【" + pmsUser.getLoginName() + "】为超级管理员，不能删除！");
 			}
-			//pmsUserDao.deleteById(PmsUser.class,pmsUser.getId());
-			//getBaseDao().deleteById(PmsUser.class,pmsUser.getId());
-			pmsUserDaoFacade.deleteById(pmsUser.getId());
 			
 			// 删除原来的角色与用户关联
 			//pmsRoleUserDao.deleteByUserId(userId);
@@ -68,6 +65,10 @@ public class PmsUserBiz {
 			pmsRoleUser.setUserId(userId);
 			//getBaseDao().deleteByModel(pmsRoleUser);
 			pmsRoleUserDaoFacade.deleteByModel(pmsRoleUser);
+			
+			//pmsUserDao.deleteById(PmsUser.class,pmsUser.getId());
+			//getBaseDao().deleteById(PmsUser.class,pmsUser.getId());
+			pmsUserDaoFacade.deleteById(pmsUser.getId());
 		}
 	}
 
@@ -176,7 +177,7 @@ public class PmsUserBiz {
 	 * @param @param roleIdsStr    
 	 * @return void
 	 */
-	private void saveOrUpdateRoleUser(long userId, String roleIdsStr) {
+	private void saveOrUpdateRoleUser(Long userId, String roleIdsStr) {
 		// 删除原来的角色与用户关联
 		//List<PmsRoleUser> listPmsRoleUsers = pmsRoleUserDao.listByUserId(userId);
 		//List<PmsRoleUser> listPmsRoleUsers = getBaseDao().selectList(getStatement("listRoleUserByUserId"), userId);
@@ -211,7 +212,7 @@ public class PmsUserBiz {
 			pmsRoleUser.setRoleId(roleId);
 			pmsRoleUser.setUserId(userId);
 			//getBaseDao().deleteByModel(pmsRoleUser);
-			pmsUserDaoFacade.deleteByModel(pmsRoleUser);
+			pmsRoleUserDaoFacade.deleteByModel(pmsRoleUser);
 		}
 	}
 

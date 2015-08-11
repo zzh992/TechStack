@@ -15,7 +15,7 @@
 			<input type="hidden" name="callbackType" value="closeCurrent">
 			<input type="hidden" name="forwardUrl" value="">
 			
-			<input type="hidden" id="operatorId" name="id">
+			<input type="hidden" name="id" value="${id}">
 			<input type="hidden" id="selectVal" name="selectVal">
 			<!-- <s:hidden id="operatorId" name="id" /> -->
 			<!-- <s:hidden id="selectVal" name="selectVal"></s:hidden> -->
@@ -45,13 +45,13 @@
 					<c:choose>
 						<c:when test="${v.roleType eq RoleTypeEnum.ADMIN.value && type eq UserTypeEnum.ADMIN.value}">
 							<label>
-								<input type="checkbox" <c:if test="${type eq UserTypeEnum.ADMIN.value}">disabled="disabled"</c:if> 
+								<input type="checkbox" <c:if test="${type eq UserTypeEnum.ADMIN.value}">disabled="disabled"</c:if> <c:if test="${fn:contains(owenedRoleIds, v.id)}">checked="checked"</c:if>
 								class="selectOperatorRole" name="selectRole" id="roleId${v.id }" value="${v.id }">${v.roleName }
 							</label>
 						</c:when>
 						<c:when test="${v.roleType eq RoleTypeEnum.USER.value}">
 							<label>
-								<input type="checkbox" <c:if test="${type eq UserTypeEnum.ADMIN.value}">disabled="disabled"</c:if> 
+								<input type="checkbox" <c:if test="${type eq UserTypeEnum.ADMIN.value}">disabled="disabled"</c:if> <c:if test="${fn:contains(owenedRoleIds, v.id)}">checked="checked"</c:if>
 								class="selectOperatorRole" name="selectRole" id="roleId${v.id }" value="${v.id }">${v.roleName }
 							</label>
 						</c:when>
@@ -72,14 +72,14 @@
 </div>
 <script type="text/javascript">
 	//回显
-	$(document).ready(function() {
+	/* $(document).ready(function() {
 		var str = "${owenedRoleIds}";
 		var array = new Array();
 		array = str.split(",");
 		for ( var i = 0; i < array.length; i++) {
 			$("#roleId" + array[i]).attr("checked", "checked");
 		}
-	});
+	}); */
 
 	function submitForm() {
 		var str = "";

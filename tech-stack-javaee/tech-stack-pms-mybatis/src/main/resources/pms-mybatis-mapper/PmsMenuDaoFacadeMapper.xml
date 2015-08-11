@@ -82,7 +82,7 @@
 			WHERE
 				r.ID IN <foreach item="item" index="index" collection="list" open="(" separator="," close=")">#{item}</foreach>
 			AND r.ROLE_TYPE = 1
-		) AS MT ORDER BY MT."number" ASC
+		) AS MT ORDER BY "number" ASC
 	</select>
 	
 	<select id="listRoleMenuByRoleId" parameterType="Long" resultMap="RoleMenuMap">

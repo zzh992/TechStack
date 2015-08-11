@@ -43,14 +43,12 @@
 					<c:choose>
 						<c:when test="${v.roleType eq RoleTypeEnum.ADMIN.value && type eq UserTypeEnum.ADMIN.value}">
 							<label>
-								${owenedRoleIds} -- ${v.id } -- ${v }
-								<c:if test="${fn:contains(owenedRoleIds, v.id)}">checked="checked"</c:if>
-								<input type="checkbox" <c:if test="${type eq UserTypeEnum.ADMIN.value}">disabled="disabled"</c:if> <c:if test="${fn:contains(owenedRoleIds, v.id)}">checked="checked"</c:if>  cssClass="required" name="selectRole" id="${v.id }">${v.roleName }
+								<input type="checkbox" <c:if test="${type eq UserTypeEnum.ADMIN.value}">disabled="disabled"</c:if> <c:if test="${fn:contains(owenedRoleIds, v.id)}">checked="checked"</c:if>  class="required" name="selectRole" id="${v.id }">${v.roleName }
 							</label>
 						</c:when>
 						<c:when test="${v.roleType eq RoleTypeEnum.USER.value}">
 							<label>
-								<input type="checkbox" disabled="disabled" cssClass="required" name="selectRole" <c:if test="${fn:contains(owenedRoleIds, v.id)}">checked="checked"</c:if>  id="${v.id }">${v.roleName }
+								<input type="checkbox" disabled="disabled" class="required" name="selectRole" <c:if test="${fn:contains(owenedRoleIds, v.id)}">checked="checked"</c:if>  id="${v.id }">${v.roleName }
 							</label>
 						</c:when>
 						<c:otherwise></c:otherwise>
@@ -69,12 +67,12 @@
 </div>
 <script type="text/javascript">
 	//回显
-	$(document).ready(function() {
+	/* $(document).ready(function() {
 		var str = "${owenedRoleIds}";
 		var array = new Array();
 		array = str.split(",");
 		for ( var i = 0; i < array.length; i++) {
 			$("#" + array[i]).attr("checked", "checked");
 		}
-	});
+	}); */
 </script>

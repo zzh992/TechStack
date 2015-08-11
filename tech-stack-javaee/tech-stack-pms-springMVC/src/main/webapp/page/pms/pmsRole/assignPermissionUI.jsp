@@ -39,7 +39,7 @@
 								<tr>
 									<th>序号</th>
 									<th>登录名</th>
-									<th>用户姓名</th>
+									<th>描述</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -48,7 +48,7 @@
 									<tr target="sid_user" rel="${pmsUser.id}">
 									    <td>${status.count}</td>
 										<td>${pmsUser.loginName }</td>
-										<td>${pmsUser.realName }</td>
+										<td>${pmsUser.remark }</td>
 									</tr>
 								</c:forEach>
 								<!-- </s:iterator> -->
