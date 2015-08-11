@@ -15,11 +15,14 @@
 			<input type="hidden" name="callbackType" value="closeCurrent">
 			<input type="hidden" name="forwardUrl" value="">
 			
-			<s:hidden id="operatorId" name="id" />
-			<s:hidden id="selectVal" name="selectVal"></s:hidden>
+			<input type="hidden" id="operatorId" name="id">
+			<input type="hidden" id="selectVal" name="selectVal">
+			<!-- <s:hidden id="operatorId" name="id" /> -->
+			<!-- <s:hidden id="selectVal" name="selectVal"></s:hidden> -->
 			<p style="width:99%">
 				<label>用户登录名：</label>
-				<s:textfield name="loginName" cssClass="required" readonly="true" minlength="3" maxlength="30" size="30" />
+				<!-- <s:textfield name="loginName" cssClass="required" readonly="true" minlength="3" maxlength="30" size="30" /> -->
+				<input type="text" name="loginName" class="required" readonly="true" minlength="3" maxlength="30" size="30" value="${loginName }">
 			</p>
 			<p style="width:99%">
 				<label>用户类型：</label>
@@ -31,28 +34,31 @@
 			</p>
 			<p style="width:99%;height:50px;">
 				<label>描述：</label>
-				<s:textarea name="remark" maxlength="100" rows="3" cols="30"></s:textarea>
+				<!-- <s:textarea name="remark" maxlength="100" rows="3" cols="30"></s:textarea> -->
+				<textarea rows="3" cols="30" name="remark" class="required" minlength="3" maxlength="300">${remark}</textarea>
 			</p>
 			<p></p>
 			<fieldset style="width:99%">
 				<legend>选择角色<font color="red">*</font></legend>
-				<s:iterator value="rolesList" status="st" var="v">
+				<!-- <s:iterator value="rolesList" status="st" var="v"> -->
+				<c:forEach items="${rolesList}" var="v" varStatus="status">
 					<c:choose>
-						<c:when test="${v.roleType eq RoleTypeEnum.ADMIN.value && type eq RoleTypeEnum.ADMIN.value}">
+						<c:when test="${v.roleType eq RoleTypeEnum.ADMIN.value && type eq UserTypeEnum.ADMIN.value}">
 							<label>
-								<input type="checkbox" <c:if test="${type eq RoleTypeEnum.ADMIN.value}">disabled="disabled"</c:if> 
+								<input type="checkbox" <c:if test="${type eq UserTypeEnum.ADMIN.value}">disabled="disabled"</c:if> 
 								class="selectOperatorRole" name="selectRole" id="roleId${v.id }" value="${v.id }">${v.roleName }
 							</label>
 						</c:when>
 						<c:when test="${v.roleType eq RoleTypeEnum.USER.value}">
 							<label>
-								<input type="checkbox" <c:if test="${type eq RoleTypeEnum.ADMIN.value}">disabled="disabled"</c:if> 
+								<input type="checkbox" <c:if test="${type eq UserTypeEnum.ADMIN.value}">disabled="disabled"</c:if> 
 								class="selectOperatorRole" name="selectRole" id="roleId${v.id }" value="${v.id }">${v.roleName }
 							</label>
 						</c:when>
 						<c:otherwise></c:otherwise>
 					</c:choose>
-				</s:iterator>
+				</c:forEach>
+				<!-- </s:iterator> -->
 			</fieldset>
 			
 		</div>

@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.techstack.component.dwz.DwzUtils;
@@ -336,6 +337,7 @@ public class PmsRoleController extends SpringMVCBaseController{
 	 */
 	//@Permission("pms:role:edit")
 	@RequestMapping("/pmsRole_assignPermission.action")
+	@ResponseBody	//ajax返回
 	public Map<String, Object> assignPermission() {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		try {

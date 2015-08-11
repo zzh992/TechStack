@@ -117,6 +117,8 @@ public class PmsUserController extends SpringMVCBaseController{
 				owenedRoleIds = owenedRoleIds.substring(0, owenedRoleIds.length() - 1);
 			}
 			modelMap.put("owenedRoleIds", owenedRoleIds);
+			modelMap.put("UserTypeEnum", UserTypeEnum.toMap());
+			modelMap.put("RoleTypeEnum", RoleTypeEnum.toMap());
 			mav.addAllObjects(modelMap);
 			return mav;
 		} catch (Exception e) {

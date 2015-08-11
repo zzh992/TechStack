@@ -43,13 +43,15 @@
 								</tr>
 							</thead>
 							<tbody>
-							    <s:iterator value="userList" status="st">
-									<tr target="sid_user" rel="${id}">
-									    <td>${st.index+1}</td>
-										<td>${loginName }</td>
-										<td>${realName }</td>
+							    <!-- <s:iterator value="userList" status="st"> -->
+							     <c:forEach items="${userList}" var="pmsUser" varStatus="status">
+									<tr target="sid_user" rel="${pmsUser.id}">
+									    <td>${status.count}</td>
+										<td>${pmsUser.loginName }</td>
+										<td>${pmsUser.realName }</td>
 									</tr>
-								</s:iterator>
+								</c:forEach>
+								<!-- </s:iterator> -->
 							</tbody>
 						</table>
 					</div>
