@@ -29,9 +29,11 @@
 <div class="pageContent">
 	<div class="panelBar">
 		<ul class="toolBar">
-		<p:permission value="pms:action:add">
+		<!-- <p:permission value="pms:action:add"> -->
+		<shiro:hasPermission name="pms:action:add">  
 			<li><a class="add" href="pmsPermission_pmsActionAdd.action" target="dialog" width="550" height="350" rel="input" title="添加权限"><span>添加权限</span></a></li>
-		</p:permission>
+		</shiro:hasPermission>
+		<!-- </p:permission> -->
 		</ul>
 	</div>
 	
@@ -61,12 +63,16 @@
 						<fmt:formatDate value="${pmsAction.createTime }" pattern="yyyy-MM-dd"/>
 					</td>
 					<td>
-					<p:permission value="pms:action:edit">
+					<!-- <p:permission value="pms:action:edit"> -->
+					<shiro:hasPermission name="pms:action:edit"> 
 						[<a href="pmsPermission_pmsActionEdit.action?id=${pmsAction.id}" title="修改权限" target="dialog" width="550" height="300" rel="input"  style="color:blue">修改</a>]
-					</p:permission>
-					<p:permission value="pms:action:delete">
+					</shiro:hasPermission>
+					<!-- </p:permission>
+					<p:permission value="pms:action:delete"> -->
+					<shiro:hasPermission name="pms:action:edit"> 
 						&nbsp;[<a href="pmsPermission_pmsActionDel.action?id=${pmsAction.id}" title="删除权限【${pmsAction.action }】" target="ajaxTodo" style="color:blue">删除</a>]
-					</p:permission>
+					</shiro:hasPermission>
+					<!-- </p:permission> -->
 					</td>
 				</tr>
 			</c:forEach>	

@@ -27,9 +27,11 @@
 
 	<div class="panelBar">
 		<ul class="toolBar">
-			<p:permission value="pms:role:add">
+			<!-- <p:permission value="pms:role:add"> -->
+			<shiro:hasPermission name="pms:role:add"> 
 				<li><a class="add" href="pmsRole_pmsRoleAdd.action" target="dialog" width="550" height="300" rel="input" title="添加角色"><span>添加角色</span></a></li>
-			</p:permission>
+			</shiro:hasPermission>
+			<!-- </p:permission> -->
 		</ul>
 	</div>
 	
@@ -63,17 +65,23 @@
 						<fmt:formatDate value="${pmsRole.createTime}" pattern="yyyy-MM-dd HH:mm:ss"/>
 					</td>
 					<td>
-						<p:permission value="pms:role:edit">
+						<!-- <p:permission value="pms:role:edit"> -->
+						<shiro:hasPermission name="pms:role:edit"> 
 							[<a href="pmsRole_assignPermissionUI.action?roleId=${pmsRole.id}" title="为角色【${pmsRole.roleName}】分配权限" target="dialog" width="950" style="color:blue">分配权限</a>]
-						</p:permission>
-						<p:permission value="pms:role:edit">
+						</shiro:hasPermission>
+						<!-- </p:permission>
+						<p:permission value="pms:role:edit"> -->
+						<shiro:hasPermission name="pms:role:edit"> 
 							&nbsp;[<a href="pmsRole_pmsRoleEdit.action?roleId=${pmsRole.id}" title="修改角色【${pmsRole.roleName}】" target="dialog" width="550" height="300" rel="input" style="color:blue">修改</a>]
-						</p:permission>
-						<p:permission value="pms:role:delete">
+						</shiro:hasPermission>
+						<!-- </p:permission>
+						<p:permission value="pms:role:delete"> -->
+						<shiro:hasPermission name="pms:role:delete"> 
 							<c:if test="${pmsRole.roleType eq RoleTypeEnum.USER.value}">
 							&nbsp;[<a href="pmsRole_pmsRoleDel.action?roleId=${pmsRole.id}" title="删除角色【${pmsRole.roleName}】" target="ajaxTodo" style="color:blue">删除</a>]
 							</c:if>
-						</p:permission>
+						</shiro:hasPermission>
+						<!-- </p:permission> -->
 					</td>
 				</tr>
 				</c:if>

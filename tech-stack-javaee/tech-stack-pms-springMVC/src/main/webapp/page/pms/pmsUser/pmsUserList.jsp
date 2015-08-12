@@ -27,9 +27,11 @@
 
 	<div class="panelBar">
 		<ul class="toolBar">
-			<p:permission value="pms:user:add">
+			<!-- <p:permission value="pms:user:add"> -->
+			<shiro:hasPermission name="pms:user:add"> 
 				<li><a class="add" href="pmsUser_pmsUserAdd.action" target="dialog" rel="input" width="600" height="460" title="添加用户"><span>添加用户</span></a></li>
-			</p:permission>
+			</shiro:hasPermission>
+			<!-- </p:permission> -->
 		</ul>
 	</div>
 	
@@ -56,21 +58,29 @@
 						</c:forEach>
 					</td>
 					<td>
-						<p:permission value="pms:user:view">
+						<!-- <p:permission value="pms:user:view"> -->
+						<shiro:hasPermission name="pms:user:view"> 
 							[<a href="pmsUser_pmsUserView.action?id=${pmsUser.id}" title="查看【${pmsUser.loginName }】详情" target="dialog" width="600" height="400" style="color:blue">查看</a>]
-						</p:permission>
+						</shiro:hasPermission>
+						<!-- </p:permission> -->
 						<%-- <c:if test="${type eq UserTypeEnum.USER.value }"> --%>
-							<p:permission value="pms:user:edit">
+							<!-- <p:permission value="pms:user:edit"> -->
+							<shiro:hasPermission name="pms:user:edit"> 
 								&nbsp;[<a href="pmsUser_pmsUserEdit.action?id=${pmsUser.id}" title="修改【${pmsUser.loginName }】" target="dialog" width="600" height="400" rel="userUpdate" style="color:blue">修改</a>]
-							</p:permission>
-							<p:permission value="pms:user:edit">
+							</shiro:hasPermission>
+							<!-- </p:permission>
+							<p:permission value="pms:user:edit"> -->
+							<shiro:hasPermission name="pms:user:edit"> 
 								&nbsp;[<a href="pmsUser_pmsUserResetPwd.action?id=${pmsUser.id}" title="重置【${pmsUser.loginName }】的密码" target="dialog" width="550" height="300" style="color:blue">重置密码</a>]
-							</p:permission>
-							<p:permission value="pms:user:delete">
+							</shiro:hasPermission>
+							<!-- </p:permission>
+							<p:permission value="pms:user:delete"> -->
+							<shiro:hasPermission name="pms:user:delete"> 
 								<c:if test="${pmsUser.type eq UserTypeEnum.USER.value }">
 								&nbsp;[<a href="pmsUser_pmsUserDel.action?id=${pmsUser.id}" target="ajaxTodo" title="确定要删除吗？" style="color:blue">删除</a>]
 								</c:if>
-							</p:permission>
+							</shiro:hasPermission>
+							<!-- </p:permission> -->
 						<%-- </c:if> --%>
 					</td>
 				</tr>
