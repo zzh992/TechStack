@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 
-public class PmsBaseDTO implements Serializable{
+public abstract class PmsBaseDTO implements Serializable{
 
 	private static final long serialVersionUID = 4365371070062440538L;
 	

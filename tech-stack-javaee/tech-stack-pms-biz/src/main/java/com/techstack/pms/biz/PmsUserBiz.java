@@ -163,7 +163,7 @@ public class PmsUserBiz {
 		// 保存用户信息
 		//pmsUserDao.saveOrUpdate(pmsUser);
 		//getBaseDao().saveOrUpdate(pmsUser);
-		pmsUserDaoFacade.saveOrUpdate(pmsUser);
+		pmsUser = pmsUserDaoFacade.saveOrUpdate(pmsUser);
 		
 		// 保存角色关联信息
 		if (StringUtils.isNotBlank(roleUserStr) && roleUserStr.length() > 0) {
