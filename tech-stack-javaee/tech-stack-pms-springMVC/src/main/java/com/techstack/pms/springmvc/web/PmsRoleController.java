@@ -8,6 +8,7 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -53,6 +54,7 @@ public class PmsRoleController extends SpringMVCBaseController{
 	 * @return String
 	 */
 	//@Permission("pms:role:view")
+	@RequiresPermissions("pms:role:view")
 	@RequestMapping("/pmsRole_pmsRoleList.action")
 	public ModelAndView pmsRoleList() {
 		try {
@@ -90,6 +92,7 @@ public class PmsRoleController extends SpringMVCBaseController{
 	 * @return String
 	 */
 	//@Permission("pms:role:add")
+	@RequiresPermissions("pms:role:add")
 	@RequestMapping("/pmsRole_pmsRoleAdd.action")
 	public ModelAndView pmsRoleAdd() {
 		try {
@@ -107,6 +110,7 @@ public class PmsRoleController extends SpringMVCBaseController{
 	 * @return String
 	 */
 	//@Permission("pms:role:add")
+	@RequiresPermissions("pms:role:add")
 	@RequestMapping("/pmsRole_pmsRoleSave.action")
 	public ModelAndView pmsRoleSave() {
 		try {
@@ -161,6 +165,7 @@ public class PmsRoleController extends SpringMVCBaseController{
 	 * @return String
 	 */
 	//@Permission("pms:role:edit")
+	@RequiresPermissions("pms:role:edit")
 	@RequestMapping("/pmsRole_pmsRoleEdit.action")
 	public ModelAndView pmsRoleEdit() {
 		try {
@@ -194,6 +199,7 @@ public class PmsRoleController extends SpringMVCBaseController{
 	 * @return String
 	 */
 	//@Permission("pms:role:edit")
+	@RequiresPermissions("pms:role:edit")
 	@RequestMapping("/pmsRole_pmsRoleUpdate.action")
 	public ModelAndView pmsRoleUpdate() {
 		try {
@@ -240,6 +246,7 @@ public class PmsRoleController extends SpringMVCBaseController{
 	 * @return String
 	 */
 	//@Permission("pms:role:delete")
+	@RequiresPermissions("pms:role:delete")
 	@RequestMapping("/pmsRole_pmsRoleDel.action")
 	public ModelAndView pmsRoleDel() {
 		try {
@@ -291,6 +298,7 @@ public class PmsRoleController extends SpringMVCBaseController{
 	 */
 	@SuppressWarnings("unchecked")
 	//@Permission("pms:role:edit")
+	@RequiresPermissions("pms:role:edit")
 	@RequestMapping("/pmsRole_assignPermissionUI.action")
 	public ModelAndView assignPermissionUI() {
 		ModelAndView mav = new ModelAndView("page/pms/pmsRole/assignPermissionUI.jsp");
@@ -336,6 +344,7 @@ public class PmsRoleController extends SpringMVCBaseController{
 	 * @return void
 	 */
 	//@Permission("pms:role:edit")
+	@RequiresPermissions("pms:role:edit")
 	@RequestMapping("/pmsRole_assignPermission.action")
 	@ResponseBody	//ajax返回
 	public Map<String, Object> assignPermission() {

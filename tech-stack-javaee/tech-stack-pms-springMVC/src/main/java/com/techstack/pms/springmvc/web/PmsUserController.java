@@ -84,6 +84,7 @@ public class PmsUserController extends SpringMVCBaseController{
 	 * @return String
 	 */
 	//@Permission("pms:user:view")
+	@RequiresPermissions("pms:user:view")
 	@RequestMapping("/pmsUser_pmsUserView.action")
 	public ModelAndView pmsUserView() {
 		try {
@@ -133,6 +134,7 @@ public class PmsUserController extends SpringMVCBaseController{
 	 * @return String
 	 */
 	//@Permission("pms:user:add")
+	@RequiresPermissions("pms:user:add")
 	@RequestMapping("/pmsUser_pmsUserAdd.action")
 	public ModelAndView pmsUserAdd() {
 		try {
@@ -155,6 +157,7 @@ public class PmsUserController extends SpringMVCBaseController{
 	 * @return String
 	 */
 	//@Permission("pms:user:add")
+	@RequiresPermissions("pms:user:add")
 	@RequestMapping("/pmsUser_pmsUserSave.action")
 	public ModelAndView pmsUserSave() {
 		try {
@@ -287,6 +290,7 @@ public class PmsUserController extends SpringMVCBaseController{
 	 * @return String
 	 */
 	//@Permission("pms:user:delete")
+	@RequiresPermissions("pms:user:delete")
 	@RequestMapping("/pmsUser_pmsUserDel.action")
 	public ModelAndView pmsUserDel() {
 		long id = getLong("id");
@@ -300,6 +304,7 @@ public class PmsUserController extends SpringMVCBaseController{
 	 * @return String
 	 */
 	//@Permission("pms:user:edit")
+	@RequiresPermissions("pms:user:edit")
 	@RequestMapping("/pmsUser_pmsUserEdit.action")
 	public ModelAndView pmsUserEdit() {
 		try {
@@ -352,6 +357,7 @@ public class PmsUserController extends SpringMVCBaseController{
 	 * @return String
 	 */
 	//@Permission("pms:user:edit")
+	@RequiresPermissions("pms:user:edit")
 	@RequestMapping("/pmsUser_pmsUserUpdate.action")
 	public ModelAndView pmsUserUpdate() {
 		try {
@@ -415,6 +421,7 @@ public class PmsUserController extends SpringMVCBaseController{
 	 * @return String
 	 */
 	//@Permission("pms:user:edit")
+	@RequiresPermissions("pms:user:edit")
 	@RequestMapping("/pmsUser_pmsUserResetPwd.action")
 	public ModelAndView pmsUserResetPwd() {
 		ModelAndView mav = new ModelAndView("page/pms/pmsUser/pmsUserResetPwd.jsp");
@@ -442,6 +449,7 @@ public class PmsUserController extends SpringMVCBaseController{
 	 * @return String
 	 */
 	//@Permission("pms:user:edit")
+	@RequiresPermissions("pms:user:edit")
 	@RequestMapping("/pmsUser_resetUserPwd.action")
 	public ModelAndView resetUserPwd() {
 		try {

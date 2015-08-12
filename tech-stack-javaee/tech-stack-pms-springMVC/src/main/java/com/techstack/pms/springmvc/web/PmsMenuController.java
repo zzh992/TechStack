@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -47,6 +48,7 @@ public class PmsMenuController extends SpringMVCBaseController{
 	 * @return PmsMenuList .
 	 */
 	//@Permission("pms:menu:view")
+	@RequiresPermissions("pms:menu:view")
 	@RequestMapping("/pmsMenu_pmsMenuList.action")
 	public ModelAndView pmsMenuList() {
 		ModelAndView mav = new ModelAndView("page/pms/pmsMenu/pmsMenuList.jsp");
@@ -62,6 +64,7 @@ public class PmsMenuController extends SpringMVCBaseController{
 	 * @return PmsMenuAdd .
 	 */
 	//@Permission("pms:menu:add")
+	@RequiresPermissions("pms:menu:add")
 	@RequestMapping("/pmsMenu_pmsMenuAdd.action")
 	public ModelAndView pmsMenuAdd() {
 		ModelAndView mav = new ModelAndView("page/pms/pmsMenu/pmsMenuAdd.jsp");
@@ -80,6 +83,7 @@ public class PmsMenuController extends SpringMVCBaseController{
 	 * @return operateSuccess or operateError .
 	 */
 	//@Permission("pms:menu:add")
+	@RequiresPermissions("pms:menu:add")
 	@RequestMapping("/pmsMenu_pmsMenuSave.action")
 	public ModelAndView pmsMenuSave() {
 		try {
@@ -117,6 +121,7 @@ public class PmsMenuController extends SpringMVCBaseController{
 	 * @return
 	 */
 //	@Permission("pms:menu:view")
+	@RequiresPermissions("pms:menu:view")
 	@RequestMapping("/pmsMenu_pmsMenuEdit.action")
 	public ModelAndView pmsMenuEdit() {
 		ModelAndView mav = new ModelAndView("page/pms/pmsMenu/pmsMenuEdit.jsp");
@@ -137,6 +142,7 @@ public class PmsMenuController extends SpringMVCBaseController{
 	 * @return
 	 */
 	//@Permission("pms:menu:edit")
+	@RequiresPermissions("pms:menu:edit")
 	@RequestMapping("/pmsMenu_pmsMenuUpdate.action")
 	public ModelAndView pmsMenuUpdate() {
 		try {
@@ -162,6 +168,7 @@ public class PmsMenuController extends SpringMVCBaseController{
 	 * @return
 	 */
 	//@Permission("pms:menu:delete")
+	@RequiresPermissions("pms:menu:delete")
 	@RequestMapping("/pmsMenu_pmsMenuDel.action")
 	public ModelAndView pmsMenuDel() {
 		try {

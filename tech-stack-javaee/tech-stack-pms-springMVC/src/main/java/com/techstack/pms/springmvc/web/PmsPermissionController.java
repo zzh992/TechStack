@@ -7,6 +7,7 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.techstack.component.dwz.DwzUtils;
-import com.techstack.component.mapper.BeanMapper;
 import com.techstack.component.springmvc.SpringMVCBaseController;
 import com.techstack.pms.biz.PmsActionBiz;
 import com.techstack.pms.biz.PmsMenuBiz;
@@ -44,6 +44,7 @@ public class PmsPermissionController extends SpringMVCBaseController{
 	 * @return String
 	 */
 	//@Permission("pms:action:view")
+	@RequiresPermissions("pms:action:view")
 	@RequestMapping("/pmsPermission_pmsActionList.action")
 	public ModelAndView pmsActionList() {
 		try {
@@ -75,6 +76,7 @@ public class PmsPermissionController extends SpringMVCBaseController{
 	 * @return String
 	 */
 	//@Permission("pms:action:add")
+	@RequiresPermissions("pms:action:add")
 	@RequestMapping("/pmsPermission_pmsActionAdd.action")
 	public String pmsActionAdd() {
 		return "page/pms/pmsAction/pmsActionAdd.jsp";
@@ -86,6 +88,7 @@ public class PmsPermissionController extends SpringMVCBaseController{
 	 * @return String
 	 */
 	//@Permission("pms:action:add")
+	@RequiresPermissions("pms:action:add")
 	@RequestMapping("/pmsPermission_pmsActionSave.action")
 	public ModelAndView pmsActionSave() {
 		try {
@@ -179,6 +182,7 @@ public class PmsPermissionController extends SpringMVCBaseController{
 	 * @return String
 	 */
 	//@Permission("pms:action:edit")
+	@RequiresPermissions("pms:action:edit")
 	@RequestMapping("/pmsPermission_pmsActionEdit.action")
 	public ModelAndView pmsActionEdit() {
 		ModelAndView mav = new ModelAndView("page/pms/pmsAction/pmsActionEdit.jsp");
@@ -201,6 +205,7 @@ public class PmsPermissionController extends SpringMVCBaseController{
 	 * @return String
 	 */
 	//@Permission("pms:action:edit")
+	@RequiresPermissions("pms:action:edit")
 	@RequestMapping("/pmsPermission_pmsActionUpdate.action")
 	public ModelAndView pmsActionUpdate() {
 		try {
@@ -252,6 +257,7 @@ public class PmsPermissionController extends SpringMVCBaseController{
 	 * @return String
 	 */
 	//@Permission("pms:action:delete")
+	@RequiresPermissions("pms:action:delete")
 	@RequestMapping("/pmsPermission_pmsActionDel.action")
 	public ModelAndView pmsActionDel() {
 		try {
