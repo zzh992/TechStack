@@ -5,12 +5,12 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>菜单管理</title>
-</head> 
-<body>
 <style type="text/css">
 	ul.rightTools {float:right; display:block;}
 	ul.rightTools li{float:left; display:block; margin-left:5px}
 </style>
+</head> 
+<body>
 <form id="treeForm1" onsubmit="return navTabSearch(this);" action="pmsMenu_pmsMenuList.action" method="post" >
 </form>
 <div class="pageContent" style="padding:5px">
@@ -26,21 +26,28 @@
 			<div>
 				<div class="panelBar" style="width:262px">
 					<ul class="toolBar">
-					<p:permission value="pms:menu:add">
+					<!-- <p:permission value="pms:menu:add"> -->
+					<shiro:hasPermission name="pms:menu:add"> 
 						<li>
 							<a id="addMenu" class="add" href="pmsMenu_pmsMenuAdd.action" target="dialog" rel="input" width="600" height="400" title="添加菜单"><span>添加</span></a>
 						</li>
-					</p:permission>
-					<p:permission value="pms:menu:delete">
+					</shiro:hasPermission>
+					<!-- </p:permission>
+					<p:permission value="pms:menu:delete"> -->
+					<shiro:hasPermission name="pms:menu:delete"> 
 						<li>
 							<a id="delMenu" class="delete" href="pmsMenu_delPmsMenu.action" callback="navTabAjax" target="ajaxTodo" rel="inputMenu"  title="确定执行该删除操作吗？"><span>删除</span></a>
 						</li>
-					</p:permission>
-					<p:permission value="pms:menu:view">
+					</shiro:hasPermission>
+					<!-- </p:permission>
+					<p:permission value="pms:menu:view"> -->
+					<shiro:hasPermission name="pms:menu:view"> 
 						<li>
 							<a id="updateMenu" class="edit" href="javascript:onscreach();" ><span>刷新</span></a>
+					
 						</li>
-					</p:permission>
+					</shiro:hasPermission>
+					<!-- </p:permission> -->
 					</ul>
 				</div>
 				<div layoutH="78" style="float:left; display:block; overflow:auto; width:260px; border:solid 1px #CCC; line-height:21px; background:#fff">

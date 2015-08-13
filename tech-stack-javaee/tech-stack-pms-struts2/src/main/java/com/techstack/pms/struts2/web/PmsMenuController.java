@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.techstack.component.dwz.DwzUtils;
@@ -48,6 +49,7 @@ public class PmsMenuController extends Struts2BaseController {
 	 * @return PmsMenuList .
 	 */
 	//@Permission("pms:menu:view")
+	@RequiresPermissions("pms:menu:view")
 	public String pmsMenuList() {
 		String str = pmsMenuBiz.getTreeMenu(EDIT_MENU_ACTION);//构建树形菜单的HTML
 		this.putData("tree", str);
@@ -59,6 +61,7 @@ public class PmsMenuController extends Struts2BaseController {
 	 * @return PmsMenuAdd .
 	 */
 	//@Permission("pms:menu:add")
+	@RequiresPermissions("pms:menu:add")
 	public String pmsMenuAdd() {
 		Long pid = getLong("pid");
 		if (null != pid) {
@@ -73,6 +76,7 @@ public class PmsMenuController extends Struts2BaseController {
 	 * @return operateSuccess or operateError .
 	 */
 	//@Permission("pms:menu:add")
+	@RequiresPermissions("pms:menu:add")
 	public String pmsMenuSave() {
 		try {
 			String name = getString("name");
@@ -109,6 +113,7 @@ public class PmsMenuController extends Struts2BaseController {
 	 * @return
 	 */
 //	@Permission("pms:menu:view")
+	@RequiresPermissions("pms:menu:view")
 	public String pmsMenuEdit() {
 		Long id = getLong("id");
 		if (null != id) {
@@ -125,6 +130,7 @@ public class PmsMenuController extends Struts2BaseController {
 	 * @return
 	 */
 	//@Permission("pms:menu:edit")
+	@RequiresPermissions("pms:menu:edit")
 	public String pmsMenuUpdate() {
 		try {
 			Long id = getLong("menuId");
@@ -149,6 +155,7 @@ public class PmsMenuController extends Struts2BaseController {
 	 * @return
 	 */
 	//@Permission("pms:menu:delete")
+	@RequiresPermissions("pms:menu:delete")
 	public String pmsMenuDel() {
 		try {
 			Long menuId = getLong("id");

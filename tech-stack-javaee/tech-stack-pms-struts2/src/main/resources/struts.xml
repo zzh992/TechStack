@@ -47,8 +47,8 @@
 		<global-results>
 			<!-- <result name="mainpage">page/index.jsp</result> -->
 			<result name="login">login.jsp</result>
-			<result name="operateSuccess">page/common/operateSuccess.jsp</result>
-			<result name="operateError">page/common/operateError.jsp</result>
+			<result name="operateSuccess">page/common/operateResult.jsp</result>
+			<result name="operateError">page/common/operateResult.jsp</result>
 			<result name="permissionError">page/common/permissionError.jsp</result>
 		</global-results>
 

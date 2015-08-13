@@ -17,8 +17,8 @@
 			
 			<input type="hidden" name="loginNamess" id="loginNamess" />
 			<input type="hidden" name="loginPwdss" id="loginPwdss" />
-			
-			<s:hidden id="selectVal" name="selectVal"></s:hidden>
+			<input type="hidden" name="selectVal" id="selectVal" />
+			<!-- <s:hidden id="selectVal" name="selectVal"></s:hidden> -->
 			
 			<p style="width:99%">
 				<label></label>
@@ -28,31 +28,36 @@
 				<label>用户登录名：</label>
 				<input type="text" accept="loginName" class="required" maxlength="30" size="30" />
 			</p>
-			<s:if test="id==null">
+			<!-- <s:if test="id==null"> -->
+			<c:if test="${id eq null }">
 			<p style="width:99%">
 				<label>密码：</label>
 				<input type="password" accept="loginPwd" class="required" maxlength="20" size="30" />
 				<span class="info"></span>
 			</p>
-			</s:if>
+			</c:if>
+			<!-- </s:if> -->
 			<p style="width:99%">
 				<label>用户类型：</label>
 				普通用户
 			</p>
 			<p style="width:99%;height:50px;">
 				<label>描述：</label>
-				<s:textarea name="desc" cssClass="required" maxlength="100" rows="3" cols="30"></s:textarea>
+				<!-- <s:textarea name="desc" cssClass="required" maxlength="100" rows="3" cols="30"></s:textarea> -->
+				<textarea rows="3" cols="30" name="desc" class="required" minlength="3" maxlength="300"></textarea>
 			</p>
 			<p></p>
 			<fieldset style="width:99%">
 				<legend>选择角色<font color="red">*</font></legend>
-				<s:iterator value="rolesList" status="st">
-					<c:if test="${roleType eq RoleTypeEnum.USER.value}">
+				<!-- <s:iterator value="rolesList" status="st"> -->
+				<c:forEach items="${rolesList}" var="pmsRole" varStatus="status">
+					<c:if test="${pmsRole.roleType eq RoleTypeEnum.USER.value}">
 						<label>
-							<input class="selectOperatorRole" type="checkbox" name="selectRole" value="${id }">${roleName }
+							<input class="selectOperatorRole" type="checkbox" name="selectRole" value="${pmsRole.id }">${pmsRole.roleName }
 						</label>
 					</c:if>
-				</s:iterator>
+				</c:forEach>
+				<!-- </s:iterator> -->
 			</fieldset>
 			
 		</div>

@@ -7,6 +7,7 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -44,6 +45,7 @@ public class PmsPermissionController extends Struts2BaseController {
 	 * @return String
 	 */
 	//@Permission("pms:action:view")
+	@RequiresPermissions("pms:action:view")
 	public String pmsActionList() {
 		try {
 			Map<String, Object> paramMap = new HashMap<String, Object>(); // 业务条件查询参数
@@ -52,7 +54,8 @@ public class PmsPermissionController extends Struts2BaseController {
 			paramMap.put("act", getString("act"));
 			paramMap.put("module", "pmsAction");
 			Page<PmsActionDTO> pageBean = pmsActionBiz.listPage(DwzUtils.getPageNum(ServletActionContext.getRequest()), DwzUtils.getNumPerPage(ServletActionContext.getRequest()), paramMap);
-			this.pushData(pageBean);
+			this.putData("pageImpl", pageBean);
+			//this.pushData(pageBean);
 			this.pushData(paramMap); // 回显查询条件值
 			return "pmsActionList";
 		} catch (Exception e) {
@@ -67,6 +70,7 @@ public class PmsPermissionController extends Struts2BaseController {
 	 * @return String
 	 */
 	//@Permission("pms:action:add")
+	@RequiresPermissions("pms:action:add")
 	public String pmsActionAdd() {
 		return "pmsActionAdd";
 	}
@@ -77,6 +81,7 @@ public class PmsPermissionController extends Struts2BaseController {
 	 * @return String
 	 */
 	//@Permission("pms:action:add")
+	@RequiresPermissions("pms:action:add")
 	public String pmsActionSave() {
 		try {
 			String actionName = getString("actionName"); // 权限名称
@@ -165,6 +170,7 @@ public class PmsPermissionController extends Struts2BaseController {
 	 * @return String
 	 */
 	//@Permission("pms:action:edit")
+	@RequiresPermissions("pms:action:edit")
 	public String pmsActionEdit() {
 		try {
 			Long id = getLong("id");
@@ -183,6 +189,7 @@ public class PmsPermissionController extends Struts2BaseController {
 	 * @return String
 	 */
 	//@Permission("pms:action:edit")
+	@RequiresPermissions("pms:action:edit")
 	public String pmsActionUpdate() {
 		try {
 			Long id = getLong("actionId");
@@ -233,6 +240,7 @@ public class PmsPermissionController extends Struts2BaseController {
 	 * @return String
 	 */
 	//@Permission("pms:action:delete")
+	@RequiresPermissions("pms:action:delete")
 	public String pmsActionDel() {
 		try {
 			Long actionId = getLong("id");

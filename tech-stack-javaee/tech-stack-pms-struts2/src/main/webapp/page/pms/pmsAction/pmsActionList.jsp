@@ -29,9 +29,11 @@
 <div class="pageContent">
 	<div class="panelBar">
 		<ul class="toolBar">
-		<p:permission value="pms:action:add">
+		<!-- <p:permission value="pms:action:add"> -->
+		<shiro:hasPermission name="pms:action:add">  
 			<li><a class="add" href="pmsPermission_pmsActionAdd.action" target="dialog" width="550" height="350" rel="input" title="添加权限"><span>添加权限</span></a></li>
-		</p:permission>
+		</shiro:hasPermission>
+		<!-- </p:permission> -->
 		</ul>
 	</div>
 	
@@ -48,26 +50,33 @@
 			</tr>
 		</thead>
 		<tbody>
-		    <s:iterator value="recordList" status="st">
-				<tr target="sid_user" rel="${id}">
-				    <td>${st.index+1}</td>
-					<td>${actionName }</td>
-					<td>${action }</td>
-					<td>${menuName}</td>
-					<td>${remark}</td>
+		   <!--  <s:iterator value="recordList" status="st"> -->
+		   <!-- jstl c:forEach http://gundumw100.iteye.com/blog/473382-->
+		   <c:forEach items="${pageImpl.content}" var="pmsAction" varStatus="status">
+				<tr target="sid_user" rel="${pmsAction.id}">
+				    <td>${status.count}</td> 
+					<td>${pmsAction.actionName }</td>
+					<td>${pmsAction.action }</td>
+					<td>${pmsAction.menuName}</td>
+					<td>${pmsAction.remark}</td>
 					<td>
-						<fmt:formatDate value="${createTime }" pattern="yyyy-MM-dd"/>
+						<fmt:formatDate value="${pmsAction.createTime }" pattern="yyyy-MM-dd"/>
 					</td>
 					<td>
-					<p:permission value="pms:action:edit">
-						[<a href="pmsPermission_pmsActionEdit.action?id=${id}" title="修改权限" target="dialog" width="550" height="300" rel="input"  style="color:blue">修改</a>]
-					</p:permission>
-					<p:permission value="pms:action:delete">
-						&nbsp;[<a href="pmsPermission_pmsActionDel.action?id=${id}" title="删除权限【${action }】" target="ajaxTodo" style="color:blue">删除</a>]
-					</p:permission>
+					<!-- <p:permission value="pms:action:edit"> -->
+					<shiro:hasPermission name="pms:action:edit"> 
+						[<a href="pmsPermission_pmsActionEdit.action?id=${pmsAction.id}" title="修改权限" target="dialog" width="550" height="300" rel="input"  style="color:blue">修改</a>]
+					</shiro:hasPermission>
+					<!-- </p:permission>
+					<p:permission value="pms:action:delete"> -->
+					<shiro:hasPermission name="pms:action:edit"> 
+						&nbsp;[<a href="pmsPermission_pmsActionDel.action?id=${pmsAction.id}" title="删除权限【${pmsAction.action }】" target="ajaxTodo" style="color:blue">删除</a>]
+					</shiro:hasPermission>
+					<!-- </p:permission> -->
 					</td>
 				</tr>
-			</s:iterator>
+			</c:forEach>	
+			<!-- </s:iterator> -->
 		</tbody>
 	</table>
      <!-- 分页条 -->

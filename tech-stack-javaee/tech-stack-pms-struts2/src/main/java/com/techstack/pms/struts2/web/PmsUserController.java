@@ -55,7 +55,8 @@ public class PmsUserController extends Struts2BaseController{
 			paramMap.put("loginName", getString("loginName")); // 用户登录名（精确查询）
 
 			Page<PmsUserDTO> pageBean = pmsUserBiz.listPage(DwzUtils.getPageNum(ServletActionContext.getRequest()), DwzUtils.getNumPerPage(ServletActionContext.getRequest()), paramMap);
-			this.pushData(pageBean);
+			this.putData("pageImpl", pageBean);
+			//this.pushData(pageBean);
 			//PmsUser pmsUser = getLoginedUser();// 获取当前登录用户对象
 			//this.putData("currLoginName", pmsUser.getLoginName());
 			// 回显查询条件值
@@ -79,6 +80,7 @@ public class PmsUserController extends Struts2BaseController{
 	 * @return String
 	 */
 	//@Permission("pms:user:view")
+	@RequiresPermissions("pms:user:view")
 	public String pmsUserView() {
 		try {
 			Long userId = getLong("id");
@@ -109,6 +111,8 @@ public class PmsUserController extends Struts2BaseController{
 				owenedRoleIds = owenedRoleIds.substring(0, owenedRoleIds.length() - 1);
 			}
 			this.putData("owenedRoleIds", owenedRoleIds);
+			this.putData("UserTypeEnum", UserTypeEnum.toMap());
+			this.putData("RoleTypeEnum", RoleTypeEnum.toMap());
 			return "pmsUserView";
 		} catch (Exception e) {
 			log.error("==== error ==== 查看用户详情失败：", e);
@@ -122,6 +126,7 @@ public class PmsUserController extends Struts2BaseController{
 	 * @return String
 	 */
 	//@Permission("pms:user:add")
+	@RequiresPermissions("pms:user:add")
 	public String pmsUserAdd() {
 		try {
 			
@@ -141,6 +146,7 @@ public class PmsUserController extends Struts2BaseController{
 	 * @return String
 	 */
 	//@Permission("pms:user:add")
+	@RequiresPermissions("pms:user:add")
 	public String pmsUserSave() {
 		try {
 			String loginPwd = getString("loginPwdss"); // 初始登录密码
@@ -272,6 +278,7 @@ public class PmsUserController extends Struts2BaseController{
 	 * @return String
 	 */
 	//@Permission("pms:user:delete")
+	@RequiresPermissions("pms:user:delete")
 	public String pmsUserDel() {
 		long id = getLong("id");
 		pmsUserBiz.deleteUserById(id);
@@ -284,6 +291,7 @@ public class PmsUserController extends Struts2BaseController{
 	 * @return String
 	 */
 	//@Permission("pms:user:edit")
+	@RequiresPermissions("pms:user:edit")
 	public String pmsUserEdit() {
 		try {
 			Long id = getLong("id");
@@ -332,6 +340,7 @@ public class PmsUserController extends Struts2BaseController{
 	 * @return String
 	 */
 	//@Permission("pms:user:edit")
+	@RequiresPermissions("pms:user:edit")
 	public String pmsUserUpdate() {
 		try {
 			Long id = getLong("id");
@@ -394,6 +403,7 @@ public class PmsUserController extends Struts2BaseController{
 	 * @return String
 	 */
 	//@Permission("pms:user:edit")
+	@RequiresPermissions("pms:user:edit")
 	public String pmsUserResetPwd() {
 		PmsUserDTO user = pmsUserBiz.getById(getLong("id"));
 		if (user == null) {
@@ -417,6 +427,7 @@ public class PmsUserController extends Struts2BaseController{
 	 * @return String
 	 */
 	//@Permission("pms:user:edit")
+	@RequiresPermissions("pms:user:edit")
 	public String resetUserPwd() {
 		try {
 			Long userId = getLong("userId");

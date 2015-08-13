@@ -10,6 +10,7 @@ import net.sf.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -55,6 +56,7 @@ public class PmsRoleController extends Struts2BaseController{
 	 * @return String
 	 */
 	//@Permission("pms:role:view")
+	@RequiresPermissions("pms:role:view")
 	public String pmsRoleList() {
 		try {
 
@@ -65,7 +67,8 @@ public class PmsRoleController extends Struts2BaseController{
 
 			ShiroUser user = this.getCurrentUser();
 			this.pushData(user);
-			this.pushData(pageBean);
+			this.putData("pageImpl", pageBean);
+			//this.pushData(pageBean);
 			// 回显查询条件值
 			this.pushData(paramMap);		
 			
@@ -86,6 +89,7 @@ public class PmsRoleController extends Struts2BaseController{
 	 * @return String
 	 */
 	//@Permission("pms:role:add")
+	@RequiresPermissions("pms:role:add")
 	public String pmsRoleAdd() {
 		try {
 			return "pmsRoleAdd";
@@ -101,6 +105,7 @@ public class PmsRoleController extends Struts2BaseController{
 	 * @return String
 	 */
 	//@Permission("pms:role:add")
+	@RequiresPermissions("pms:role:add")
 	public String pmsRoleSave() {
 		try {
 			String roleName = getString("roleName");
@@ -154,6 +159,7 @@ public class PmsRoleController extends Struts2BaseController{
 	 * @return String
 	 */
 	//@Permission("pms:role:edit")
+	@RequiresPermissions("pms:role:edit")
 	public String pmsRoleEdit() {
 		try {
 			Long roleId = getLong("roleId");
@@ -183,6 +189,7 @@ public class PmsRoleController extends Struts2BaseController{
 	 * @return String
 	 */
 	//@Permission("pms:role:edit")
+	@RequiresPermissions("pms:role:edit")
 	public String pmsRoleUpdate() {
 		try {
 			Long id = getLong("id");
@@ -228,6 +235,7 @@ public class PmsRoleController extends Struts2BaseController{
 	 * @return String
 	 */
 	//@Permission("pms:role:delete")
+	@RequiresPermissions("pms:role:delete")
 	public String pmsRoleDel() {
 		try {
 			Long roleId = getLong("roleId");
@@ -278,6 +286,7 @@ public class PmsRoleController extends Struts2BaseController{
 	 */
 	@SuppressWarnings("unchecked")
 	//@Permission("pms:role:edit")
+	@RequiresPermissions("pms:role:edit")
 	public String assignPermissionUI() {
 		Long roleId = getLong("roleId");
 
@@ -320,6 +329,7 @@ public class PmsRoleController extends Struts2BaseController{
 	 * @return void
 	 */
 	//@Permission("pms:role:edit")
+	@RequiresPermissions("pms:role:edit")
 	public void assignPermission() {
 		try {
 
