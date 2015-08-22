@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
 import com.techstack.component.jpa.DynamicSpecifications;
@@ -124,6 +126,12 @@ public class PmsActionDaoFacadeImpl implements PmsActionDaoFacade {
 		List<Role> roleList = roleDao.findByIdIn(roleIds);
 		List<PmsRoleActionDTO> pmsRoleActionDTOList = new ArrayList<PmsRoleActionDTO>(); 
 		for(Role role : roleList){
+			if(role.getRoleType() == 1){
+				List<Action> actions = actionDao.findAll();
+				for(Action action  : actions){
+					pmsRoleActionDTOList.add(PmsRoleActionDTOMapper.toPmsRoleActionDTO(role, action));
+				}
+			}
 			for(Action action : role.getActions()){
 				pmsRoleActionDTOList.add(PmsRoleActionDTOMapper.toPmsRoleActionDTO(role, action));
 			}
@@ -134,16 +142,16 @@ public class PmsActionDaoFacadeImpl implements PmsActionDaoFacade {
 	@Override
 	public Page<PmsActionDTO> listPage(int pageNum, int pageSize, Map<String, Object> paramMap) {
 		List<SearchFilter> searchFilterList = new ArrayList<SearchFilter>();
-		if(paramMap.get("actionName") !=null){
+		if(paramMap.get("actionName") !=null && !StringUtils.isEmpty(paramMap.get("actionName").toString())){
 			SearchFilter searchFilter = new SearchFilter("actionName", Operator.LIKE, paramMap.get("actionName"), Logic.AND);
 			searchFilterList.add(searchFilter);
 		}
-		if(paramMap.get("action") !=null){
+		if(paramMap.get("action") !=null && !StringUtils.isEmpty(paramMap.get("action").toString())){
 			SearchFilter searchFilter = new SearchFilter("action", Operator.EQ, paramMap.get("action"), Logic.AND);
 			searchFilterList.add(searchFilter);
 		}
 		Page<Action> pageBean = actionDao.findAll(JpaPageUtils.buildSpecification(searchFilterList), JpaPageUtils.buildPageRequest(pageNum, pageSize, null, null));
-		Page<PmsActionDTO> page = new PageImpl<PmsActionDTO>(BeanMapper.mapList(pageBean.getContent(), PmsActionDTO.class));
+		Page<PmsActionDTO> page = new PageImpl<PmsActionDTO>(BeanMapper.mapList(pageBean.getContent(), PmsActionDTO.class), new PageRequest(pageNum, pageSize), pageBean.getTotalElements());
 		return page;
 	}
 

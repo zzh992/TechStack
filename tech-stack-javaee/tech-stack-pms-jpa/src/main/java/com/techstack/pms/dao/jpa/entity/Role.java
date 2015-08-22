@@ -59,7 +59,7 @@ public class Role extends BaseEntity {
 	 * 否则可能引起数据一致性的问题。该属性的值是主体对象的属性名而不是表的列名
 	 * 
 	 */
-	@ManyToMany(mappedBy = "roles")
+	@ManyToMany(mappedBy = "roles", fetch=FetchType.LAZY)
 	public List<User> getUsers() {
 		return users;
 	}
@@ -68,7 +68,7 @@ public class Role extends BaseEntity {
 		this.users = users;
 	}
 
-	@ManyToMany(fetch=FetchType.EAGER)
+	@ManyToMany(fetch=FetchType.LAZY)
 	@JoinTable(name = "PMS_ROLE_MENU", joinColumns = { @JoinColumn(name = "ROLE_ID", referencedColumnName = "ID") }, inverseJoinColumns = { @JoinColumn(name = "MENU_ID", referencedColumnName = "ID") })
 	public List<Menu> getMenus() {
 		return menus;
@@ -78,7 +78,7 @@ public class Role extends BaseEntity {
 		this.menus = menus;
 	}
 
-	@ManyToMany(fetch=FetchType.EAGER)
+	@ManyToMany(fetch=FetchType.LAZY)
 	@JoinTable(name = "PMS_ROLE_ACTION", joinColumns = { @JoinColumn(name = "ROLE_ID", referencedColumnName = "ID") }, inverseJoinColumns = { @JoinColumn(name = "ACTION_ID", referencedColumnName = "ID") })
 	public List<Action> getActions() {
 		return actions;

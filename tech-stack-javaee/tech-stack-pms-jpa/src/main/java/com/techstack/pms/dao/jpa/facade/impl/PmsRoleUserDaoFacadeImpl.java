@@ -24,9 +24,9 @@ public class PmsRoleUserDaoFacadeImpl implements PmsRoleUserDaoFacade {
 		PmsRoleUserDTO pmsRoleUserDTO = BeanMapper.map(model, PmsRoleUserDTO.class);
 		Role role = roleDao.findOne(pmsRoleUserDTO.getRoleId());
 		User user = userDao.findOne(pmsRoleUserDTO.getUserId());
-		if(!role.getUsers().contains(user)){
-			role.getUsers().add(user);
-			roleDao.save(role);
+		if(!user.getRoles().contains(role)){
+			user.getRoles().add(role);
+			userDao.save(user);
 		}
 		return (Model) pmsRoleUserDTO;
 	}
@@ -48,11 +48,26 @@ public class PmsRoleUserDaoFacadeImpl implements PmsRoleUserDaoFacade {
 		//PmsRoleUser pmsRoleUser = BeanMapper.map(model, PmsRoleUser.class);
 		//baseDao.deleteByModel(pmsRoleUser);
 		PmsRoleUserDTO pmsRoleUserDTO = BeanMapper.map(model, PmsRoleUserDTO.class);
-		Role role = roleDao.findOne(pmsRoleUserDTO.getRoleId());
-		User user = userDao.findOne(pmsRoleUserDTO.getUserId());
-		if(role.getUsers().contains(user)){
-			role.getUsers().remove(user);
-			roleDao.save(role);
+		if(pmsRoleUserDTO.getUserId() != null){
+			User user = userDao.findOne(pmsRoleUserDTO.getUserId());
+			if(pmsRoleUserDTO.getRoleId()!=null){
+				Role role = roleDao.findOne(pmsRoleUserDTO.getRoleId());
+				if(user.getRoles().contains(role)){
+					user.getRoles().remove(role);
+					
+				}
+			}else{
+				user.setRoles(null);
+			}
+			userDao.save(user);
+		}else if(pmsRoleUserDTO.getRoleId() != null){
+			Role role = roleDao.findOne(pmsRoleUserDTO.getRoleId());
+			for(User user : role.getUsers()){
+				if(user.getRoles().contains(role)){
+					user.getRoles().remove(role);
+				}
+				userDao.save(user);
+			}
 		}
 	}
 

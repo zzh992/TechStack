@@ -1,5 +1,8 @@
 package com.techstack.pms.dao.jpa.facade.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +27,12 @@ public class PmsRoleMenuDaoFacadeimpl implements PmsRoleMenuDaoFacade {
 		PmsRoleMenuDTO pmsRoleMenuDTO = BeanMapper.map(model, PmsRoleMenuDTO.class);
 		Role role = roleDao.findOne(pmsRoleMenuDTO.getRoleId());
 		Menu menu = menuDao.findOne(pmsRoleMenuDTO.getMenuId());
-		if(!role.getMenus().contains(menu)){
+		if(role.getMenus() == null){
+			List<Menu> menus = new ArrayList<Menu>();
+			menus.add(menu);
+			role.setMenus(menus);
+			roleDao.save(role);
+		}else if(!role.getMenus().contains(menu)){
 			role.getMenus().add(menu);
 			roleDao.save(role);
 		}
@@ -49,11 +57,15 @@ public class PmsRoleMenuDaoFacadeimpl implements PmsRoleMenuDaoFacade {
 		//baseDao.deleteByModel(pmsRoleMenu);
 		PmsRoleMenuDTO pmsRoleMenuDTO = BeanMapper.map(model, PmsRoleMenuDTO.class);
 		Role role = roleDao.findOne(pmsRoleMenuDTO.getRoleId());
-		Menu menu = menuDao.findOne(pmsRoleMenuDTO.getMenuId());
-		if(role.getMenus().contains(menu)){
-			role.getMenus().remove(menu);
-			roleDao.save(role);
+		if(pmsRoleMenuDTO.getMenuId() == null){
+			role.setMenus(null);
+		}else{
+			Menu menu = menuDao.findOne(pmsRoleMenuDTO.getMenuId());
+			if(role.getMenus().contains(menu)){
+				role.getMenus().remove(menu);
+			}
 		}
+		roleDao.save(role);
 	}
 
 }

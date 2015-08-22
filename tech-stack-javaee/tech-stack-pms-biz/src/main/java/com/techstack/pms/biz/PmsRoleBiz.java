@@ -178,7 +178,7 @@ public class PmsRoleBiz {
 		//pmsRoleUserDao.deleteByRoleId(roleId);
 		PmsRoleUserDTO pmsRoleUser = new PmsRoleUserDTO();
 		pmsRoleUser.setRoleId(roleId);
-		pmsRoleUserDaoFacade.deleteByModel(pmsRoleMenu);
+		pmsRoleUserDaoFacade.deleteByModel(pmsRoleUser);
 		
 		// 最后删除角色信息
 		//pmsRoleDao.deleteById(PmsRole.class,roleId);

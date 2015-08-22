@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
 import com.techstack.component.jpa.DynamicSpecifications;
@@ -37,6 +38,10 @@ public class PmsUserDaoFacadeImpl implements PmsUserDaoFacade {
 	public <Model> Model saveOrUpdate(Model model) {
 		PmsUserDTO pmsUserDTO = BeanMapper.map(model, PmsUserDTO.class);
 		User user = PmsUserDTOMapper.toUser(pmsUserDTO);
+		if(user.getId()!=null){
+			User tempUser = userDao.findOne(user.getId());
+			user.setRoles(tempUser.getRoles());
+		}
 		user = userDao.save(user);
 		return (Model) PmsUserDTOMapper.toPmsUserDTO(user);
 	}
@@ -104,7 +109,7 @@ public class PmsUserDaoFacadeImpl implements PmsUserDaoFacade {
 			searchFilterList.add(searchFilter);
 		}
 		Page<User> pageBean = userDao.findAll(JpaPageUtils.buildSpecification(searchFilterList), JpaPageUtils.buildPageRequest(pageNum, pageSize, null, null));
-		Page<PmsUserDTO> page = new PageImpl<PmsUserDTO>(BeanMapper.mapList(pageBean.getContent(), PmsUserDTO.class));
+		Page<PmsUserDTO> page = new PageImpl<PmsUserDTO>(BeanMapper.mapList(pageBean.getContent(), PmsUserDTO.class), new PageRequest(pageNum, pageSize), pageBean.getTotalElements());
 		return page;
 	}
 

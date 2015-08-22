@@ -1,5 +1,8 @@
 package com.techstack.pms.dao.jpa.facade.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +27,12 @@ public class PmsRoleActionDaoFacadeImpl implements PmsRoleActionDaoFacade {
 		PmsRoleActionDTO pmsRoleActionDTO = BeanMapper.map(model, PmsRoleActionDTO.class);
 		Role role = roleDao.findOne(pmsRoleActionDTO.getRoleId());
 		Action action = actionDao.findOne(pmsRoleActionDTO.getActionId());
-		if(!role.getActions().contains(action)){
+		if(role.getActions() == null){
+			List<Action> actions = new ArrayList<Action>();
+			actions.add(action);
+			role.setActions(actions);
+			roleDao.save(role);
+		}else if(!role.getActions().contains(action)){
 			role.getActions().add(action);
 			roleDao.save(role);
 		}
@@ -47,11 +55,15 @@ public class PmsRoleActionDaoFacadeImpl implements PmsRoleActionDaoFacade {
 	public <Model> void deleteByModel(Model model) {
 		PmsRoleActionDTO pmsRoleActionDTO = BeanMapper.map(model, PmsRoleActionDTO.class);
 		Role role = roleDao.findOne(pmsRoleActionDTO.getRoleId());
-		Action action = actionDao.findOne(pmsRoleActionDTO.getActionId());
-		if(role.getActions().contains(action)){
-			role.getActions().remove(action);
-			roleDao.save(role);
+		if(pmsRoleActionDTO.getActionId() == null){
+			role.setActions(null);
+		}else{
+			Action action = actionDao.findOne(pmsRoleActionDTO.getActionId());
+			if(role.getActions().contains(action)){
+				role.getActions().remove(action);
+			}
 		}
+		roleDao.save(role);
 	}
 
 }

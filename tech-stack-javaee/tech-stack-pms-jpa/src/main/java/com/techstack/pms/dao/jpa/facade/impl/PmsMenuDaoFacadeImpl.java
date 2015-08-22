@@ -7,6 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.techstack.component.jpa.DynamicSpecifications;
+import com.techstack.component.jpa.JpaPageUtils;
+import com.techstack.component.jpa.SearchFilter;
+import com.techstack.component.jpa.SearchFilter.Logic;
+import com.techstack.component.jpa.SearchFilter.Operator;
 import com.techstack.component.mapper.BeanMapper;
 import com.techstack.pms.dao.dto.PmsActionDTO;
 import com.techstack.pms.dao.dto.PmsMenuDTO;
@@ -129,7 +133,17 @@ public class PmsMenuDaoFacadeImpl implements PmsMenuDaoFacade {
 
 	@Override
 	public List<PmsMenuDTO> listMenuBy(Integer isLeaf, String name,Long parentId) {
-		List<Menu> menuList = menuDao.findByNameAndIsLeaf(name, isLeaf);
+		List<SearchFilter> searchFilterList = new ArrayList<SearchFilter>();
+		if(isLeaf != null) {
+			SearchFilter searchFilter = new SearchFilter("isLeaf", Operator.EQ, isLeaf, Logic.AND);
+			searchFilterList.add(searchFilter);
+		}
+		if(name != null) {
+			SearchFilter searchFilter = new SearchFilter("name", Operator.EQ, name, Logic.AND);
+			searchFilterList.add(searchFilter);
+		}
+		List<Menu> menuList = menuDao.findAll(JpaPageUtils.buildSpecification(searchFilterList));
+		//List<Menu> menuList = menuDao.findByNameAndIsLeaf(name, isLeaf);
 		List<PmsMenuDTO> pmsMenuDTOList = new ArrayList<PmsMenuDTO>();
 		for(Menu menu : menuList){
 			pmsMenuDTOList.add(PmsMenuDTOMapper.toPmsMenuDTO(menu));

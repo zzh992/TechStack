@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
 import com.techstack.component.jpa.DynamicSpecifications;
@@ -114,7 +115,7 @@ public class PmsRoleDaoFacadeImpl implements PmsRoleDaoFacade {
 			searchFilterList.add(searchFilter);
 		}
 		Page<Role> pageBean = roleDao.findAll(JpaPageUtils.buildSpecification(searchFilterList), JpaPageUtils.buildPageRequest(pageNum, pageSize, null, null));
-		Page<PmsRoleDTO> page = new PageImpl<PmsRoleDTO>(BeanMapper.mapList(pageBean.getContent(), PmsRoleDTO.class));
+		Page<PmsRoleDTO> page = new PageImpl<PmsRoleDTO>(BeanMapper.mapList(pageBean.getContent(), PmsRoleDTO.class), new PageRequest(pageNum, pageSize), pageBean.getTotalElements());
 		return page;
 	}
 
