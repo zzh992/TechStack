@@ -30,6 +30,13 @@
 		</dependency>
 	
 		<dependency>
+			<groupId>tech.stack.component</groupId>
+			<artifactId>tech-stack-component</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+	
+		<dependency>
 			<groupId>tech.stack.pms.dao</groupId>
 			<artifactId>tech-stack-pms-dao</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
