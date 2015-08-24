@@ -54,16 +54,26 @@ public class PmsRoleActionDaoFacadeImpl implements PmsRoleActionDaoFacade {
 	@Override
 	public <Model> void deleteByModel(Model model) {
 		PmsRoleActionDTO pmsRoleActionDTO = BeanMapper.map(model, PmsRoleActionDTO.class);
-		Role role = roleDao.findOne(pmsRoleActionDTO.getRoleId());
-		if(pmsRoleActionDTO.getActionId() == null){
-			role.setActions(null);
-		}else{
+		if(pmsRoleActionDTO.getRoleId()!=null){
+			Role role = roleDao.findOne(pmsRoleActionDTO.getRoleId());
+			if(pmsRoleActionDTO.getActionId() == null){
+				role.setActions(null);
+			}else{
+				Action action = actionDao.findOne(pmsRoleActionDTO.getActionId());
+				if(role.getActions().contains(action)){
+					role.getActions().remove(action);
+				}
+			}
+			roleDao.save(role);
+		}else if(pmsRoleActionDTO.getActionId() != null){
 			Action action = actionDao.findOne(pmsRoleActionDTO.getActionId());
-			if(role.getActions().contains(action)){
-				role.getActions().remove(action);
+			for(Role role : action.getRoles()){
+				if(role.getActions().contains(action)){
+					role.getActions().remove(action);
+				}
+				roleDao.save(role);
 			}
 		}
-		roleDao.save(role);
 	}
 
 }

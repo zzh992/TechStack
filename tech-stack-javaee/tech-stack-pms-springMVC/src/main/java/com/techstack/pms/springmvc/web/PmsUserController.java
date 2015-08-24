@@ -19,7 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.techstack.component.dwz.DwzUtils;
 import com.techstack.component.mapper.BeanMapper;
 import com.techstack.component.shiro.ShiroUser;
-import com.techstack.component.springmvc.SpringMVCBaseController;
+import com.techstack.component.spring.mvc.SpringMVCBaseController;
 import com.techstack.pms.biz.PmsRoleBiz;
 import com.techstack.pms.biz.PmsUserBiz;
 import com.techstack.pms.dao.dto.PmsRoleDTO;

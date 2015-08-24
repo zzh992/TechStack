@@ -1,4 +1,4 @@
-package com.techstack.component.springmvc;
+package com.techstack.component.spring.mvc;
 
 import javax.servlet.http.HttpServletRequest;
 

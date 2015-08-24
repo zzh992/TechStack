@@ -25,14 +25,6 @@ import com.techstack.pms.dao.facade.PmsRoleUserDaoFacade;
 @Component("pmsRoleBiz")
 public class PmsRoleBiz {
 
-	/*@Autowired
-	private PmsRoleDao pmsRoleDao;
-	@Autowired
-	private PmsRoleActionDao pmsRoleActionDao;
-	@Autowired
-	private PmsRoleUserDao pmsRoleUserDao;
-	@Autowired
-	private PmsRoleMenuDao pmsRoleMenuDao;*/
 	@Autowired
 	private PmsRoleDaoFacade pmsRoleDaoFacade;
 	@Autowired
@@ -49,8 +41,6 @@ public class PmsRoleBiz {
 	 * @return List<PmsRole>
 	 */
 	public List<PmsRoleDTO> listAllRole() {
-		//return pmsRoleDao.listAll();
-		//return getBaseDao().selectList(getStatement("listAllRole"), new HashMap<String,Object>());
 		return pmsRoleDaoFacade.listAllRole();
 	}
 
@@ -60,8 +50,6 @@ public class PmsRoleBiz {
 	 * @return void
 	 */
 	public void deleteById(Long id) {
-		//pmsRoleDao.deleteById(PmsRole.class,id);
-		//getBaseDao().deleteById(PmsRole.class,id);
 		pmsRoleDaoFacade.deleteById(id);
 	}
 
@@ -72,8 +60,6 @@ public class PmsRoleBiz {
 	 * @return PmsRole
 	 */
 	public PmsRoleDTO getByRoleName(String roleName) {
-		//return pmsRoleDao.getByRoleName(roleName);
-		//return getBaseDao().selectOne(getStatement("getRoleByRoleName"), roleName);
 		return pmsRoleDaoFacade.getRoleByRoleName(roleName);
 	}
 
@@ -85,11 +71,6 @@ public class PmsRoleBiz {
 	 * @return PmsRole
 	 */
 	public PmsRoleDTO findByRoleNameNotEqId(Long id, String roleName) {
-		//return pmsRoleDao.findByRoleNameNotEqId(id, roleName);
-		//Map<String, Object> param = new HashMap<String, Object>();
-		//param.put("id", id);
-		//param.put("roleName", roleName);
-		//return getBaseDao().selectOne(getStatement("findRoleByRoleNameNotEqId"), param);
 		return pmsRoleDaoFacade.findRoleByRoleNameNotEqId(roleName, id);
 	}
 
@@ -100,8 +81,6 @@ public class PmsRoleBiz {
 	 * @return List<PmsRole>
 	 */
 	public List<PmsRoleDTO> listByActionId(Long actionId) {
-		//return pmsRoleDao.listByActionId(actionId);
-		//return getBaseDao().selectList(getStatement("listRoleByActionId"), actionId);
 		return pmsRoleDaoFacade.listRoleByActionId(actionId);
 	}
 
@@ -112,11 +91,6 @@ public class PmsRoleBiz {
 	 * @param @return    
 	 * @return PageBean
 	 */
-	/*public PageBean listPage(PageParam pageParam, Map<String, Object> paramMap) {
-		//return pmsRoleDao.listPage(pageParam, paramMap);
-		//return pmsRoleDao.listPage(PmsRole.class, pageParam, paramMap);
-		return getBaseDao().listPage(PmsRole.class, pageParam, paramMap);
-	}*/
 	public Page<PmsRoleDTO> listPage(int pageNum, int pageSize, Map<String, Object> paramMap) {
 		return pmsRoleDaoFacade.listPage(pageNum, pageSize, paramMap);
 	}
@@ -128,8 +102,6 @@ public class PmsRoleBiz {
 	 * @return PmsRole
 	 */
 	public PmsRoleDTO getById(Long id) {
-		//return pmsRoleDao.getById(PmsRole.class,id);
-		//return getBaseDao().getById(PmsRole.class,id);
 		return pmsRoleDaoFacade.getById(id);
 	}
 
@@ -139,8 +111,6 @@ public class PmsRoleBiz {
 	 * @return void
 	 */
 	public void create(PmsRoleDTO pmsRole) {
-		//pmsRoleDao.saveOrUpdate(pmsRole);
-		//getBaseDao().saveOrUpdate(pmsRole);
 		pmsRoleDaoFacade.saveOrUpdate(pmsRole);
 	}
 
@@ -150,8 +120,6 @@ public class PmsRoleBiz {
 	 * @return void
 	 */
 	public void update(PmsRoleDTO pmsRole) {
-		//pmsRoleDao.saveOrUpdate(pmsRole);
-		//getBaseDao().saveOrUpdate(pmsRole);
 		pmsRoleDaoFacade.saveOrUpdate(pmsRole);
 	}
 	
@@ -162,27 +130,21 @@ public class PmsRoleBiz {
 	 */
 	public void deleteRoleById(Long roleId) {
 		// 删除角色权限关联表中的数据
-		//pmsRoleActionDao.deleteByRoleId(roleId);
 		PmsRoleActionDTO pmsRoleAction = new PmsRoleActionDTO();
 		pmsRoleAction.setRoleId(roleId);
-		//getBaseDao().deleteByModel(pmsRoleAction);
 		pmsRoleActionDaoFacade.deleteByModel(pmsRoleAction);
 		
 		// 删除角色菜单关联表中的数据
-		//pmsRoleMenuDao.deleteByRoleId(roleId);
 		PmsRoleMenuDTO pmsRoleMenu = new PmsRoleMenuDTO();
 		pmsRoleMenu.setRoleId(roleId);
 		pmsRoleMenuDaoFacade.deleteByModel(pmsRoleMenu);
 		
 		// 删除角色用户关联表中的数据
-		//pmsRoleUserDao.deleteByRoleId(roleId);
 		PmsRoleUserDTO pmsRoleUser = new PmsRoleUserDTO();
 		pmsRoleUser.setRoleId(roleId);
 		pmsRoleUserDaoFacade.deleteByModel(pmsRoleUser);
 		
 		// 最后删除角色信息
-		//pmsRoleDao.deleteById(PmsRole.class,roleId);
-		//getBaseDao().deleteById(PmsRole.class,roleId);
 		pmsRoleDaoFacade.deleteById(roleId);
 		
 	}
@@ -193,8 +155,6 @@ public class PmsRoleBiz {
 	 * @return void
 	 */
 	public void updateRole(PmsRoleDTO pmsRole) {
-		//pmsRoleDao.saveOrUpdate(pmsRole);
-		//getBaseDao().saveOrUpdate(pmsRole);
 		pmsRoleDaoFacade.saveOrUpdate(pmsRole);
 	}
 	
@@ -204,8 +164,6 @@ public class PmsRoleBiz {
 	 * @return void
 	 */
 	public void saveRole(PmsRoleDTO pmsRole) {
-		//pmsRoleDao.saveOrUpdate(pmsRole);
-//		getBaseDao().saveOrUpdate(pmsRole);
 		pmsRoleDaoFacade.saveOrUpdate(pmsRole);
 	}
 	
@@ -217,10 +175,7 @@ public class PmsRoleBiz {
 	 */
 	public String getRoleIdsByUserId(long userId) {
 		// 得到用户和角色列表
-		//List<PmsRoleUser> rpList = pmsRoleUserDao.listByUserId(userId);
-		//List<PmsRoleUser> rpList = getBaseDao().selectList(getStatement("listRoleUserByUserId"), userId);
 		List<PmsRoleUserDTO> rpList = pmsRoleDaoFacade.listRoleUserByUserId(userId);
-		// 构建StringBuffer来拼字符串
 		StringBuffer roleIdsBuf = new StringBuffer("");
 		for (PmsRoleUserDTO rp : rpList) {
 			roleIdsBuf.append(rp.getRoleId()).append(",");

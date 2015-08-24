@@ -6,10 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import com.techstack.pms.dao.dto.PmsActionDTO;
@@ -27,19 +27,11 @@ import com.techstack.pms.enums.NodeTypeEnum;
  * @Description: 菜单业务层
  * @author zzh
  */
-@Service("pmsMenuBiz")
+@Component("pmsMenuBiz")
 public class PmsMenuBiz {
 	
-	private static final Log log = LogFactory.getLog(PmsMenuBiz.class);
+	private static final Logger log = LoggerFactory.getLogger(PmsMenuBiz.class);
 	
-	/*@Autowired
-	private PmsMenuDao pmsMenuDao;
-	@Autowired
-	private PmsActionDao pmsActionDao;
-	@Autowired
-	private PmsRoleMenuDao pmsRoleMenuDao;
-	@Autowired
-	private PmsRoleActionDao pmsRoleActionDao;*/
 	@Autowired
 	private PmsMenuDaoFacade pmsMenuDaoFacade;
 	@Autowired
@@ -71,9 +63,6 @@ public class PmsMenuBiz {
 	 */
 	@SuppressWarnings("rawtypes")
 	private List getTreeData(String parentId) {
-		//return pmsMenuDao.listByParent(parentId);
-		//return getBaseDao().selectList(getStatement("listMenuByParent"), parentId);
-		//return pmsMenuDaoFacade.listMenuByParentId(Long.parseLong(parentId));
 		return pmsMenuDaoFacade.listMenuBy(null, null, parentId==null? null : Long.parseLong(parentId));
 	}
 
@@ -94,9 +83,6 @@ public class PmsMenuBiz {
 		}
 		List<PmsMenuDTO> listMenu = getSonMenuListByPid(pId, list);
 		for (PmsMenuDTO menu : listMenu) {
-			//String id = map.get("id").toString();// id
-			//String name = map.get("name").toString();// 名称
-			//String isLeaf = map.get("isLeaf").toString();// 是否叶子科目
 			Long id = menu.getId();
 			String name = menu.getName();
 			Integer isLeaf = menu.getIsLeaf();
@@ -120,9 +106,7 @@ public class PmsMenuBiz {
 	private List<PmsMenuDTO> getSonMenuListByPid(Long pId, List<PmsMenuDTO> menuList) {
 		List sonMenuList = new ArrayList<PmsMenuDTO>();
 		for (PmsMenuDTO menu : menuList) {
-			//Map map = (Map) menu;
 			if (menu != null) {
-				//String parentId = map.get("pId").toString();// 父id
 				Long parentId = menu.getParentId();
 				if (parentId == pId) {
 					sonMenuList.add(menu);
@@ -138,8 +122,6 @@ public class PmsMenuBiz {
 	 * @return void
 	 */
 	public void delete(Long id) {
-		//this.pmsMenuDao.deleteById(PmsMenu.class,id);
-		//getBaseDao().deleteById(PmsMenu.class,id);
 		pmsMenuDaoFacade.deleteById(id);
 	}
 
@@ -151,13 +133,11 @@ public class PmsMenuBiz {
 	 */
 	@SuppressWarnings("rawtypes")
 	public List listByRoleIds(String roleIdsStr) {
-		//return this.pmsMenuDao.listByRoleIds(roleIdsStr);
 		List<String> roldIds = Arrays.asList(roleIdsStr.split(","));
 		List<Long> roleIdList = new ArrayList<Long>();
 		for(String roleId : roldIds){
 			roleIdList.add(Long.parseLong(roleId));
 		}
-		//return getBaseDao().selectList(getStatement("listMenuByRoleIds"), roldIds);
 		return pmsMenuDaoFacade.listMenuByRoleIds(roleIdList);
 	}
 
@@ -172,13 +152,11 @@ public class PmsMenuBiz {
 	public String buildPermissionTree(String roleIds){
 		List treeData = null;
 		try {
-			//treeData = this.pmsMenuDao.listByRoleIds(roleIds);
 			List<String> roldIds = Arrays.asList(roleIds.split(","));
 			List<Long> roleIdList = new ArrayList<Long>();
 			for(String roleId : roldIds){
 				roleIdList.add(Long.parseLong(roleId));
 			}
-			//treeData = getBaseDao().selectList(getStatement("listMenuByRoleIds"), roldIds);
 			treeData = pmsMenuDaoFacade.listMenuByRoleIds(roleIdList);
 			if (treeData == null || treeData.isEmpty()) {
 				log.error("用户没有分配菜单权限");
@@ -203,28 +181,15 @@ public class PmsMenuBiz {
 		
 		List<PmsMenuDTO> sonMenuList = getSonMenuListByPid(pId, menuList);
 		for (PmsMenuDTO sonMenu : sonMenuList) {
-			//String id = map.get("id").toString();// id
-			//String name = map.get("name").toString();// 名称
-			//String isLeaf = map.get("isLeaf").toString();// 是否叶子
-			//String level = map.get("level").toString();// 菜单层级（1、2、3、4）
-			//String url = map.get("url").toString(); // ACTION访问地址
 			Long id = sonMenu.getId();
 			String name = sonMenu.getName();
 			Integer isLeaf = sonMenu.getIsLeaf();
-			//Integer level = sonMenu.getLevel();
 			String url = sonMenu.getUrl();
 			
 			String navTabId = "";
 			if (!StringUtils.isEmpty(sonMenu.getTargetName())) {
 				navTabId = sonMenu.getTargetName(); // 用于刷新查询页面
 			}
-			
-			/*if ("1".equals(level)){ 	//若是一级菜单
-				treeBuf.append("<div class='accordionHeader'>");
-				treeBuf.append("<h2>" + name + "</h2>");
-				treeBuf.append("</div>");
-				treeBuf.append("<div class='accordionContent'>");
-			}*/
 			
 			if(sonMenu.getParentId() == 0) {	//若是一级菜单
 				treeBuf.append("<div class='accordionHeader'>");
@@ -236,14 +201,6 @@ public class PmsMenuBiz {
 			if (isLeaf == NodeTypeEnum.LEAF.getValue()) {	//若是叶子节点
 				treeBuf.append("<li><a href='" + url + "' target='navTab' rel='" + navTabId + "'>" + name + "</a></li>");
 			} else {
-				
-				/*if ("1".equals(level)){
-					treeBuf.append("<ul class='tree treeFolder'>");
-				}else{
-					treeBuf.append("<li><a>" + name + "</a>");
-					treeBuf.append("<ul>");
-				}*/
-				
 				if(sonMenu.getParentId() == 0) {	//若是一级菜单
 					treeBuf.append("<ul class='tree treeFolder'>");
 				} else {
@@ -253,12 +210,6 @@ public class PmsMenuBiz {
 				
 				buildAdminPermissionTree(id, treeBuf, menuList);
 				
-				/*if ("1".equals(level)){
-					treeBuf.append("</ul>");
-				}else{
-					treeBuf.append("</ul></li>");
-				}*/
-				
 				if(sonMenu.getParentId() == 0) {	//若是一级菜单
 					treeBuf.append("</ul>");
 				} else {
@@ -267,9 +218,6 @@ public class PmsMenuBiz {
 				
 			}
 			
-			/*if ("1".equals(level)){
-				treeBuf.append("</div>");
-			}*/
 			if(sonMenu.getParentId() == 0) {	//若是一级菜单
 				treeBuf.append("</div>");
 			}
@@ -285,28 +233,18 @@ public class PmsMenuBiz {
 	public void createMenu(PmsMenuDTO model){
 		try {
 			PmsMenuDTO newPmsMenu = model;
-			//PmsMenu parentPmsMenu = pmsMenuDao.getById(PmsMenu.class, newPmsMenu.getParentId());
-			//PmsMenu parentPmsMenu = getBaseDao().getById(PmsMenu.class, newPmsMenu.getParentId());
 			PmsMenuDTO parentPmsMenu = pmsMenuDaoFacade.getById(newPmsMenu.getParentId());
 			if (null == parentPmsMenu) {	//新的一级菜单
-				//parentPmsMenu = new PmsMenu();
-				//parentPmsMenu.setId(0L);
 				newPmsMenu.setIsLeaf(NodeTypeEnum.LEAF.getValue());
 				newPmsMenu.setLevel(1);
 				newPmsMenu.setParentId(0L);
 			} else {
-				//parentPmsMenu = this.pmsMenuDao.getById(PmsMenu.class,parentPmsMenu.getId());
-				//parentPmsMenu = getBaseDao().getById(PmsMenu.class,parentPmsMenu.getId());
 				parentPmsMenu = pmsMenuDaoFacade.getById(parentPmsMenu.getId());
 				newPmsMenu.setIsLeaf(NodeTypeEnum.LEAF.getValue());
 				newPmsMenu.setLevel(parentPmsMenu.getLevel() + 1);
 				parentPmsMenu.setIsLeaf(NodeTypeEnum.PARENT.getValue());
-				//pmsMenuDao.saveOrUpdate(parentPmsMenu);
-				//getBaseDao().saveOrUpdate(parentPmsMenu);
 				pmsMenuDaoFacade.saveOrUpdate(parentPmsMenu);
 			}
-			//pmsMenuDao.saveOrUpdate(newPmsMenu);
-			//getBaseDao().saveOrUpdate(newPmsMenu);
 			pmsMenuDaoFacade.saveOrUpdate(newPmsMenu);
 		} catch (Exception e) {
 			log.error("添加菜单报错", e);
@@ -321,8 +259,6 @@ public class PmsMenuBiz {
 	 * @return String
 	 */
 	public String getMenuIdsByRoleId(Long roleId){
-		//List<PmsRoleMenu> menuList = pmsRoleMenuDao.listByRoleId(roleId);
-		//List<PmsRoleMenu> menuList = getBaseDao().selectList(getStatement("listRoleMenuByRoleId"), roleId);
 		List<PmsRoleMenuDTO> menuList = pmsMenuDaoFacade.listRoleMenuByRoleId(roleId);
 		StringBuffer menuIds = new StringBuffer("");
 		if (menuList != null && !menuList.isEmpty()) {
@@ -342,7 +278,6 @@ public class PmsMenuBiz {
 	 */
 	@SuppressWarnings("rawtypes")
 	public String buildMenuActionTree(String menuIdsStr, String actionIdsStr) {
-
 		List allMenuList = getTreeData(null); // 获取所有的菜单
 		StringBuffer treeBuf = new StringBuffer();
 		buildPermissionTree(0L, treeBuf, allMenuList, menuIdsStr, actionIdsStr); //从一级菜单开始构建
@@ -369,10 +304,6 @@ public class PmsMenuBiz {
 
 		List<PmsMenuDTO> sonMenuList = getSonMenuListByPid(pId, allMenuList);
 		for (PmsMenuDTO sonMenu : sonMenuList) {
-			//String menuId = sonMenu.get("id").toString();// id
-			//String parentId = sonMenu.get("pId").toString(); // PID
-			//String name = sonMenu.get("name").toString();// 名称
-			//String isLeaf = sonMenu.get("isLeaf").toString();// 是否叶子
 			Long menuId = sonMenu.getId();
 			Long parentId = sonMenu.getParentId();
 			String name = sonMenu.getName();
@@ -385,10 +316,8 @@ public class PmsMenuBiz {
 			if (isLeaf == NodeTypeEnum.LEAF.getValue()) {  // 如果叶子菜单，则处理挂在此菜单下的权限功能点
 
 				// 获取叶子菜单下所有的功能权限
-				//List<PmsAction> actionList = pmsActionDao.listAllByMenuId(Long.valueOf(menuId));
 				Map<String, Object> param = new HashMap<String, Object>();
 				param.put("menuId", Long.valueOf(menuId));
-				//List<PmsAction> actionList = getBaseDao().selectList(getStatement("listAllActionByMenuId"), param);
 				List<PmsActionDTO> actionList = pmsMenuDaoFacade.listAllActionByMenuId(menuId);
 				if (null != actionList && !actionList.isEmpty()) {
 					treeBuf.append("<ul>");
@@ -428,18 +357,14 @@ public class PmsMenuBiz {
 		}
 		
 		// 先删除所有的菜单权限
-		//pmsRoleMenuDao.deleteByRoleId(roleId);
 		PmsRoleMenuDTO pmsRoleMenu = new PmsRoleMenuDTO();
 		pmsRoleMenu.setRoleId(roleId);
-		//getBaseDao().deleteByModel(pmsRoleMenu);
 		pmsRoleMenuDaoFacade.deleteByModel(pmsRoleMenu);
 		
 		List<String> oldMenuIdList = new ArrayList<String>();
 		// 删除功能权限
-		//pmsRoleActionDao.deleteByRoleId(roleId);
 		PmsRoleActionDTO pmsRoleAction = new PmsRoleActionDTO();
 		pmsRoleAction.setRoleId(roleId);
-		//getBaseDao().deleteByModel(pmsRoleAction);
 		pmsRoleActionDaoFacade.deleteByModel(pmsRoleAction);
 		
 		if (!StringUtils.isEmpty(menuIds)) {
@@ -451,8 +376,6 @@ public class PmsMenuBiz {
 					entity.setRoleId(roleId);
 					entity.setMenuId(Long.valueOf(menuId));
 					// 新增菜单权限
-					//pmsRoleMenuDao.saveOrUpdate(entity);
-					//getBaseDao().saveOrUpdate(entity);
 					pmsRoleMenuDaoFacade.saveOrUpdate(entity);
 				}
 				oldMenuIdList.add(menuId);
@@ -466,8 +389,6 @@ public class PmsMenuBiz {
 				entity.setRoleId(roleId);
 				entity.setActionId(Long.valueOf(actionId));
 				// 新增功能权限
-				//pmsRoleActionDao.saveOrUpdate(entity);
-				//getBaseDao().saveOrUpdate(entity);
 				pmsRoleActionDaoFacade.saveOrUpdate(entity);
 			}
 		}
@@ -502,10 +423,6 @@ public class PmsMenuBiz {
 		}
 		List<PmsMenuDTO> sonMenuList = getSonMenuListByPid(pId, list);
 		for (PmsMenuDTO sonMenu : sonMenuList) {
-			//String id = map.get("id").toString();// id
-			//String parentId = map.get("pId").toString();// 父id
-			//String name = map.get("name").toString();// 名称
-			//String isLeaf = map.get("isLeaf").toString();// 是否叶子科目
 			Long id = sonMenu.getId();
 			Long parentId = sonMenu.getParentId();
 			String name = sonMenu.getName();
@@ -532,8 +449,6 @@ public class PmsMenuBiz {
 	 * @return List<PmsMenu>
 	 */
 	public List<PmsMenuDTO> listByParentId(Long parentId) {
-		//return pmsMenuDao.listByParentId(parentId);
-		//return getBaseDao().selectList(getStatement("listMenuByParentId"), parentId);
 		return pmsMenuDaoFacade.listMenuByParentId(parentId);
 	}
 
@@ -544,8 +459,6 @@ public class PmsMenuBiz {
 	 * @return List<PmsMenu>
 	 */
 	public List<PmsMenuDTO> getMenuByNameAndIsLeaf(Map<String, Object> map) {
-		//return pmsMenuDao.getMenuByNameAndIsLeaf(map);
-		//return getBaseDao().selectList(getStatement("listMenuBy"), map);
 		Integer isLeaf = map.get("isLeaf")==null? null:Integer.parseInt(map.get("isLeaf").toString());
 		String name = map.get("name")==null? null : map.get("name").toString();
 		Long parentId = map.get("parentId")==null? null : Long.parseLong(map.get("parentId").toString());
@@ -559,8 +472,6 @@ public class PmsMenuBiz {
 	 * @return PmsMenu
 	 */
 	public PmsMenuDTO getById(Long pid) {
-		//return pmsMenuDao.getById(PmsMenu.class,pid);
-		//return getBaseDao().getById(PmsMenu.class,pid);
 		return pmsMenuDaoFacade.getById(pid);
 	}
 
@@ -570,8 +481,6 @@ public class PmsMenuBiz {
 	 * @return void
 	 */
 	public void update(PmsMenuDTO menu) {
-		//pmsMenuDao.saveOrUpdate(menu);
-		//getBaseDao().saveOrUpdate(menu);
 		pmsMenuDaoFacade.saveOrUpdate(menu);
 	}
 	
@@ -582,8 +491,6 @@ public class PmsMenuBiz {
 	 * @return int
 	 */
 	public int countMenuByRoleId(Long roleId) {
-		//List<PmsRoleMenu> meunList = pmsRoleMenuDao.listByRoleId(roleId);
-		//List<PmsRoleMenu> meunList = getBaseDao().selectList(getStatement("listRoleMenuByRoleId"), roleId);
 		List<PmsRoleMenuDTO> meunList = pmsMenuDaoFacade.listRoleMenuByRoleId(roleId);
 		if (meunList == null || meunList.isEmpty()) {
 			return 0;

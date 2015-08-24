@@ -23,11 +23,6 @@ import com.techstack.pms.dao.facade.PmsRoleActionDaoFacade;
 @Component("pmsActionBiz")
 public class PmsActionBiz {
 	
-	/*@Autowired
-	private PmsActionDao pmsActionDao;
-	@Autowired
-	private PmsRoleActionDao pmsRoleActionDao;*/
-	
 	@Autowired
 	private PmsActionDaoFacade pmsActionDaoFacade;
 	@Autowired
@@ -40,13 +35,11 @@ public class PmsActionBiz {
 	 * @return List<PmsAction>
 	 */
 	public List<PmsActionDTO> findActionsByIdStr(String ids) {
-		//return pmsActionDao.findByIds(ids);
 		List<String> idarr = Arrays.asList(ids.split(","));
 		List<Long> idList = new ArrayList<Long>();
 		for(String id : idarr){
 			idList.add(Long.parseLong(id));
 		}
-		//return getBaseDao().selectList(getStatement("findActionByIds"), idarr);
 		return pmsActionDaoFacade.findActionsByIds(idList);
 	}
 
@@ -56,8 +49,6 @@ public class PmsActionBiz {
 	 * @return void
 	 */
 	public void deleteById(Long id) {
-		//pmsActionDao.deleteById(PmsAction.class,id);
-		//getBaseDao().deleteById(PmsAction.class,id);
 		pmsActionDaoFacade.deleteById(id);
 	}
 
@@ -68,8 +59,6 @@ public class PmsActionBiz {
 	 * @return PmsAction
 	 */
 	public PmsActionDTO getByActionName(String actionName) {
-		//return pmsActionDao.getByActionName(actionName);
-		//return getBaseDao().selectOne(getStatement("getActionByActionName"), actionName);
 		return pmsActionDaoFacade.getActionByActionName(actionName);
 	}
 
@@ -80,8 +69,6 @@ public class PmsActionBiz {
 	 * @return PmsAction
 	 */
 	public PmsActionDTO getByAction(String action) {
-		//return pmsActionDao.getByAction(action);
-		//return getBaseDao().selectOne(getStatement("getActionByAction"), action);
 		return pmsActionDaoFacade.getActionByAction(action);
 	}
 
@@ -93,11 +80,6 @@ public class PmsActionBiz {
 	 * @return PmsAction
 	 */
 	public PmsActionDTO getByActionNameNotEqId(String actionName, Long id) {
-		//return pmsActionDao.getByActionNameNotEqId(actionName, id);
-		/*Map<String, Object> param = new HashMap<String, Object>();
-		param.put("actionName", actionName);
-		param.put("id", id);
-		return getBaseDao().selectOne(getStatement("getActionByActionNameNotEqId"), param);*/
 		return pmsActionDaoFacade.getActionByActionNameNotEqId(actionName, id);
 	}
 
@@ -109,11 +91,6 @@ public class PmsActionBiz {
 	 * @return PmsAction
 	 */
 	public PmsActionDTO getByActionNotEqId(String action, Long id) {
-		//return pmsActionDao.getByActionNotEqId(action, id);
-	/*	Map<String, Object> param = new HashMap<String, Object>();
-		param.put("action", action);
-		param.put("id", id);
-		return getBaseDao().selectOne(getStatement("getActionByActionNotEqId"), param);*/
 		return pmsActionDaoFacade.getActionByActionNotEqId(action, id);
 	}
 
@@ -124,8 +101,6 @@ public class PmsActionBiz {
 	 * @return List<PmsAction>
 	 */
 	public List<PmsActionDTO> listByMenuId(Long menuId) {
-		//return pmsActionDao.listByMenuId(menuId);
-		//return getBaseDao().selectList(getStatement("listActionByMenuId"), menuId);
 		return pmsActionDaoFacade.listActionByMenuId(menuId);
 	}
 
@@ -136,11 +111,6 @@ public class PmsActionBiz {
 	 * @param @return    
 	 * @return PageBean
 	 */
-	/*public PageBean listPage(PageParam pageParam, Map<String, Object> paramMap) {
-		//return pmsActionDao.listPage(pageParam, paramMap);
-		//return pmsActionDao.listPage(PmsAction.class, pageParam, paramMap);
-		return getBaseDao().listPage(PmsAction.class, pageParam, paramMap);
-	}*/
 	public Page<PmsActionDTO> listPage(int pageNum, int pageSize, Map<String, Object> paramMap) {
 		return pmsActionDaoFacade.listPage(pageNum, pageSize, paramMap);
 	}
@@ -152,8 +122,6 @@ public class PmsActionBiz {
 	 * @return PmsAction
 	 */
 	public PmsActionDTO getById(Long id) {
-		//return pmsActionDao.getById(PmsAction.class,id);
-		//return getBaseDao().getById(PmsAction.class,id);
 		return pmsActionDaoFacade.getById(id);
 	}
 
@@ -163,8 +131,6 @@ public class PmsActionBiz {
 	 * @return void
 	 */
 	public void saveAction(PmsActionDTO act) {
-		//pmsActionDao.saveOrUpdate(act);
-		//getBaseDao().saveOrUpdate(act);
 		pmsActionDaoFacade.saveOrUpdate(act);
 	}
 
@@ -174,8 +140,6 @@ public class PmsActionBiz {
 	 * @return void
 	 */
 	public void updateAction(PmsActionDTO pmsAction) {
-		//pmsActionDao.saveOrUpdate(pmsAction);
-		//getBaseDao().saveOrUpdate(pmsAction);
 		pmsActionDaoFacade.saveOrUpdate(pmsAction);
 	}
 	
@@ -185,17 +149,11 @@ public class PmsActionBiz {
 	 * @return void
 	 */
 	public void deleteActionById(Long actionId) {
-		//pmsActionDao.deleteById(PmsAction.class,actionId);
-		//getBaseDao().deleteById(PmsAction.class,actionId);
-		pmsActionDaoFacade.deleteById(actionId);
-		// 删除权限和角色关联表中的关联关系
-		//pmsRoleActionDao.deleteByActionId(actionId);
-		//PmsRoleAction pmsRoleAction = new PmsRoleAction();
-		//pmsRoleAction.setActionId(actionId);
-		//getBaseDao().deleteByModel(pmsRoleAction);
 		PmsRoleActionDTO pmsRoleActionDTO = new PmsRoleActionDTO();
 		pmsRoleActionDTO.setActionId(actionId);
 		pmsRoleActionDaoFacade.deleteByModel(pmsRoleActionDTO);
+		
+		pmsActionDaoFacade.deleteById(actionId);
 	}
 	
 	/**
@@ -205,8 +163,6 @@ public class PmsActionBiz {
 	 * @return int
 	 */
 	public int countActionByRoleId(Long roleId) {
-		//List<PmsRoleAction> actionList = pmsRoleActionDao.listByRoleId(roleId);
-		//List<PmsRoleAction> actionList = getBaseDao().selectList(getStatement("listRoleActionByRoleId"), roleId);
 		List<PmsRoleActionDTO> actionList = pmsActionDaoFacade.listRoleActionByRoleId(roleId);
 		if (actionList == null || actionList.isEmpty()) {
 			return 0;
@@ -222,8 +178,6 @@ public class PmsActionBiz {
 	 * @return String
 	 */
 	public String getActionIdsByRoleId(Long roleId) {
-		//List<PmsRoleAction> rmList = pmsRoleActionDao.listByRoleId(roleId);
-		//List<PmsRoleAction> rmList = getBaseDao().selectList(getStatement("listRoleActionByRoleId"), roleId);
 		List<PmsRoleActionDTO> rmList = pmsActionDaoFacade.listRoleActionByRoleId(roleId);
 		StringBuffer actionIds = new StringBuffer();
 		if (rmList != null && !rmList.isEmpty()) {
@@ -242,22 +196,17 @@ public class PmsActionBiz {
 	 */
 	public String getActionIdsByRoleIds(String roleIds) {
 		// 得到角色－权限表中roleiId在ids中的所有关联对象
-		//List<PmsRoleAction> listPmsRoleActions = pmsRoleActionDao.listByRoleIds(roleIds);
 		List<String> roldIdArr = Arrays.asList(roleIds.split(","));
 		List<Long> roldIdList = new ArrayList<Long>();
 		for(String roleId : roldIdArr){
 			roldIdList.add(Long.parseLong(roleId));
 		}
-		//List<PmsRoleAction> listPmsRoleActions = getBaseDao().selectList(getStatement("listRoleActionByRoleIds"), roldIdArr);
 		List<PmsRoleActionDTO> listPmsRoleActions = pmsActionDaoFacade.listRoleActionByRoleIds(roldIdList);
-		// 构建StringBuffer
 		StringBuffer actionIdsBuf = new StringBuffer("");
-		// 拼接字符串
 		for (PmsRoleActionDTO pmsRoleAction : listPmsRoleActions) {
 			actionIdsBuf.append(pmsRoleAction.getActionId()).append(",");
 		}
 		String actionIds = actionIdsBuf.toString();
-		// 截取字符串
 		if (!StringUtils.isEmpty(actionIds)) {
 			actionIds = actionIds.substring(0, actionIds.length() - 1); // 去掉最后一个逗号
 		}

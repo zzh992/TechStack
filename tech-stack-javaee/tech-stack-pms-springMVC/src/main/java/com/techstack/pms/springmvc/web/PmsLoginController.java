@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.techstack.component.shiro.ShiroUser;
-import com.techstack.component.springmvc.SpringMVCBaseController;
+import com.techstack.component.spring.mvc.SpringMVCBaseController;
 import com.techstack.pms.biz.PmsActionBiz;
 import com.techstack.pms.biz.PmsMenuBiz;
 import com.techstack.pms.biz.PmsRoleBiz;

@@ -8,7 +8,7 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import com.techstack.pms.dao.dto.PmsRoleUserDTO;
 import com.techstack.pms.dao.dto.PmsUserDTO;
@@ -20,14 +20,9 @@ import com.techstack.pms.dao.facade.PmsUserDaoFacade;
  * @Description: 用户业务层
  * @author zzh
  */
-@Service("pmsUserBiz")
+@Component("pmsUserBiz")
 public class PmsUserBiz {
 
-/*	@Autowired
-	private PmsUserDao pmsUserDao;
-
-	@Autowired
-	private PmsRoleUserDao pmsRoleUserDao;*/
 	@Autowired
 	private PmsUserDaoFacade pmsUserDaoFacade;
 	@Autowired
@@ -40,8 +35,6 @@ public class PmsUserBiz {
 	 * @return PmsUser
 	 */
 	public PmsUserDTO findUserByLoginName(String loginName) {
-		//return pmsUserDao.findByLoginName(loginName);
-		//return getBaseDao().selectOne(getStatement("findUserByLoginName"), loginName);
 		return pmsUserDaoFacade.findUserByLoginName(loginName);
 	}
 
@@ -51,23 +44,15 @@ public class PmsUserBiz {
 	 * @return void
 	 */
 	public void deleteUserById(long userId) {
-		//PmsUser pmsUser = pmsUserDao.getById(PmsUser.class,userId);
-		//PmsUser pmsUser = getBaseDao().getById(PmsUser.class,userId);
 		PmsUserDTO pmsUser = pmsUserDaoFacade.getById(userId);
 		if (pmsUser != null) {
 			if ("1".equals(pmsUser.getType())) {
 				throw new RuntimeException("【" + pmsUser.getLoginName() + "】为超级管理员，不能删除！");
 			}
-			
 			// 删除原来的角色与用户关联
-			//pmsRoleUserDao.deleteByUserId(userId);
 			PmsRoleUserDTO pmsRoleUser = new PmsRoleUserDTO();
 			pmsRoleUser.setUserId(userId);
-			//getBaseDao().deleteByModel(pmsRoleUser);
 			pmsRoleUserDaoFacade.deleteByModel(pmsRoleUser);
-			
-			//pmsUserDao.deleteById(PmsUser.class,pmsUser.getId());
-			//getBaseDao().deleteById(PmsUser.class,pmsUser.getId());
 			pmsUserDaoFacade.deleteById(pmsUser.getId());
 		}
 	}
@@ -80,8 +65,6 @@ public class PmsUserBiz {
 	 */
 	@SuppressWarnings("rawtypes")
 	public List listUserByRoleId(long roleId) {
-		//return pmsUserDao.listByRoleId(roleId);
-		//return getBaseDao().selectList(getStatement("listUserByRoleId"), roleId);
 		return pmsUserDaoFacade.listUserByRoleId(roleId);
 	}
 	
@@ -91,8 +74,6 @@ public class PmsUserBiz {
 	 * @return void
 	 */
 	public void update(PmsUserDTO user) {
-		//pmsUserDao.saveOrUpdate(user);
-		//getBaseDao().saveOrUpdate(user);
 		pmsUserDaoFacade.saveOrUpdate(user);
 	}
 	
@@ -104,12 +85,8 @@ public class PmsUserBiz {
 	 * @return void
 	 */
 	public void updateUserPwd(Long userId, String newPwd, Integer isTrue) {
-		//PmsUser pmsUser = pmsUserDao.getById(PmsUser.class,userId);
-		//PmsUser pmsUser = getBaseDao().getById(PmsUser.class,userId);
 		PmsUserDTO pmsUser = pmsUserDaoFacade.getById(userId);
 		pmsUser.setLoginPwd(newPwd);
-		//pmsUserDao.saveOrUpdate(pmsUser);
-		//getBaseDao().saveOrUpdate(pmsUser);
 		pmsUserDaoFacade.saveOrUpdate(pmsUser);
 	}
 
@@ -120,8 +97,6 @@ public class PmsUserBiz {
 	 * @return PmsUser
 	 */
 	public PmsUserDTO getById(Long userId) {
-		//return pmsUserDao.getById(PmsUser.class,userId);
-		//return getBaseDao().getById(PmsUser.class,userId);
 		return pmsUserDaoFacade.getById(userId);
 	}
 
@@ -132,12 +107,6 @@ public class PmsUserBiz {
 	 * @param @return    
 	 * @return PageBean
 	 */
-	/*public PageBean listPage(PageParam pageParam, Map<String, Object> paramMap) {
-		//return pmsUserDao.listPage(pageParam, paramMap);
-		//return pmsUserDao.listPage(PmsUser.class, pageParam, paramMap);
-		paramMap.put("module", "pmsUser");
-		return getBaseDao().listPage(PmsUser.class, pageParam, paramMap);
-	}*/
 	public Page<PmsUserDTO> listPage(int pageNum, int pageSize, Map<String, Object> paramMap) {
 		return pmsUserDaoFacade.listPage(pageNum, pageSize, paramMap);
 	}
@@ -148,8 +117,6 @@ public class PmsUserBiz {
 	 * @return void
 	 */
 	public void create(PmsUserDTO pmsUser) {
-		//pmsUserDao.saveOrUpdate(pmsUser);
-		//getBaseDao().saveOrUpdate(pmsUser);
 		pmsUserDaoFacade.saveOrUpdate(pmsUser);
 	}
 	
@@ -161,8 +128,6 @@ public class PmsUserBiz {
 	 */
 	public void saveUser(PmsUserDTO pmsUser, String roleUserStr) {
 		// 保存用户信息
-		//pmsUserDao.saveOrUpdate(pmsUser);
-		//getBaseDao().saveOrUpdate(pmsUser);
 		pmsUser = pmsUserDaoFacade.saveOrUpdate(pmsUser);
 		
 		// 保存角色关联信息
@@ -179,8 +144,6 @@ public class PmsUserBiz {
 	 */
 	private void saveOrUpdateRoleUser(Long userId, String roleIdsStr) {
 		// 删除原来的角色与用户关联
-		//List<PmsRoleUser> listPmsRoleUsers = pmsRoleUserDao.listByUserId(userId);
-		//List<PmsRoleUser> listPmsRoleUsers = getBaseDao().selectList(getStatement("listRoleUserByUserId"), userId);
 		List<PmsRoleUserDTO> listPmsRoleUsers = pmsUserDaoFacade.listRoleUserByUserId(userId);
 		Map<Long, PmsRoleUserDTO> delMap = new HashMap<Long, PmsRoleUserDTO>();
 		for (PmsRoleUserDTO pmsRoleUser : listPmsRoleUsers) {
@@ -195,8 +158,6 @@ public class PmsUserBiz {
 					PmsRoleUserDTO pmsRoleUser = new PmsRoleUserDTO();
 					pmsRoleUser.setUserId(userId);
 					pmsRoleUser.setRoleId(roleId);
-					//pmsRoleUserDao.saveOrUpdate(pmsRoleUser);
-					//getBaseDao().saveOrUpdate(pmsRoleUser);
 					pmsRoleUserDaoFacade.saveOrUpdate(pmsRoleUser);
 				} else {
 					delMap.remove(roleId);
@@ -207,11 +168,9 @@ public class PmsUserBiz {
 		Iterator<Long> iterator = delMap.keySet().iterator();
 		while (iterator.hasNext()) {
 			long roleId = iterator.next();
-			//pmsRoleUserDao.deleteByRoleIdAndUserId(roleId, userId);
 			PmsRoleUserDTO pmsRoleUser = new PmsRoleUserDTO();
 			pmsRoleUser.setRoleId(roleId);
 			pmsRoleUser.setUserId(userId);
-			//getBaseDao().deleteByModel(pmsRoleUser);
 			pmsRoleUserDaoFacade.deleteByModel(pmsRoleUser);
 		}
 	}
@@ -224,8 +183,6 @@ public class PmsUserBiz {
 	 * @return void
 	 */
 	public void updateUser(PmsUserDTO pmsUser, String roleUserStr) {
-		//pmsUserDao.saveOrUpdate(pmsUser);
-		//getBaseDao().saveOrUpdate(pmsUser);
 		pmsUserDaoFacade.saveOrUpdate(pmsUser);
 		// 更新角色信息
 		saveOrUpdateRoleUser(pmsUser.getId(), roleUserStr);
@@ -238,8 +195,6 @@ public class PmsUserBiz {
 	 * @return int
 	 */
 	public int countUserByRoleId(Long roleId) {
-		//List<PmsRoleUser> userList = pmsRoleUserDao.listByRoleId(roleId);
-		//List<PmsRoleUser> userList = getBaseDao().selectList(getStatement("listRoleUserByRoleId"), roleId);
 		List<PmsRoleUserDTO> userList = pmsUserDaoFacade.listRoleUserByRoleId(roleId);
 		if (userList == null || userList.isEmpty()) {
 			return 0;
@@ -255,8 +210,6 @@ public class PmsUserBiz {
 	 * @return List<PmsRoleUser>
 	 */
 	public List<PmsRoleUserDTO> listRoleUserByUserId(long userId) {
-		//return pmsRoleUserDao.listByUserId(userId);
-		//return getBaseDao().selectList(getStatement("listRoleUserByUserId"), userId);
 		return pmsUserDaoFacade.listRoleUserByUserId(userId);
 	}
 

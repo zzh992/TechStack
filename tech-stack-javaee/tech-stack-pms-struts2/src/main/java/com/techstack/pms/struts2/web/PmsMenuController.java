@@ -188,8 +188,10 @@ public class PmsMenuController extends Struts2BaseController {
 			if (childList == null || childList.isEmpty()) {
 				// 此时要将父菜单设为叶子
 				PmsMenuDTO parent = pmsMenuBiz.getById(parentId);
-				parent.setIsLeaf(NodeTypeEnum.LEAF.getValue());
-				pmsMenuBiz.update(parent);
+				if(parent != null){
+					parent.setIsLeaf(NodeTypeEnum.LEAF.getValue());
+					pmsMenuBiz.update(parent);
+				}
 			}
 			log.info("==== info ==== 删除菜单【"+menu.getName()+"】成功");
 			return DwzUtils.operateSuccessInStruts2("操作成功");

@@ -35,12 +35,12 @@
 	</filter-mapping>
 	
 	<!--JPA LazyInitializationException -->
-	<filter>
+	<!-- <filter>
 		<filter-name>Spring OpenEntityManagerInViewFilter</filter-name>
 		<filter-class>org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter</filter-class>
 		<init-param>
-			<!-- 指定org.springframework.orm.jpa.LocalEntityManagerFactoryBean在spring配置文件中的名称,默认值为entityManagerFactory 
-				如果LocalEntityManagerFactoryBean在spring中的名称不是entityManagerFactory,该参数一定要指定,否则会出现找不到entityManagerFactory的异常 -->
+			指定org.springframework.orm.jpa.LocalEntityManagerFactoryBean在spring配置文件中的名称,默认值为entityManagerFactory 
+				如果LocalEntityManagerFactoryBean在spring中的名称不是entityManagerFactory,该参数一定要指定,否则会出现找不到entityManagerFactory的异常
 			<param-name>entityManagerFactoryBeanName</param-name>
 			<param-value>entityManagerFactory</param-value>
 		</init-param>
@@ -48,7 +48,7 @@
 	<filter-mapping>
 		<filter-name>Spring OpenEntityManagerInViewFilter</filter-name>
 		<url-pattern>/*</url-pattern>
-	</filter-mapping>  
+	</filter-mapping>   -->
 
 	<!-- Struts2过滤器 -->
 	<filter>

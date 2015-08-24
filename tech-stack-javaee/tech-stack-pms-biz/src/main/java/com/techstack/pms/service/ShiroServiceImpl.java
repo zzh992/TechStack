@@ -1,4 +1,4 @@
-package com.techstack.pms.springmvc.service;
+package com.techstack.pms.service;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -7,7 +7,7 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import com.techstack.component.shiro.ShiroService;
 import com.techstack.component.shiro.ShiroUser;
@@ -19,7 +19,7 @@ import com.techstack.pms.dao.dto.PmsRoleDTO;
 import com.techstack.pms.dao.dto.PmsRoleUserDTO;
 import com.techstack.pms.dao.dto.PmsUserDTO;
 
-@Component("shiroService")
+@Service("shiroService")
 public class ShiroServiceImpl implements ShiroService {
 
 	@Autowired

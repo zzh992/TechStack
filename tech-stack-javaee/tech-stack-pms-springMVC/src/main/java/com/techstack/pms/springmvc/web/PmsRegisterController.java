@@ -9,7 +9,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.techstack.component.springmvc.SpringMVCBaseController;
+import com.techstack.component.spring.mvc.SpringMVCBaseController;
 import com.techstack.pms.biz.PmsUserBiz;
 import com.techstack.pms.dao.dto.PmsUserDTO;
 import com.techstack.pms.enums.UserTypeEnum;
