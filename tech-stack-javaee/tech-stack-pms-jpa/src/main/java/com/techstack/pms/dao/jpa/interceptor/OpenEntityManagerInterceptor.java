@@ -54,7 +54,8 @@ public class OpenEntityManagerInterceptor implements MethodInterceptor {
 		}
 
 		try {
-			return invocation.proceed();
+			Object result = invocation.proceed();
+			return result;
 		} finally {
 			if (!participate) {
 				EntityManagerHolder emHolder = (EntityManagerHolder) TransactionSynchronizationManager.unbindResource(emf);

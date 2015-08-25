@@ -25,6 +25,7 @@
 
 	
 	<!-- 加载shiro组件的配置 -->
+	<!-- <import resource="classpath:logback/applicationContext-logbackConfig.xml" /> -->
 	<import resource="classpath:shiro/applicationContext-shiro.xml" />
 	<import resource="spring-mybatis.xml" />
 </beans>

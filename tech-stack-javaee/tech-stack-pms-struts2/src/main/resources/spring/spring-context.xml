@@ -27,5 +27,5 @@
 	<!-- 加载shiro组件的配置 -->
 	<import resource="classpath:shiro/applicationContext-shiro.xml" />
 	<import resource="spring-jpa.xml" />
-	<import resource="classpath:jpaLazy/spring-jpa-lazy.xml" />
+	<!-- <import resource="classpath:jpaLazy/spring-jpa-lazy.xml" /> -->
 </beans>

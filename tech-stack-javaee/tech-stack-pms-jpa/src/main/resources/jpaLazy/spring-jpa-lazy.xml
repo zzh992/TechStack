@@ -12,7 +12,7 @@
 	
 	<bean id="openEntityManagerInterceptor" class="com.techstack.pms.dao.jpa.interceptor.OpenEntityManagerInterceptor" />
 	<aop:config>
-		<aop:pointcut id="jpaLazyInit" expression="execution(* com.techstack.sms2.permission.action.*.*(..))" />
+		<aop:pointcut id="jpaLazyInit" expression="execution(public * com.techstack.pms.struts2.web.*.*(..))" />
 		<aop:advisor pointcut-ref="jpaLazyInit" advice-ref="openEntityManagerInterceptor" />
 	</aop:config>
 	
