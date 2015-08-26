@@ -13,7 +13,7 @@ public class SpringMVCServer {
 	public static final int PORT = 9556;
 	public static final String CONTEXT = "/tech-stack-pms-springMVC";
 	public static final String[] TLD_JAR_NAMES = new String[] { "sitemesh", "spring-webmvc", "shiro-web",
-			"springside-core" };
+			"springside-core", "tech-stack-component" };
 
 	public static void main(String[] args) throws Exception {
 
