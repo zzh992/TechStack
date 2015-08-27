@@ -1,5 +1,7 @@
 package com.techstack.pms.struts2.web;
 
+import java.util.Arrays;
+
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -52,7 +54,8 @@ public class PmsRegisterController extends Struts2BaseController{
 		user.setLoginPwd(loginPwd);
 		user.setType(UserTypeEnum.USER.getValue());
 		//pmsUserBiz.create(user);
-		pmsUserBiz.saveUser(user, "4");
+		//pmsUserBiz.saveUser(user, "4");
+		pmsUserBiz.saveUser(user, Arrays.asList(4L));
 		log.info("==== info ==== 用户【"+loginName+"】注册成功");
 		return "login";
 	}

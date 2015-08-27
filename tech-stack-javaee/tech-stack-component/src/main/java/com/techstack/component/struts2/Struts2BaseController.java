@@ -9,15 +9,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.shiro.SecurityUtils;
 import org.apache.struts2.ServletActionContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
-import com.techstack.component.mybatis.page.PageBean;
-import com.techstack.component.mybatis.page.PageParam;
 import com.techstack.component.shiro.ShiroUser;
 
 
@@ -25,11 +23,11 @@ import com.techstack.component.shiro.ShiroUser;
 public class Struts2BaseController extends ActionSupport{
 	private static ThreadLocal<Map<String, Object>> outPutMsg = new ThreadLocal<Map<String, Object>>();
 
-	public PageBean pageBean;
+	//public PageBean pageBean;
 
-	public Integer pageNum;
+	//public Integer pageNum;
 	
-	private static final Log log = LogFactory.getLog(Struts2BaseController.class);
+	private static final Logger log = LoggerFactory.getLogger(Struts2BaseController.class);
 	
 	
 	
@@ -96,17 +94,17 @@ public class Struts2BaseController extends ActionSupport{
 	 * 
 	 * @return the pageBean
 	 */
-	public PageBean getPageBean() {
+	/*public PageBean getPageBean() {
 		return pageBean;
 	}
 
-	/**
+	*//**
 	 * @param pageBean
 	 *            the pageBean to set
-	 */
+	 *//*
 	public void setPageBean(PageBean pageBean) {
 		this.pageBean = pageBean;
-	}
+	}*/
 
 	/**
 	 * 取得当前request
@@ -224,7 +222,7 @@ public class Struts2BaseController extends ActionSupport{
 	 * 获取当前页（DWZ-UI分页查询参数）.<br/>
 	 * 如果没有值则默认返回1.
 	 * 
-	 */
+	 *//*
 	private int getPageNum() {
 		// 当前页数
 		String pageNumStr = getHttpRequest().getParameter("pageNum");
@@ -235,11 +233,11 @@ public class Struts2BaseController extends ActionSupport{
 		return pageNum;
 	}
 
-	/**
+	*//**
 	 * 获取每页记录数（DWZ-UI分页查询参数）.<br/>
 	 * 如果没有值则默认返回15.
 	 * 
-	 */
+	 *//*
 	private int getNumPerPage() {
 		String numPerPageStr = getHttpRequest().getParameter("numPerPage");
 		int numPerPage = 20;
@@ -247,16 +245,16 @@ public class Struts2BaseController extends ActionSupport{
 			numPerPage = Integer.parseInt(numPerPageStr);
 		}
 		return numPerPage;
-	}
+	}*/
 
 	/**
 	 * 获取分页参数，包含当前页、每页记录数.
 	 * 
 	 * @return PageParam .
-	 */
+	 *//*
 	public PageParam getPageParam() {
 		return new PageParam(getPageNum(), getNumPerPage());
-	}
+	}*/
 
 	// //////////////////////// 存值方法 /////////////////////////////////
 	/**

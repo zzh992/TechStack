@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
@@ -86,7 +85,9 @@ public class PmsUserBiz {
 	 */
 	public void updateUserPwd(Long userId, String newPwd, Integer isTrue) {
 		PmsUserDTO pmsUser = pmsUserDaoFacade.getById(userId);
-		pmsUser.setLoginPwd(newPwd);
+		if(pmsUser!=null){
+			pmsUser.setLoginPwd(newPwd);
+		}
 		pmsUserDaoFacade.saveOrUpdate(pmsUser);
 	}
 
@@ -126,13 +127,13 @@ public class PmsUserBiz {
 	 * @param @param roleUserStr    
 	 * @return void
 	 */
-	public void saveUser(PmsUserDTO pmsUser, String roleUserStr) {
+	public void saveUser(PmsUserDTO pmsUser, List<Long> roleIds) {
 		// 保存用户信息
 		pmsUser = pmsUserDaoFacade.saveOrUpdate(pmsUser);
 		
 		// 保存角色关联信息
-		if (StringUtils.isNotBlank(roleUserStr) && roleUserStr.length() > 0) {
-			saveOrUpdateRoleUser(pmsUser.getId(), roleUserStr);
+		if (pmsUser!=null && roleIds!=null && !roleIds.isEmpty()) {
+			saveOrUpdateRoleUser(pmsUser.getId(), roleIds);
 		}
 	}
 	
@@ -142,18 +143,18 @@ public class PmsUserBiz {
 	 * @param @param roleIdsStr    
 	 * @return void
 	 */
-	private void saveOrUpdateRoleUser(Long userId, String roleIdsStr) {
+	private void saveOrUpdateRoleUser(Long userId, List<Long> roleIds) {
 		// 删除原来的角色与用户关联
 		List<PmsRoleUserDTO> listPmsRoleUsers = pmsUserDaoFacade.listRoleUserByUserId(userId);
 		Map<Long, PmsRoleUserDTO> delMap = new HashMap<Long, PmsRoleUserDTO>();
 		for (PmsRoleUserDTO pmsRoleUser : listPmsRoleUsers) {
 			delMap.put(pmsRoleUser.getRoleId(), pmsRoleUser);
 		}
-		if (StringUtils.isNotBlank(roleIdsStr)) {
+		if (roleIds!=null && !roleIds.isEmpty()) {
 			// 创建新的关联
-			String[] roleIds = roleIdsStr.split(",");
-			for (int i = 0; i < roleIds.length; i++) {
-				long roleId = Long.parseLong(roleIds[i]);
+			//String[] roleIds = roleIds.split(",");
+			for (Long roleId : roleIds) {
+				//long roleId = Long.parseLong(roleIds[i]);
 				if (delMap.get(roleId) == null) {
 					PmsRoleUserDTO pmsRoleUser = new PmsRoleUserDTO();
 					pmsRoleUser.setUserId(userId);
@@ -182,10 +183,12 @@ public class PmsUserBiz {
 	 * @param @param roleUserStr    
 	 * @return void
 	 */
-	public void updateUser(PmsUserDTO pmsUser, String roleUserStr) {
+	public void updateUser(PmsUserDTO pmsUser, List<Long> roleIds) {
 		pmsUserDaoFacade.saveOrUpdate(pmsUser);
 		// 更新角色信息
-		saveOrUpdateRoleUser(pmsUser.getId(), roleUserStr);
+		if(pmsUser != null){
+			saveOrUpdateRoleUser(pmsUser.getId(), roleIds);
+		}
 	}
 	
 	/**

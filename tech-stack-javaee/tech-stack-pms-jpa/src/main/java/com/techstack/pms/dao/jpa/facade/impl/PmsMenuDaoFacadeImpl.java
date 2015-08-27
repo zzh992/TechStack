@@ -60,7 +60,9 @@ public class PmsMenuDaoFacadeImpl implements PmsMenuDaoFacade {
 		PmsMenuDTO pmsMenuDTO = BeanMapper.map(model, PmsMenuDTO.class);
 		Menu menu = PmsMenuDTOMapper.toMenu(pmsMenuDTO);
 		List<Menu> menuList = menuDao.findAll(DynamicSpecifications.bySearchModel(menu));
-		menuDao.delete(menuList);
+		if(menuList!=null && !menuList.isEmpty()){
+			menuDao.delete(menuList);
+		}
 	}
 
 	@Override
@@ -69,8 +71,10 @@ public class PmsMenuDaoFacadeImpl implements PmsMenuDaoFacade {
 		parentMenu.setId(parentId);
 		List<Menu> menuList = menuDao.findByParentMenu(parentMenu);
 		List<PmsMenuDTO> pmsMenuDTOList = new ArrayList<PmsMenuDTO>();
-		for(Menu menu : menuList){
-			pmsMenuDTOList.add(PmsMenuDTOMapper.toPmsMenuDTO(menu));
+		if(menuList!=null && !menuList.isEmpty()){
+			for(Menu menu : menuList){
+				pmsMenuDTOList.add(PmsMenuDTOMapper.toPmsMenuDTO(menu));
+			}
 		}
 		return pmsMenuDTOList;
 	}
@@ -79,18 +83,24 @@ public class PmsMenuDaoFacadeImpl implements PmsMenuDaoFacade {
 	public List<PmsMenuDTO> listMenuByRoleIds(List<Long> roleIds) {	//TODO: need refactor: 参考mybatis的实现
 		List<Role> roleList = roleDao.findByIdIn(roleIds);
 		List<PmsMenuDTO> pmsMenuDTOList = new ArrayList<PmsMenuDTO>();
-		for(Role role : roleList){
-			if(role.getRoleType() == 1){
-				List<Menu> menus = menuDao.findAll();
-				for(Menu menu : menus){
-					if(!pmsMenuDTOList.contains(PmsMenuDTOMapper.toPmsMenuDTO(menu))){
-						pmsMenuDTOList.add(PmsMenuDTOMapper.toPmsMenuDTO(menu));
+		if(roleList!=null && !roleList.isEmpty()){
+			for(Role role : roleList){
+				if(role.getRoleType() == 1){
+					List<Menu> menus = menuDao.findAll();
+					if(menus!=null && !menus.isEmpty()){
+						for(Menu menu : menus){
+							if(!pmsMenuDTOList.contains(PmsMenuDTOMapper.toPmsMenuDTO(menu))){
+								pmsMenuDTOList.add(PmsMenuDTOMapper.toPmsMenuDTO(menu));
+							}
+						}
 					}
 				}
-			}
-			for(Menu menu : role.getMenus()){
-				if(!pmsMenuDTOList.contains(PmsMenuDTOMapper.toPmsMenuDTO(menu))){
-					pmsMenuDTOList.add(PmsMenuDTOMapper.toPmsMenuDTO(menu));
+				if(role.getMenus()!=null && !role.getMenus().isEmpty()){
+					for(Menu menu : role.getMenus()){
+						if(!pmsMenuDTOList.contains(PmsMenuDTOMapper.toPmsMenuDTO(menu))){
+							pmsMenuDTOList.add(PmsMenuDTOMapper.toPmsMenuDTO(menu));
+						}
+					}
 				}
 			}
 		}
@@ -101,8 +111,10 @@ public class PmsMenuDaoFacadeImpl implements PmsMenuDaoFacade {
 	public List<PmsRoleMenuDTO> listRoleMenuByRoleId(Long roleId) {
 		Role role = roleDao.findOne(roleId);
 		List<PmsRoleMenuDTO> pmsRoleMenuDTOList = new ArrayList<PmsRoleMenuDTO>();
-		for(Menu menu : role.getMenus()){
-			pmsRoleMenuDTOList.add(PmsRoleMenuDTOMapper.toPmsRoleMenuDTO(role, menu));
+		if(role!=null && role.getMenus()!=null){
+			for(Menu menu : role.getMenus()){
+				pmsRoleMenuDTOList.add(PmsRoleMenuDTOMapper.toPmsRoleMenuDTO(role, menu));
+			}
 		}
 		return pmsRoleMenuDTOList;
 	}
@@ -113,8 +125,10 @@ public class PmsMenuDaoFacadeImpl implements PmsMenuDaoFacade {
 		relevantMenu.setId(menuId);
 		List<Action> actionList = actionDao.findByRelevantMenu(relevantMenu);
 		List<PmsActionDTO> pmsActionDTOList = new ArrayList<PmsActionDTO>();
-		for(Action action : actionList){
-			pmsActionDTOList.add(PmsActionDTOMapper.toPmsActionDTO(action));
+		if(actionList!=null && !actionList.isEmpty()){
+			for(Action action : actionList){
+				pmsActionDTOList.add(PmsActionDTOMapper.toPmsActionDTO(action));
+			}
 		}
 		return pmsActionDTOList;
 	}
@@ -125,8 +139,10 @@ public class PmsMenuDaoFacadeImpl implements PmsMenuDaoFacade {
 		parentMenu.setId(parentId);
 		List<Menu> menuList = menuDao.findByParentMenu(parentMenu);
 		List<PmsMenuDTO> pmsMenuDTOList = new ArrayList<PmsMenuDTO>();
-		for(Menu menu : menuList){
-			pmsMenuDTOList.add(PmsMenuDTOMapper.toPmsMenuDTO(menu));
+		if(menuList!=null && !menuList.isEmpty()){
+			for(Menu menu : menuList){
+				pmsMenuDTOList.add(PmsMenuDTOMapper.toPmsMenuDTO(menu));
+			}
 		}
 		return pmsMenuDTOList;
 	}
@@ -145,8 +161,10 @@ public class PmsMenuDaoFacadeImpl implements PmsMenuDaoFacade {
 		List<Menu> menuList = menuDao.findAll(JpaPageUtils.buildSpecification(searchFilterList));
 		//List<Menu> menuList = menuDao.findByNameAndIsLeaf(name, isLeaf);
 		List<PmsMenuDTO> pmsMenuDTOList = new ArrayList<PmsMenuDTO>();
-		for(Menu menu : menuList){
-			pmsMenuDTOList.add(PmsMenuDTOMapper.toPmsMenuDTO(menu));
+		if(menuList!=null && !menuList.isEmpty()){
+			for(Menu menu : menuList){
+				pmsMenuDTOList.add(PmsMenuDTOMapper.toPmsMenuDTO(menu));
+			}
 		}
 		return pmsMenuDTOList;
 	}
