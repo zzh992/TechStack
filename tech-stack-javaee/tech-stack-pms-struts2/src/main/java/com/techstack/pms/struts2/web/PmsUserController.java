@@ -1,5 +1,6 @@
 package com.techstack.pms.struts2.web;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -159,7 +160,7 @@ public class PmsUserController extends Struts2BaseController{
 			pmsUser.setRemark(getString("desc")); // 描述
 			pmsUser.setType(UserTypeEnum.USER.getValue()); // 类型（ "0":'普通用户',"1":'超级管理员'），只能添加普通用户
 
-			String roleUserStr = getRoleUserStr();
+			List<Long> roleUserStr = getRoleUserStr();
 
 			// 表单数据校验
 			String validateMsg = validatePmsUser(pmsUser, roleUserStr);
@@ -230,7 +231,7 @@ public class PmsUserController extends Struts2BaseController{
 	 * @param @return    
 	 * @return String
 	 */
-	private String validatePmsUser(PmsUserDTO user, String roleUserStr) {
+	private String validatePmsUser(PmsUserDTO user, List<Long> roleUserStr) {
 		String msg = ""; // 用于存放校验提示信息的变量
 		msg += DwzUtils.lengthValidate("登录名", user.getLoginName(), true, 3, 50);
 
@@ -266,7 +267,7 @@ public class PmsUserController extends Struts2BaseController{
 		//msg += lengthValidate("描述", user.getRemark(), true, 3, 100);
 
 		// 新增用户的权限不能为空，为空没意义
-		if (StringUtils.isBlank(roleUserStr) && user.getId() == null) {
+		if (roleUserStr == null || roleUserStr.isEmpty()) {
 			msg += "用户关联的角色不能为空";
 		}
 		return msg;
@@ -359,7 +360,7 @@ public class PmsUserController extends Struts2BaseController{
 			// 修改时不能修状态
 			// pmsUser.setStatus(getInteger("status"));
 
-			String roleUserStr = getRoleUserStr();
+			List<Long> roleUserStr = getRoleUserStr();
 			String newStr = "";
 			StringBuffer oldRoleNameBuffer = new StringBuffer();
 			// 查询用户原有的角色
@@ -559,12 +560,17 @@ public class PmsUserController extends Struts2BaseController{
 	 * @param @throws Exception    
 	 * @return String
 	 */
-	private String getRoleUserStr() throws Exception {
+	private  List<Long> getRoleUserStr() throws Exception {
 		String roleStr = getString("selectVal");
+		List<Long> roleIds = new ArrayList<Long>();
 		if (StringUtils.isNotBlank(roleStr) && roleStr.length() > 0) {
 			roleStr = roleStr.substring(0, roleStr.length() - 1);
+			String[] roleIdArr = roleStr.split(",");
+			for(String roleId : roleIdArr){
+				roleIds.add(Long.parseLong(roleId));
+			}
 		}
-		return roleStr;
+		return roleIds;
 	}
 
 	/**

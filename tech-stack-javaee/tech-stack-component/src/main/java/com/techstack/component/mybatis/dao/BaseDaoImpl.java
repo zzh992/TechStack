@@ -13,10 +13,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.mybatis.spring.support.SqlSessionDaoSupport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -28,11 +28,12 @@ import com.techstack.component.mybatis.annotation.Table;
 import com.techstack.component.mybatis.page.PageBean;
 import com.techstack.component.mybatis.page.PageParam;
 import com.techstack.component.mybatis.utils.MybatisMapUtils;
+import com.techstack.component.reflection.Reflections;
 
 //@Repository("baseDao")
 public class BaseDaoImpl extends SqlSessionDaoSupport implements BaseDao{
 	
-	private static final Log log = LogFactory.getLog(BaseDaoImpl.class);
+	private static final Logger log = LoggerFactory.getLogger(BaseDaoImpl.class);
 	
 	@Autowired
 	private SqlSessionTemplate sqlSessionTemplate;
@@ -58,15 +59,15 @@ public class BaseDaoImpl extends SqlSessionDaoSupport implements BaseDao{
 			             * 在Boolean值的时候是isXXX（默认使用ide生成getter的都是isXXX） 
 			             * 如果出现NoSuchMethod异常 就说明它找不到那个gettet方法 需要做个规范 
 			             */  
-			            Method m;
+			           // Method m;
 						
 						if(field.isAnnotationPresent(Column.class)){
 							Column column = field.getAnnotation(Column.class);
 							//System.out.println(column.name());
 							String columnName = column.name();
-							m = (Method) model.getClass().getMethod(  
-							        "get" + getMethodName(field.getName()));
-				            Object val =  m.invoke(model);// 调用getter方法获取属性值  
+							//m = (Method) model.getClass().getMethod("get" + getMethodName(field.getName()));
+				            //Object val =  m.invoke(model);// 调用getter方法获取属性值  
+							Object val =  Reflections.getFieldValue(model, field.getName());
 				            if (val != null) {  
 				            	Map columnMap = new HashMap();
 				            	columnMap.put("columnName", columnName);
@@ -82,12 +83,14 @@ public class BaseDaoImpl extends SqlSessionDaoSupport implements BaseDao{
 	//		        }
 				}
 				
-				Long id = (Long) model.getClass().getMethod("get" + getMethodName("id")).invoke(model);
+				//Long id = (Long) model.getClass().getMethod("get" + getMethodName("id")).invoke(model);
+				Long id = (Long) Reflections.getFieldValue(model, "id");
 				if(id!=null){
 					for(int i =0;i<columns.size();i++){
 						value.append(columns.get(i).get("columnName")+"='"+columns.get(i).get("val")+"',");
 					}
-					int version =  (Integer) model.getClass().getMethod("get" + getMethodName("version")).invoke(model);
+					//int version =  (Integer) model.getClass().getMethod("get" + getMethodName("version")).invoke(model);
+					int version =  (Integer) Reflections.getFieldValue(model, "version");
 					value.append("VERSION="+(version+1));
 					sql.append("UPDATE "+tableName+" SET "+value+" WHERE ID="+"'"+id+"'");
 					log.info("==== info ==== UPDATE SQL:"+sql);
@@ -97,7 +100,8 @@ public class BaseDaoImpl extends SqlSessionDaoSupport implements BaseDao{
 						value.append("'"+columns.get(i).get("val")+"',");
 					}
 					columnsName.append("CREATE_TIME,VERSION");
-					Date createTime = (Date) model.getClass().getMethod("get" + getMethodName("createTime")).invoke(model);
+					//Date createTime = (Date) model.getClass().getMethod("get" + getMethodName("createTime")).invoke(model);
+					Date createTime = (Date) Reflections.getFieldValue(model, "createTime");
 					SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 					value.append("'"+format.format(createTime)+"',"+'0');
 					sql.append("INSERT INTO "+tableName+"("+columnsName+") VALUES "+" ("+ value+")");
@@ -113,8 +117,9 @@ public class BaseDaoImpl extends SqlSessionDaoSupport implements BaseDao{
 					ResultSet rs = statement.getGeneratedKeys();	//返回主键
 					rs.next();
 					Long insertId = rs.getLong(1);
-					Method idSetter = (Method) model.getClass().getMethod("setId", Long.class);
-					idSetter.invoke(model, insertId);
+					//Method idSetter = (Method) model.getClass().getMethod("setId", Long.class);
+					//idSetter.invoke(model, insertId);
+					Reflections.setFieldValue(model, "id", insertId);
 					rs.close();
 				}
 				
@@ -213,7 +218,7 @@ public class BaseDaoImpl extends SqlSessionDaoSupport implements BaseDao{
 				Connection connection = sqlSessionTemplate.getSqlSessionFactory().openSession().getConnection();
 				//Connection connection = getSqlSession().getConnection();
 				Statement statement = connection.createStatement();
-				System.out.println("==== info ===  getByModel SQL："+sql.toString());
+				log.info("==== info ===  getByModel SQL："+sql.toString());
 				ResultSet resultSet = statement.executeQuery(sql.toString());
 				ResultSetMetaData metaData =  resultSet.getMetaData();
 				while(resultSet.next()){

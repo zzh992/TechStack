@@ -62,15 +62,19 @@ public class PmsActionDaoFacadeImpl implements PmsActionDaoFacade {
 		List<Action> actionList = actionDao.findAll(DynamicSpecifications.bySearchModel(action));
 		//actionDao.deleteInBatch(actionList);
 		//actionDao.flush();
-		actionDao.delete(actionList);
+		if(actionList != null){
+			actionDao.delete(actionList);
+		}
 	}
 
 	@Override
 	public List<PmsActionDTO> findActionsByIds(List<Long> ids) {
 		List<Action> actionList = actionDao.findByIdIn(ids);
 		List<PmsActionDTO> pmsActionDTOList = new ArrayList<PmsActionDTO>();
-		for(Action action : actionList){
-			pmsActionDTOList.add(PmsActionDTOMapper.toPmsActionDTO(action));
+		if(actionList!=null && !actionList.isEmpty()){
+			for(Action action : actionList){
+				pmsActionDTOList.add(PmsActionDTOMapper.toPmsActionDTO(action));
+			}
 		}
 		return pmsActionDTOList;
 	}
@@ -105,8 +109,10 @@ public class PmsActionDaoFacadeImpl implements PmsActionDaoFacade {
 		relevantMenu.setId(menuId);
 		List<Action> actionList = actionDao.findByRelevantMenu(relevantMenu);
 		List<PmsActionDTO> pmsActionDTOList = new ArrayList<PmsActionDTO>();
-		for(Action action : actionList){
-			pmsActionDTOList.add(PmsActionDTOMapper.toPmsActionDTO(action));
+		if(actionList!=null && actionList.isEmpty()){
+			for(Action action : actionList){
+				pmsActionDTOList.add(PmsActionDTOMapper.toPmsActionDTO(action));
+			}
 		}
 		return pmsActionDTOList;
 	}
@@ -115,8 +121,10 @@ public class PmsActionDaoFacadeImpl implements PmsActionDaoFacade {
 	public List<PmsRoleActionDTO> listRoleActionByRoleId(Long roleId) {
 		Role role = roleDao.findOne(roleId);
 		List<PmsRoleActionDTO> pmsRoleActionDTOList = new ArrayList<PmsRoleActionDTO>(); 
-		for(Action action : role.getActions()){
-			pmsRoleActionDTOList.add(PmsRoleActionDTOMapper.toPmsRoleActionDTO(role, action));
+		if(role!=null && role.getActions()!=null){
+			for(Action action : role.getActions()){
+				pmsRoleActionDTOList.add(PmsRoleActionDTOMapper.toPmsRoleActionDTO(role, action));
+			}
 		}
 		return pmsRoleActionDTOList;
 	}
@@ -125,15 +133,21 @@ public class PmsActionDaoFacadeImpl implements PmsActionDaoFacade {
 	public List<PmsRoleActionDTO> listRoleActionByRoleIds(List<Long> roleIds) {
 		List<Role> roleList = roleDao.findByIdIn(roleIds);
 		List<PmsRoleActionDTO> pmsRoleActionDTOList = new ArrayList<PmsRoleActionDTO>(); 
-		for(Role role : roleList){
-			if(role.getRoleType() == 1){
-				List<Action> actions = actionDao.findAll();
-				for(Action action  : actions){
-					pmsRoleActionDTOList.add(PmsRoleActionDTOMapper.toPmsRoleActionDTO(role, action));
+		if(roleList!=null && !roleList.isEmpty()){
+			for(Role role : roleList){
+				if(role.getRoleType() == 1){
+					List<Action> actions = actionDao.findAll();
+					if(actions!=null && !actions.isEmpty()){
+						for(Action action  : actions){
+							pmsRoleActionDTOList.add(PmsRoleActionDTOMapper.toPmsRoleActionDTO(role, action));
+						}
+					}
 				}
-			}
-			for(Action action : role.getActions()){
-				pmsRoleActionDTOList.add(PmsRoleActionDTOMapper.toPmsRoleActionDTO(role, action));
+				if(role.getActions()!=null && !role.getActions().isEmpty()){
+					for(Action action : role.getActions()){
+						pmsRoleActionDTOList.add(PmsRoleActionDTOMapper.toPmsRoleActionDTO(role, action));
+					}
+				}
 			}
 		}
 		return pmsRoleActionDTOList;
