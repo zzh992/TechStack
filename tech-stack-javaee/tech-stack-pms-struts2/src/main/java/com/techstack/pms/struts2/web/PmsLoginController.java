@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.shiro.SecurityUtils;
@@ -136,7 +135,6 @@ public class PmsLoginController extends Struts2BaseController {
 		this.putData("loginName", shiroUser.getUsername());
 		
 		try {
-			String tree = buildUserPermissionMenu(user);
 			this.putData("tree", buildUserPermissionMenu(user));
 			//pmsUserBiz.update(user); TODO:为什么update
 
@@ -185,16 +183,16 @@ public class PmsLoginController extends Struts2BaseController {
 	 */
 	private List<String> getActions(PmsUserDTO pmsUser) {
 		// 根据用户ID得到该用户的所有角色拼成的字符串
-		String roleIds = pmsRoleBiz.getRoleIdsByUserId(pmsUser.getId());
+		List<Long> roleIds = pmsRoleBiz.getRoleIdsByUserId(pmsUser.getId());
 		// 根据角色ID字符串得到该用户的所有权限拼成的字符串
-		String actionIds = "";
-		if (StringUtils.isNotBlank(roleIds)) {
+		List<Long> actionIds = new ArrayList<Long>();
+		if (roleIds!=null && !roleIds.isEmpty()) {
 			actionIds = pmsActionBiz.getActionIdsByRoleIds(roleIds);
 		}
 		// 根据权限ID字符串得到权限列表
 		List<PmsActionDTO> pmsActionList = new ArrayList<PmsActionDTO>();
 		if (!"".equals(actionIds)) {
-			pmsActionList = pmsActionBiz.findActionsByIdStr(actionIds);
+			pmsActionList = pmsActionBiz.findActionsByIds(actionIds);
 		}
 		
 		List<String> actionList = new ArrayList<String>();
@@ -213,8 +211,8 @@ public class PmsLoginController extends Struts2BaseController {
 	 */
 	private String buildUserPermissionMenu(PmsUserDTO pmsUser){
 		// 根据用户ID得到该用户的所有角色拼成的字符串
-		String roleIds = pmsRoleBiz.getRoleIdsByUserId(pmsUser.getId());
-		if (StringUtils.isBlank(roleIds)) {
+		List<Long> roleIds = pmsRoleBiz.getRoleIdsByUserId(pmsUser.getId());
+		if (roleIds==null || roleIds.isEmpty()) {
 			log.info("==== info ==== 用户[" + pmsUser.getLoginName() + "]没有配置对应的权限角色");
 			throw new RuntimeException("该帐号已被取消所有系统权限");
 		}

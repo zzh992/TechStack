@@ -1,5 +1,6 @@
 package com.techstack.pms.springmvc.web;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -315,7 +316,8 @@ public class PmsRoleController extends SpringMVCBaseController{
 		}
 
 		String menuIds = "";
-		String actionIds = "";
+		//String actionIds = "";
+		List<Long> actionIds = new ArrayList<Long>();
 		try {
 			menuIds = pmsMenuBiz.getMenuIdsByRoleId(roleId); // 根据角色查找角色对应的菜单ID集
 			actionIds = pmsActionBiz.getActionIdsByRoleId(roleId); // 根据角色查找角色对应的功能权限ID集
@@ -325,7 +327,7 @@ public class PmsRoleController extends SpringMVCBaseController{
 
 		// 前面加个逗号，方便接下来的处理
 		menuIds = "," + menuIds;
-		actionIds = "," + actionIds;
+		//actionIds = "," + actionIds;
 
 		modelMap.put("menuActionTree", pmsMenuBiz.buildMenuActionTree(menuIds, actionIds));
 

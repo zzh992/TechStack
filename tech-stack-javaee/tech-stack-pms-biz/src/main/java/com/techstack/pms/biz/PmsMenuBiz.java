@@ -62,8 +62,8 @@ public class PmsMenuBiz {
 	 * @return List
 	 */
 	@SuppressWarnings("rawtypes")
-	private List getTreeData(String parentId) {
-		return pmsMenuDaoFacade.listMenuBy(null, null, parentId==null? null : Long.parseLong(parentId));
+	private List getTreeData(Long parentId) {
+		return pmsMenuDaoFacade.listMenuBy(null, null, parentId);
 	}
 
 	/**
@@ -82,15 +82,17 @@ public class PmsMenuBiz {
 			buffer.append("<ul>");
 		}
 		List<PmsMenuDTO> listMenu = getSonMenuListByPid(pId, list);
-		for (PmsMenuDTO menu : listMenu) {
-			Long id = menu.getId();
-			String name = menu.getName();
-			Integer isLeaf = menu.getIsLeaf();
-			buffer.append("<li><a onclick=\"onClickMenuNode(" + id + ")\"  href=\"" + url + "?id=" + id + "\" target=\"ajax\" rel=\"jbsxBox\"  value=" + id + ">" + name + "</a>");
-			if (isLeaf != NodeTypeEnum.LEAF.getValue()) {	//非叶子节点继续递归
-				recursionTreeMenu(id, buffer, list, url);
+		if(listMenu != null && !listMenu.isEmpty()){
+			for (PmsMenuDTO menu : listMenu) {
+				Long id = menu.getId();
+				String name = menu.getName();
+				Integer isLeaf = menu.getIsLeaf();
+				buffer.append("<li><a onclick=\"onClickMenuNode(" + id + ")\"  href=\"" + url + "?id=" + id + "\" target=\"ajax\" rel=\"jbsxBox\"  value=" + id + ">" + name + "</a>");
+				if (!NodeTypeEnum.LEAF.getValue().equals(isLeaf)) {	//非叶子节点继续递归
+					recursionTreeMenu(id, buffer, list, url);
+				}
+				buffer.append("</li>");
 			}
-			buffer.append("</li>");
 		}
 		buffer.append("</ul>");
 	}
@@ -149,15 +151,15 @@ public class PmsMenuBiz {
 	 * @return String
 	 */
 	@SuppressWarnings("rawtypes")
-	public String buildPermissionTree(String roleIds){
+	public String buildPermissionTree(List<Long> roleIds){
 		List treeData = null;
 		try {
-			List<String> roldIds = Arrays.asList(roleIds.split(","));
+			/*List<String> roldIds = Arrays.asList(roleIds.split(","));
 			List<Long> roleIdList = new ArrayList<Long>();
 			for(String roleId : roldIds){
 				roleIdList.add(Long.parseLong(roleId));
-			}
-			treeData = pmsMenuDaoFacade.listMenuByRoleIds(roleIdList);
+			}*/
+			treeData = pmsMenuDaoFacade.listMenuByRoleIds(roleIds);
 			if (treeData == null || treeData.isEmpty()) {
 				log.error("用户没有分配菜单权限");
 			}
@@ -277,10 +279,10 @@ public class PmsMenuBiz {
 	 * @return String
 	 */
 	@SuppressWarnings("rawtypes")
-	public String buildMenuActionTree(String menuIdsStr, String actionIdsStr) {
+	public String buildMenuActionTree(String menuIdsStr, List<Long> actionIds) {
 		List allMenuList = getTreeData(null); // 获取所有的菜单
 		StringBuffer treeBuf = new StringBuffer();
-		buildPermissionTree(0L, treeBuf, allMenuList, menuIdsStr, actionIdsStr); //从一级菜单开始构建
+		buildPermissionTree(0L, treeBuf, allMenuList, menuIdsStr, actionIds); //从一级菜单开始构建
 		return treeBuf.toString();
 
 	}
@@ -295,7 +297,7 @@ public class PmsMenuBiz {
 	 * @return void
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private void buildPermissionTree(Long pId, StringBuffer treeBuf, List allMenuList, String menuIds, String actionIds) {
+	private void buildPermissionTree(Long pId, StringBuffer treeBuf, List allMenuList, String menuIds, List<Long> actionIds) {
 		if (pId == 0) {  // 为一级菜单
 			treeBuf.append("<ul class=\"tree treeFolder treeCheck expand\" >");
 		} else {
@@ -323,7 +325,8 @@ public class PmsMenuBiz {
 					treeBuf.append("<ul>");
 					for (int j = 0; j < actionList.size(); j++) {
 						PmsActionDTO action = actionList.get(j);
-						if (actionIds.indexOf("," + action.getId().toString() + ",") > -1) {
+						//if (actionIds.indexOf("," + action.getId().toString() + ",") > -1) {
+						if (actionIds.indexOf(action.getId()) > -1) {
 							treeBuf.append("<li><a checked='true' actionid='" + action.getId() + "'>" + action.getActionName() + " (A)</a>");
 						} else {
 							treeBuf.append("<li><a actionid='" + action.getId() + "'>" + action.getActionName() + " (A)</a>");

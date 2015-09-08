@@ -35,6 +35,14 @@ public class LogBackTest {
 		log.info("======info");
 		log.warn("======warn");
 		log.error("======error");
+		Long id = null;
+		String name = null;
+		Integer isLeaf = new Integer(2);
+		Integer temp = new Integer(2);
+		System.out.println("11"+ id + name);
+		if(isLeaf != temp){
+			System.out.println("11"+ isLeaf);
+		}
 	}
 
 }

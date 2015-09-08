@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -56,16 +55,20 @@ public class ShiroServiceImpl implements ShiroService {
 	public Set<String> findPermissionsByUsername(String username) {
 		PmsUserDTO pmsUser = pmsUserBiz.findUserByLoginName(username);
 		// 根据用户ID得到该用户的所有角色拼成的字符串
-		String roleIds = pmsRoleBiz.getRoleIdsByUserId(pmsUser.getId());
+		List<Long> roleIds = pmsRoleBiz.getRoleIdsByUserId(pmsUser.getId());
 		// 根据角色ID字符串得到该用户的所有权限拼成的字符串
-		String actionIds = "";
+		/*String actionIds = "";
 		if (StringUtils.isNotBlank(roleIds)) {
+			actionIds = pmsActionBiz.getActionIdsByRoleIds(roleIds);
+		}*/
+		List<Long> actionIds = null;
+		if(roleIds!=null && !roleIds.isEmpty()){
 			actionIds = pmsActionBiz.getActionIdsByRoleIds(roleIds);
 		}
 		// 根据权限ID字符串得到权限列表
 		List<PmsActionDTO> pmsActionList = new ArrayList<PmsActionDTO>();
-		if (!"".equals(actionIds)) {
-			pmsActionList = pmsActionBiz.findActionsByIdStr(actionIds);
+		if (actionIds!=null && !actionIds.isEmpty()) {
+			pmsActionList = pmsActionBiz.findActionsByIds(actionIds);
 		}
 		
 		Set<String> actionList = new HashSet<String>();

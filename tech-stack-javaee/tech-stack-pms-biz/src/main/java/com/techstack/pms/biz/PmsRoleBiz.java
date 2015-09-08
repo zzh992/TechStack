@@ -1,9 +1,9 @@
 package com.techstack.pms.biz;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
@@ -173,10 +173,15 @@ public class PmsRoleBiz {
 	 * @param @return    
 	 * @return String
 	 */
-	public String getRoleIdsByUserId(long userId) {
+	public List<Long> getRoleIdsByUserId(long userId) {
 		// 得到用户和角色列表
 		List<PmsRoleUserDTO> rpList = pmsRoleDaoFacade.listRoleUserByUserId(userId);
-		StringBuffer roleIdsBuf = new StringBuffer("");
+		List<Long> roleIds = new ArrayList<Long>();
+		for (PmsRoleUserDTO rp : rpList) {
+			roleIds.add(rp.getRoleId());
+		}
+		return roleIds;
+		/*StringBuffer roleIdsBuf = new StringBuffer("");
 		for (PmsRoleUserDTO rp : rpList) {
 			roleIdsBuf.append(rp.getRoleId()).append(",");
 		}
@@ -185,7 +190,7 @@ public class PmsRoleBiz {
 		if (!StringUtils.isEmpty(roleIds)) {
 			roleIds = roleIds.substring(0, roleIds.length() - 1);
 		}
-		return roleIds;
+		return roleIds;*/
 	}
 
 

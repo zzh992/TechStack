@@ -18,6 +18,9 @@ import org.apache.commons.logging.LogFactory;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.mybatis.spring.support.SqlSessionDaoSupport;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import com.techstack.component.mapper.BeanMapper;
 import com.techstack.component.mybatis.annotation.Column;
@@ -370,7 +373,7 @@ public class BaseDaoImpl extends SqlSessionDaoSupport implements BaseDao{
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public <Model> PageBean listPage(Class<Model> modelClass, PageParam pageParam, Map<String, Object> paramMap) {
+	public <Model> Page listPage(Class<Model> modelClass, PageParam pageParam, Map<String, Object> paramMap) {
 		try{
 			if (paramMap == null) {
 				paramMap = new HashMap<String, Object>();
@@ -405,10 +408,12 @@ public class BaseDaoImpl extends SqlSessionDaoSupport implements BaseDao{
 			if (isCount != null && "1".equals(isCount.toString())){
 				Map<String, Object> countResultMap = new HashMap<String, Object>();
 				countResultMap.put("count", resultList.size());
-				return new PageBean(pageParam.getPageNum(), pageParam.getNumPerPage(), resultList.size(), list, countResultMap);
+				return new PageImpl<Object>(list, new PageRequest(pageParam.getPageNum(), pageParam.getNumPerPage()), resultList.size());
+				//return new PageBean(pageParam.getPageNum(), pageParam.getNumPerPage(), resultList.size(), list, countResultMap);
 			}else{
 				// 构造分页对象
-				return new PageBean(pageParam.getPageNum(), pageParam.getNumPerPage(), resultList.size(), list);
+				return new PageImpl<Object>(list, new PageRequest(pageParam.getPageNum(), pageParam.getNumPerPage()), resultList.size());
+				//return new PageBean(pageParam.getPageNum(), pageParam.getNumPerPage(), resultList.size(), list);
 			}
 		}catch(Exception e){
 			e.printStackTrace();

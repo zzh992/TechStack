@@ -3,6 +3,8 @@ package com.techstack.component.mybatis.dao;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.data.domain.Page;
+
 import com.techstack.component.mybatis.page.PageBean;
 import com.techstack.component.mybatis.page.PageParam;
 
@@ -100,5 +102,5 @@ public interface BaseDao{
 	 * @param @return    
 	 * @return PageBean
 	 */
-	public <Model> PageBean listPage(Class<Model> modelClass, PageParam pageParam, Map<String, Object> paramMap);
+	public <Model> Page listPage(Class<Model> modelClass, PageParam pageParam, Map<String, Object> paramMap);
 }

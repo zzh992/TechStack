@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 
 import com.techstack.component.mapper.BeanMapper;
 import com.techstack.component.mybatis.dao.BaseDao;
-import com.techstack.component.mybatis.page.PageBean;
 import com.techstack.component.mybatis.page.PageParam;
 import com.techstack.pms.dao.dto.PmsActionDTO;
 import com.techstack.pms.dao.dto.PmsRoleActionDTO;
@@ -116,8 +115,8 @@ public class PmsActionDaoFacadeImpl implements PmsActionDaoFacade {
 	@Override
 	public Page<PmsActionDTO> listPage(int pageNum, int pageSize, Map<String, Object> paramMap) {
 		PageParam pageParam = new PageParam(pageNum, pageSize);
-		PageBean pageBean = baseDao.listPage(PmsAction.class, pageParam, paramMap);
-		Page<PmsActionDTO> page = new PageImpl<PmsActionDTO>(BeanMapper.mapList(pageBean.getRecordList(), PmsActionDTO.class), new PageRequest(pageNum, pageSize), pageBean.getTotalCount());
+		Page pageBean = baseDao.listPage(PmsAction.class, pageParam, paramMap);
+		Page<PmsActionDTO> page = new PageImpl<PmsActionDTO>(BeanMapper.mapList(pageBean.getContent(), PmsActionDTO.class), new PageRequest(pageNum, pageSize), pageBean.getTotalElements());
 		return page;
 	}
 

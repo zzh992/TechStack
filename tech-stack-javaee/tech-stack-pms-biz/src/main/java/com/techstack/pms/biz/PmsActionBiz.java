@@ -1,14 +1,12 @@
 package com.techstack.pms.biz;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 import com.techstack.pms.dao.dto.PmsActionDTO;
 import com.techstack.pms.dao.dto.PmsRoleActionDTO;
@@ -34,13 +32,13 @@ public class PmsActionBiz {
 	 * @param @return    
 	 * @return List<PmsAction>
 	 */
-	public List<PmsActionDTO> findActionsByIdStr(String ids) {
-		List<String> idarr = Arrays.asList(ids.split(","));
+	public List<PmsActionDTO> findActionsByIds(List<Long> ids) {
+		/*List<String> idarr = Arrays.asList(ids.split(","));
 		List<Long> idList = new ArrayList<Long>();
 		for(String id : idarr){
 			idList.add(Long.parseLong(id));
-		}
-		return pmsActionDaoFacade.findActionsByIds(idList);
+		}*/
+		return pmsActionDaoFacade.findActionsByIds(ids);
 	}
 
 	/**
@@ -177,15 +175,22 @@ public class PmsActionBiz {
 	 * @param @return    
 	 * @return String
 	 */
-	public String getActionIdsByRoleId(Long roleId) {
+	public List<Long> getActionIdsByRoleId(Long roleId) {
 		List<PmsRoleActionDTO> rmList = pmsActionDaoFacade.listRoleActionByRoleId(roleId);
-		StringBuffer actionIds = new StringBuffer();
+		List<Long> actionIds = new ArrayList<Long>();
+		if (rmList != null && !rmList.isEmpty()) {
+			for (PmsRoleActionDTO rm : rmList) {
+				actionIds.add(rm.getActionId());
+			}
+		}
+		return actionIds;
+		/*StringBuffer actionIds = new StringBuffer();
 		if (rmList != null && !rmList.isEmpty()) {
 			for (PmsRoleActionDTO rm : rmList) {
 				actionIds.append(rm.getActionId()).append(",");
 			}
 		}
-		return actionIds.toString();
+		return actionIds.toString();*/
 	}
 	
 	/**
@@ -194,15 +199,20 @@ public class PmsActionBiz {
 	 * @param @return    
 	 * @return String
 	 */
-	public String getActionIdsByRoleIds(String roleIds) {
+	public List<Long> getActionIdsByRoleIds(List<Long> roleIds) {
 		// 得到角色－权限表中roleiId在ids中的所有关联对象
-		List<String> roldIdArr = Arrays.asList(roleIds.split(","));
+		/*List<String> roldIdArr = Arrays.asList(roleIds.split(","));
 		List<Long> roldIdList = new ArrayList<Long>();
 		for(String roleId : roldIdArr){
 			roldIdList.add(Long.parseLong(roleId));
+		}*/
+		List<PmsRoleActionDTO> listPmsRoleActions = pmsActionDaoFacade.listRoleActionByRoleIds(roleIds);
+		List<Long> actionIds = new ArrayList<Long>();
+		for (PmsRoleActionDTO pmsRoleAction : listPmsRoleActions) {
+			actionIds.add(pmsRoleAction.getActionId());
 		}
-		List<PmsRoleActionDTO> listPmsRoleActions = pmsActionDaoFacade.listRoleActionByRoleIds(roldIdList);
-		StringBuffer actionIdsBuf = new StringBuffer("");
+		return actionIds;
+		/*StringBuffer actionIdsBuf = new StringBuffer("");
 		for (PmsRoleActionDTO pmsRoleAction : listPmsRoleActions) {
 			actionIdsBuf.append(pmsRoleAction.getActionId()).append(",");
 		}
@@ -210,7 +220,7 @@ public class PmsActionBiz {
 		if (!StringUtils.isEmpty(actionIds)) {
 			actionIds = actionIds.substring(0, actionIds.length() - 1); // 去掉最后一个逗号
 		}
-		return actionIds;
+		return actionIds;*/
 	}
 
 }
