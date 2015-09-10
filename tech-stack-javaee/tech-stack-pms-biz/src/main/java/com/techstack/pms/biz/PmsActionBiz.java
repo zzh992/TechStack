@@ -155,21 +155,6 @@ public class PmsActionBiz {
 	}
 	
 	/**
-	 * @Description: 根据角色ID统计有多少权限关联到此角色.
-	 * @param @param roleId
-	 * @param @return    
-	 * @return int
-	 */
-	public int countActionByRoleId(Long roleId) {
-		List<PmsRoleActionDTO> actionList = pmsActionDaoFacade.listRoleActionByRoleId(roleId);
-		if (actionList == null || actionList.isEmpty()) {
-			return 0;
-		} else {
-			return actionList.size();
-		}
-	}
-	
-	/**
 	 * @Description: 根据角色ID，获取所有的功能权限ID集
 	 * @param @param roleId
 	 * @param @return    

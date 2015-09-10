@@ -106,24 +106,6 @@ public class PmsRoleBiz {
 	}
 
 	/**
-	 * @Description: 保存角色
-	 * @param @param pmsRole    
-	 * @return void
-	 */
-	public void create(PmsRoleDTO pmsRole) {
-		pmsRoleDaoFacade.saveOrUpdate(pmsRole);
-	}
-
-	/**
-	 * @Description: 更新角色
-	 * @param @param pmsRole    
-	 * @return void
-	 */
-	public void update(PmsRoleDTO pmsRole) {
-		pmsRoleDaoFacade.saveOrUpdate(pmsRole);
-	}
-	
-	/**
 	 * @Description: 根据角色ID删除角色，并删除与用户、权限、菜单的关联关系.
 	 * @param @param roleId    
 	 * @return void
@@ -168,7 +150,7 @@ public class PmsRoleBiz {
 	}
 	
 	/**
-	 * @Description: 根据用户ID获得该用户的所有角色id所拼成的String，每个ID用“,”分隔
+	 * @Description: 根据用户ID获得该用户的所有角色id
 	 * @param @param operatorId
 	 * @param @return    
 	 * @return String

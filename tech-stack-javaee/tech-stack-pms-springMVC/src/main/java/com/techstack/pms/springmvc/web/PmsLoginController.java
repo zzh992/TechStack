@@ -12,6 +12,7 @@ import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -22,7 +23,9 @@ import com.techstack.pms.biz.PmsMenuBiz;
 import com.techstack.pms.biz.PmsRoleBiz;
 import com.techstack.pms.biz.PmsUserBiz;
 import com.techstack.pms.dao.dto.PmsActionDTO;
+import com.techstack.pms.dao.dto.PmsMenuDTO;
 import com.techstack.pms.dao.dto.PmsUserDTO;
+import com.techstack.pms.enums.NodeTypeEnum;
 
 @Controller
 //@RequestMapping("/login_")
@@ -228,7 +231,86 @@ public class PmsLoginController extends SpringMVCBaseController{
 			throw new RuntimeException("该帐号已被取消所有系统权限");
 		}
 		// 根据操作员拥有的角色ID,构建管理后台的树形权限功能菜单
-		return pmsMenuBiz.buildPermissionTree(roleIds);
+		List treeData = pmsMenuBiz.listByRoleIds(roleIds);
+		StringBuffer strJson = new StringBuffer();
+		buildAdminPermissionTree(0L, strJson, treeData); //从一级菜单开始构建
+		return strJson.toString();
+	}
+	
+	/**
+	 * @Description: 构建管理后台的树形权限功能菜单
+	 * @param @param pId
+	 * @param @param treeBuf
+	 * @param @param menuList    
+	 * @return void
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private void buildAdminPermissionTree(Long pId, StringBuffer treeBuf, List menuList) {
+		List<PmsMenuDTO> sonMenuList = getSonMenuListByPid(pId, menuList);
+		for (PmsMenuDTO sonMenu : sonMenuList) {
+			Long id = sonMenu.getId();
+			String name = sonMenu.getName();
+			Integer isLeaf = sonMenu.getIsLeaf();
+			String url = sonMenu.getUrl();
+			
+			String navTabId = "";
+			if (!StringUtils.isEmpty(sonMenu.getTargetName())) {
+				navTabId = sonMenu.getTargetName(); // 用于刷新查询页面
+			}
+			
+			if(sonMenu.getParentId() == 0) {	//若是一级菜单
+				treeBuf.append("<div class='accordionHeader'>");
+				treeBuf.append("<h2>" + name + "</h2>");
+				treeBuf.append("</div>");
+				treeBuf.append("<div class='accordionContent'>");
+			}
+			
+			if (isLeaf == NodeTypeEnum.LEAF.getValue()) {	//若是叶子节点
+				treeBuf.append("<li><a href='" + url + "' target='navTab' rel='" + navTabId + "'>" + name + "</a></li>");
+			} else {
+				if(sonMenu.getParentId() == 0) {	//若是一级菜单
+					treeBuf.append("<ul class='tree treeFolder'>");
+				} else {
+					treeBuf.append("<li><a>" + name + "</a>");
+					treeBuf.append("<ul>");
+				}
+				
+				buildAdminPermissionTree(id, treeBuf, menuList);
+				
+				if(sonMenu.getParentId() == 0) {	//若是一级菜单
+					treeBuf.append("</ul>");
+				} else {
+					treeBuf.append("</ul></li>");
+				}
+				
+			}
+			
+			if(sonMenu.getParentId() == 0) {	//若是一级菜单
+				treeBuf.append("</div>");
+			}
+		}
+
+	}
+	
+	/**
+	 * @Description: 根据(pId)获取(menuList)中的所有子菜单集合.
+	 * @param @param pId
+	 * @param @param menuList
+	 * @param @return    
+	 * @return List<Map>
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private List<PmsMenuDTO> getSonMenuListByPid(Long pId, List<PmsMenuDTO> menuList) {
+		List sonMenuList = new ArrayList<PmsMenuDTO>();
+		for (PmsMenuDTO menu : menuList) {
+			if (menu != null) {
+				Long parentId = menu.getParentId();
+				if (parentId == pId) {
+					sonMenuList.add(menu);
+				}
+			}
+		}
+		return sonMenuList;
 	}
 
 }

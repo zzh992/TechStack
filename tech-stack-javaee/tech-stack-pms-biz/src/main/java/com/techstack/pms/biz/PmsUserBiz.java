@@ -1,7 +1,6 @@
 package com.techstack.pms.biz;
 
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -113,15 +112,6 @@ public class PmsUserBiz {
 	}
 
 	/**
-	 * @Description: 保存用户信息.
-	 * @param @param pmsUser    
-	 * @return void
-	 */
-	public void create(PmsUserDTO pmsUser) {
-		pmsUserDaoFacade.saveOrUpdate(pmsUser);
-	}
-	
-	/**
 	 * @Description: 保存用户信息及其关联的角色.
 	 * @param @param pmsUser
 	 * @param @param roleUserStr    
@@ -146,7 +136,25 @@ public class PmsUserBiz {
 	private void saveOrUpdateRoleUser(Long userId, List<Long> roleIds) {
 		// 删除原来的角色与用户关联
 		List<PmsRoleUserDTO> listPmsRoleUsers = pmsUserDaoFacade.listRoleUserByUserId(userId);
-		Map<Long, PmsRoleUserDTO> delMap = new HashMap<Long, PmsRoleUserDTO>();
+		List<Long> originRoleIds = new ArrayList<Long>();
+		for (PmsRoleUserDTO pmsRoleUser : listPmsRoleUsers) {
+			originRoleIds.add(pmsRoleUser.getRoleId());
+		}
+		List<Long> newAddRoleIds = removeAll(roleIds, originRoleIds);
+		for(Long newRoleId : newAddRoleIds){
+			PmsRoleUserDTO pmsRoleUser = new PmsRoleUserDTO();
+			pmsRoleUser.setUserId(userId);
+			pmsRoleUser.setRoleId(newRoleId);
+			pmsRoleUserDaoFacade.saveOrUpdate(pmsRoleUser);
+		}
+		List<Long> removeRoleIds = removeAll(originRoleIds, roleIds);
+		for(Long removeRoleId : removeRoleIds){
+			PmsRoleUserDTO pmsRoleUser = new PmsRoleUserDTO();
+			pmsRoleUser.setRoleId(removeRoleId);
+			pmsRoleUser.setUserId(userId);
+			pmsRoleUserDaoFacade.deleteByModel(pmsRoleUser);
+		}
+		/*Map<Long, PmsRoleUserDTO> delMap = new HashMap<Long, PmsRoleUserDTO>();
 		for (PmsRoleUserDTO pmsRoleUser : listPmsRoleUsers) {
 			delMap.put(pmsRoleUser.getRoleId(), pmsRoleUser);
 		}
@@ -173,7 +181,23 @@ public class PmsUserBiz {
 			pmsRoleUser.setRoleId(roleId);
 			pmsRoleUser.setUserId(userId);
 			pmsRoleUserDaoFacade.deleteByModel(pmsRoleUser);
+		}*/
+	}
+	
+	/**
+	 * roleIds - originRoleIds的差集
+	 * @param roleIds
+	 * @param originRoleIds
+	 * @return
+	 */
+	private List<Long> removeAll(List<Long> roleIds, List<Long> originRoleIds){
+		List<Long> result = new ArrayList<Long>();
+		for(Long roleId : roleIds){
+			if(!originRoleIds.contains(roleId)){
+				result.add(roleId);
+			}
 		}
+		return result;
 	}
 
 	

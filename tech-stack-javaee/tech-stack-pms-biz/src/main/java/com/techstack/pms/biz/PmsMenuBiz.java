@@ -47,13 +47,13 @@ public class PmsMenuBiz {
 	 * @param @return    
 	 * @return String
 	 */
-	@SuppressWarnings("rawtypes")
+	/*@SuppressWarnings("rawtypes")
 	public String getTreeMenu(String actionUrl) {
 		List treeData = getTreeData(null);
 		StringBuffer strJson = new StringBuffer();
 		recursionTreeMenu(0L, strJson, treeData, actionUrl); //从一级菜单开始递归
 		return strJson.toString();
-	}
+	}*/
 
 	/**
 	 * @Description: 根据父菜单ID获取该菜单下的所有子孙菜单(如果为空，则为获取所有的菜单).
@@ -62,40 +62,11 @@ public class PmsMenuBiz {
 	 * @return List
 	 */
 	@SuppressWarnings("rawtypes")
-	private List getTreeData(Long parentId) {
+	public List getMenuByPid(Long parentId) {
 		return pmsMenuDaoFacade.listMenuBy(null, null, parentId);
 	}
 
-	/**
-	 * @Description: 递归输出树形菜单
-	 * @param @param pId (父节点ID，若为0则表示一级菜单)
-	 * @param @param buffer
-	 * @param @param list
-	 * @param @param url    
-	 * @return void
-	 */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private void recursionTreeMenu(Long pId, StringBuffer buffer, List list, String url) {
-		if (pId == 0) {	//若为一级菜单
-			buffer.append("<ul class=\"tree treeFolder collapse \" >");
-		} else {
-			buffer.append("<ul>");
-		}
-		List<PmsMenuDTO> listMenu = getSonMenuListByPid(pId, list);
-		if(listMenu != null && !listMenu.isEmpty()){
-			for (PmsMenuDTO menu : listMenu) {
-				Long id = menu.getId();
-				String name = menu.getName();
-				Integer isLeaf = menu.getIsLeaf();
-				buffer.append("<li><a onclick=\"onClickMenuNode(" + id + ")\"  href=\"" + url + "?id=" + id + "\" target=\"ajax\" rel=\"jbsxBox\"  value=" + id + ">" + name + "</a>");
-				if (!NodeTypeEnum.LEAF.getValue().equals(isLeaf)) {	//非叶子节点继续递归
-					recursionTreeMenu(id, buffer, list, url);
-				}
-				buffer.append("</li>");
-			}
-		}
-		buffer.append("</ul>");
-	}
+	
 
 	/**
 	 * @Description: 根据(pId)获取(menuList)中的所有子菜单集合.
@@ -104,7 +75,7 @@ public class PmsMenuBiz {
 	 * @param @return    
 	 * @return List<Map>
 	 */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	/*@SuppressWarnings({ "rawtypes", "unchecked" })
 	private List<PmsMenuDTO> getSonMenuListByPid(Long pId, List<PmsMenuDTO> menuList) {
 		List sonMenuList = new ArrayList<PmsMenuDTO>();
 		for (PmsMenuDTO menu : menuList) {
@@ -116,7 +87,7 @@ public class PmsMenuBiz {
 			}
 		}
 		return sonMenuList;
-	}
+	}*/
 
 	/**
 	 * @Description: 根据ID删除菜单
@@ -134,13 +105,8 @@ public class PmsMenuBiz {
 	 * @return List
 	 */
 	@SuppressWarnings("rawtypes")
-	public List listByRoleIds(String roleIdsStr) {
-		List<String> roldIds = Arrays.asList(roleIdsStr.split(","));
-		List<Long> roleIdList = new ArrayList<Long>();
-		for(String roleId : roldIds){
-			roleIdList.add(Long.parseLong(roleId));
-		}
-		return pmsMenuDaoFacade.listMenuByRoleIds(roleIdList);
+	public List listByRoleIds(List<Long> roleIds) {
+		return pmsMenuDaoFacade.listMenuByRoleIds(roleIds);
 	}
 
 	/**
@@ -150,15 +116,15 @@ public class PmsMenuBiz {
 	 * @param @throws PermissionException    
 	 * @return String
 	 */
-	@SuppressWarnings("rawtypes")
+	/*@SuppressWarnings("rawtypes")
 	public String buildPermissionTree(List<Long> roleIds){
 		List treeData = null;
 		try {
-			/*List<String> roldIds = Arrays.asList(roleIds.split(","));
+			List<String> roldIds = Arrays.asList(roleIds.split(","));
 			List<Long> roleIdList = new ArrayList<Long>();
 			for(String roleId : roldIds){
 				roleIdList.add(Long.parseLong(roleId));
-			}*/
+			}
 			treeData = pmsMenuDaoFacade.listMenuByRoleIds(roleIds);
 			if (treeData == null || treeData.isEmpty()) {
 				log.error("用户没有分配菜单权限");
@@ -169,7 +135,7 @@ public class PmsMenuBiz {
 		StringBuffer strJson = new StringBuffer();
 		buildAdminPermissionTree(0L, strJson, treeData); //从一级菜单开始构建
 		return strJson.toString();
-	}
+	}*/
 
 	/**
 	 * @Description: 构建管理后台的树形权限功能菜单
@@ -178,7 +144,7 @@ public class PmsMenuBiz {
 	 * @param @param menuList    
 	 * @return void
 	 */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	/*@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void buildAdminPermissionTree(Long pId, StringBuffer treeBuf, List menuList) {
 		
 		List<PmsMenuDTO> sonMenuList = getSonMenuListByPid(pId, menuList);
@@ -225,7 +191,7 @@ public class PmsMenuBiz {
 			}
 		}
 
-	}
+	}*/
 
 	/**
 	 * @Description: 创建菜单
@@ -278,14 +244,14 @@ public class PmsMenuBiz {
 	 * @param @return    
 	 * @return String
 	 */
-	@SuppressWarnings("rawtypes")
+	/*@SuppressWarnings("rawtypes")
 	public String buildMenuActionTree(String menuIdsStr, List<Long> actionIds) {
 		List allMenuList = getTreeData(null); // 获取所有的菜单
 		StringBuffer treeBuf = new StringBuffer();
 		buildPermissionTree(0L, treeBuf, allMenuList, menuIdsStr, actionIds); //从一级菜单开始构建
 		return treeBuf.toString();
 
-	}
+	}*/
 
 	/**
 	 * @Description: 创建分配权限的菜单树
@@ -296,7 +262,7 @@ public class PmsMenuBiz {
 	 * @param @param actionIds    
 	 * @return void
 	 */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	/*@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void buildPermissionTree(Long pId, StringBuffer treeBuf, List allMenuList, String menuIds, List<Long> actionIds) {
 		if (pId == 0) {  // 为一级菜单
 			treeBuf.append("<ul class=\"tree treeFolder treeCheck expand\" >");
@@ -343,7 +309,7 @@ public class PmsMenuBiz {
 		}
 
 		treeBuf.append("</ul>");
-	}
+	}*/
 
 	/**
 	 * @Description: 为角色分配权限
@@ -401,14 +367,14 @@ public class PmsMenuBiz {
 	 * @Description: 构建查找带回
 	 * @param @return    
 	 * @return String
-	 */
+	 *//*
 	@SuppressWarnings("rawtypes")
 	public String buildLookUpMenu() {
 		List treeData = getTreeData(null);
 		StringBuffer strJson = new StringBuffer();
 		recursionTreeMenuLookUp(0L, strJson, treeData); //从一级菜单开始构建
 		return strJson.toString();
-	}
+	}*/
 
 	/**
 	 * @Description: 查找带回权限树
@@ -417,7 +383,7 @@ public class PmsMenuBiz {
 	 * @param @param list    
 	 * @return void
 	 */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	/*@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void recursionTreeMenuLookUp(Long pId, StringBuffer buffer, List list) {
 		if (pId == 0) {	//为一级菜单
 			buffer.append("<ul class=\"tree treeFolder\" >");
@@ -443,7 +409,7 @@ public class PmsMenuBiz {
 			buffer.append("</li>");
 		}
 		buffer.append("</ul>");
-	}
+	}*/
 
 	/**
 	 * @Description: 根据菜单ID查找菜单（可用于判断菜单下是否还有子菜单）.

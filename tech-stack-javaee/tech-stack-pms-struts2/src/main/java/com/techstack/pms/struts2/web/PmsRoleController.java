@@ -27,6 +27,7 @@ import com.techstack.pms.dao.dto.PmsActionDTO;
 import com.techstack.pms.dao.dto.PmsMenuDTO;
 import com.techstack.pms.dao.dto.PmsRoleDTO;
 import com.techstack.pms.dao.dto.PmsUserDTO;
+import com.techstack.pms.enums.NodeTypeEnum;
 import com.techstack.pms.enums.RoleTypeEnum;
 import com.techstack.pms.enums.UserTypeEnum;
 
@@ -314,8 +315,12 @@ public class PmsRoleController extends Struts2BaseController{
 		// 前面加个逗号，方便接下来的处理
 		menuIds = "," + menuIds;
 		//actionIds = "," + actionIds;
+		
+		List allMenuList = pmsMenuBiz.getMenuByPid(null); // 获取所有的菜单
+		StringBuffer treeBuf = new StringBuffer();
+		buildPermissionTree(0L, treeBuf, allMenuList, menuIds, actionIds); //从一级菜单开始构建
 
-		this.putData("menuActionTree", pmsMenuBiz.buildMenuActionTree(menuIds, actionIds));
+		this.putData("menuActionTree", treeBuf.toString());
 
 		// 查询角色对应的用户
 		List<PmsUserDTO> userList = (List<PmsUserDTO>) pmsUserBiz.listUserByRoleId(roleId);
@@ -323,6 +328,85 @@ public class PmsRoleController extends Struts2BaseController{
 
 		this.putData("roleId", roleId);
 		return "assignPermissionUI";
+	}
+	
+	/**
+	 * @Description: 创建分配权限的菜单树
+	 * @param @param pId
+	 * @param @param treeBuf
+	 * @param @param allMenuList
+	 * @param @param menuIds
+	 * @param @param actionIds    
+	 * @return void
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private void buildPermissionTree(Long pId, StringBuffer treeBuf, List allMenuList, String menuIds, List<Long> actionIds) {
+		if (pId == 0) {  // 为一级菜单
+			treeBuf.append("<ul class=\"tree treeFolder treeCheck expand\" >");
+		} else {
+			treeBuf.append("<ul>");
+		}
+
+		List<PmsMenuDTO> sonMenuList = getSonMenuListByPid(pId, allMenuList);
+		for (PmsMenuDTO sonMenu : sonMenuList) {
+			Long menuId = sonMenu.getId();
+			Long parentId = sonMenu.getParentId();
+			String name = sonMenu.getName();
+			Integer isLeaf = sonMenu.getIsLeaf();
+			if (menuIds.indexOf("," + menuId + ",") > -1) {
+				treeBuf.append("<li><a menuid='" + menuId + "' checked='true' pid='" + parentId + "' isleaf='" + isLeaf + "'>" + name + " (M)</a>");
+			} else {
+				treeBuf.append("<li><a menuid='" + menuId + "' pid='" + parentId + "' isleaf='" + isLeaf + "'>" + name + " (M)</a>");
+			}
+			if (isLeaf == NodeTypeEnum.LEAF.getValue()) {  // 如果叶子菜单，则处理挂在此菜单下的权限功能点
+
+				// 获取叶子菜单下所有的功能权限
+				Map<String, Object> param = new HashMap<String, Object>();
+				param.put("menuId", Long.valueOf(menuId));
+				List<PmsActionDTO> actionList = pmsActionBiz.listByMenuId(menuId);
+				if (null != actionList && !actionList.isEmpty()) {
+					treeBuf.append("<ul>");
+					for (int j = 0; j < actionList.size(); j++) {
+						PmsActionDTO action = actionList.get(j);
+						//if (actionIds.indexOf("," + action.getId().toString() + ",") > -1) {
+						if (actionIds.indexOf(action.getId()) > -1) {
+							treeBuf.append("<li><a checked='true' actionid='" + action.getId() + "'>" + action.getActionName() + " (A)</a>");
+						} else {
+							treeBuf.append("<li><a actionid='" + action.getId() + "'>" + action.getActionName() + " (A)</a>");
+						}
+					}
+					treeBuf.append("</ul>");
+				}
+
+			} else {
+				// 不是叶子菜单，递归
+				buildPermissionTree(menuId, treeBuf, allMenuList, menuIds, actionIds);
+			}
+			treeBuf.append("</li>");
+		}
+
+		treeBuf.append("</ul>");
+	}
+	
+	/**
+	 * @Description: 根据(pId)获取(menuList)中的所有子菜单集合.
+	 * @param @param pId
+	 * @param @param menuList
+	 * @param @return    
+	 * @return List<Map>
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private List<PmsMenuDTO> getSonMenuListByPid(Long pId, List<PmsMenuDTO> menuList) {
+		List sonMenuList = new ArrayList<PmsMenuDTO>();
+		for (PmsMenuDTO menu : menuList) {
+			if (menu != null) {
+				Long parentId = menu.getParentId();
+				if (parentId == pId) {
+					sonMenuList.add(menu);
+				}
+			}
+		}
+		return sonMenuList;
 	}
 
 	/**

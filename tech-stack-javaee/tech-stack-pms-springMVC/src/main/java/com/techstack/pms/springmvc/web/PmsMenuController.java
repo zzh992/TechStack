@@ -1,5 +1,6 @@
 package com.techstack.pms.springmvc.web;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,10 +54,65 @@ public class PmsMenuController extends SpringMVCBaseController{
 	public ModelAndView pmsMenuList() {
 		ModelAndView mav = new ModelAndView("page/pms/pmsMenu/pmsMenuList.jsp");
 		ModelMap modelMap = new ModelMap();
-		String str = pmsMenuBiz.getTreeMenu(EDIT_MENU_ACTION);//构建树形菜单的HTML
-		modelMap.put("tree", str);
+		StringBuffer strJson = new StringBuffer();
+		List treeData = pmsMenuBiz.getMenuByPid(null);
+		recursionTreeMenu(0L, strJson, treeData, EDIT_MENU_ACTION); //从一级菜单开始递归
+		//String str = pmsMenuBiz.getTreeMenu(EDIT_MENU_ACTION);//构建树形菜单的HTML
+		modelMap.put("tree", strJson.toString());
 		mav.addAllObjects(modelMap);
 		return mav;
+	}
+	
+	/**
+	 * @Description: 递归输出树形菜单
+	 * @param @param pId (父节点ID，若为0则表示一级菜单)
+	 * @param @param buffer
+	 * @param @param list
+	 * @param @param url    
+	 * @return void
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private void recursionTreeMenu(Long pId, StringBuffer buffer, List list, String url) {
+		if (pId == 0) {	//若为一级菜单
+			buffer.append("<ul class=\"tree treeFolder collapse \" >");
+		} else {
+			buffer.append("<ul>");
+		}
+		List<PmsMenuDTO> listMenu = getSonMenuListByPid(pId, list);
+		if(listMenu != null && !listMenu.isEmpty()){
+			for (PmsMenuDTO menu : listMenu) {
+				Long id = menu.getId();
+				String name = menu.getName();
+				Integer isLeaf = menu.getIsLeaf();
+				buffer.append("<li><a onclick=\"onClickMenuNode(" + id + ")\"  href=\"" + url + "?id=" + id + "\" target=\"ajax\" rel=\"jbsxBox\"  value=" + id + ">" + name + "</a>");
+				if (!NodeTypeEnum.LEAF.getValue().equals(isLeaf)) {	//非叶子节点继续递归
+					recursionTreeMenu(id, buffer, list, url);
+				}
+				buffer.append("</li>");
+			}
+		}
+		buffer.append("</ul>");
+	}
+	
+	/**
+	 * @Description: 根据(pId)获取(menuList)中的所有子菜单集合.
+	 * @param @param pId
+	 * @param @param menuList
+	 * @param @return    
+	 * @return List<Map>
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private List<PmsMenuDTO> getSonMenuListByPid(Long pId, List<PmsMenuDTO> menuList) {
+		List sonMenuList = new ArrayList<PmsMenuDTO>();
+		for (PmsMenuDTO menu : menuList) {
+			if (menu != null) {
+				Long parentId = menu.getParentId();
+				if (parentId == pId) {
+					sonMenuList.add(menu);
+				}
+			}
+		}
+		return sonMenuList;
 	}
 
 	/**

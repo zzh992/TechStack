@@ -1,5 +1,6 @@
 package com.techstack.pms.struts2.web;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,7 @@ import com.techstack.pms.biz.PmsRoleBiz;
 import com.techstack.pms.dao.dto.PmsActionDTO;
 import com.techstack.pms.dao.dto.PmsMenuDTO;
 import com.techstack.pms.dao.dto.PmsRoleDTO;
+import com.techstack.pms.enums.NodeTypeEnum;
 
 /**
  * @Title: PmsPermissionAction.java 
@@ -131,8 +133,67 @@ public class PmsPermissionController extends Struts2BaseController {
 	 * @return String
 	 */
 	public String pmsMenuLookUpUI() {
-		putData("tree", pmsMenuBiz.buildLookUpMenu());
+		List treeData = pmsMenuBiz.getMenuByPid(null);
+		StringBuffer strJson = new StringBuffer();
+		recursionTreeMenuLookUp(0L, strJson, treeData); //从一级菜单开始构建
+		putData("tree", strJson.toString());
 		return "pmsMenuLookUp";
+	}
+	
+	/**
+	 * @Description: 查找带回权限树
+	 * @param @param pId
+	 * @param @param buffer
+	 * @param @param list    
+	 * @return void
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private void recursionTreeMenuLookUp(Long pId, StringBuffer buffer, List list) {
+		if (pId == 0) {	//为一级菜单
+			buffer.append("<ul class=\"tree treeFolder\" >");
+		} else {
+			buffer.append("<ul>");
+		}
+		List<PmsMenuDTO> sonMenuList = getSonMenuListByPid(pId, list);
+		for (PmsMenuDTO sonMenu : sonMenuList) {
+			Long id = sonMenu.getId();
+			Long parentId = sonMenu.getParentId();
+			String name = sonMenu.getName();
+			Integer isLeaf = sonMenu.getIsLeaf();
+
+			if (isLeaf == NodeTypeEnum.LEAF.getValue()) {	//若为叶子节点
+				buffer.append("<li><a onclick=\"$.bringBack({id:'" + id + "', name:'" + name + "'})\"  href=\"javascript:\"  >" + name + "</a>");
+			} else {
+				buffer.append("<li><a id='" + id + "' pid='" + parentId + "' isleaf='" + isLeaf + "'>" + name + "</a>");
+			}
+
+			if (isLeaf != NodeTypeEnum.LEAF.getValue()) { //非叶子节点继续递归
+				recursionTreeMenuLookUp(id, buffer, list);
+			}
+			buffer.append("</li>");
+		}
+		buffer.append("</ul>");
+	}
+	
+	/**
+	 * @Description: 根据(pId)获取(menuList)中的所有子菜单集合.
+	 * @param @param pId
+	 * @param @param menuList
+	 * @param @return    
+	 * @return List<Map>
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private List<PmsMenuDTO> getSonMenuListByPid(Long pId, List<PmsMenuDTO> menuList) {
+		List sonMenuList = new ArrayList<PmsMenuDTO>();
+		for (PmsMenuDTO menu : menuList) {
+			if (menu != null) {
+				Long parentId = menu.getParentId();
+				if (parentId == pId) {
+					sonMenuList.add(menu);
+				}
+			}
+		}
+		return sonMenuList;
 	}
 
 	/**
