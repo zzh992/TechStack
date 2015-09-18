@@ -49,6 +49,21 @@ public class PmsRoleController extends SpringMVCBaseController{
 	@Autowired
 	private PmsMenuBiz pmsMenuBiz;
 	
+	@RequiresPermissions("pms:role:view")
+	@RequestMapping("/restful_test.action")
+	public ModelAndView restfulTest() {
+		ModelAndView mav = new ModelAndView("page/restfulTest.html");
+		return mav;
+	}
+	
+	@RequiresPermissions("pms:role:api")
+	@RequestMapping("/restful_api.action")
+	@ResponseBody	//ajax返回
+	public Map<String,Object> restfulApi(){
+		Map<String,Object> resultMap = new HashMap<String,Object>();
+		resultMap.put("ttt", "test");
+		return resultMap;
+	}
 	
 	/**
 	 * @Description: 获取角色列表

@@ -11,8 +11,7 @@
 	<description>Shiro安全配置</description>
 
 	<!-- 項目自定义的Realm, shiroService需要具体项目去注入 -->
-	<bean id="shiroDbRealm"
-		class="com.techstack.component.shiro.ShiroDbRealm">
+	<bean id="shiroDbRealm" class="com.techstack.component.shiro.ShiroDbRealm">
 		<property name="shiroService" ref="shiroService" />
 	</bean>
 
@@ -48,11 +47,14 @@
 		<!-- Shiro的核心安全接口,这个属性是必须的 -->  
 		<property name="securityManager" ref="securityManager" />
 		<!-- 要求登录时的链接(可根据项目的URL进行替换),非必须的属性,默认会自动寻找Web工程根目录下的"/login.jsp"页面 -->  
-		<property name="loginUrl" value="/login_loginPage.action" /> <!-- 拦截了post method的这个url请求，如果用户验证失败是放过这个url让其他filterq去处理，所以在controller中也可以写对应的action方法，处理用户验证失败后的逻辑，如返回错误信息回ui -->
+		<!-- <property name="loginUrl" value="/login_loginPage.action" />  --><!-- 拦截了post method的这个url请求，如果用户验证失败是放过这个url让其他filterq去处理，所以在controller中也可以写对应的action方法，处理用户验证失败后的逻辑，如返回错误信息回ui -->
+		<property name="loginUrl" value="${shiro.loginUrl}" />
 		<!-- 登录成功后要跳转的连接 -->  
-		<property name="successUrl" value="/login_mainpage.action" />
+		<!-- <property name="successUrl" value="/login_mainpage.action" /> -->
+		<property name="successUrl" value="${shiro.successUrl}" />
 		<!-- 没有权限跳转的url -->
-		<property name="unauthorizedUrl" value="/login_loginPage.action" />
+		<!-- <property name="unauthorizedUrl" value="/login_loginPage.action" /> -->
+		<property name="unauthorizedUrl" value="${shiro.unauthorizedUrl}" />
 		<property name="filters">
 			<map>
 				<entry key="authc" value-ref="formAuthenticationFilter" />
@@ -64,9 +66,9 @@
 	    <!-- anon：它对应的过滤器里面是空的,什么都没做,这里.do和.jsp后面的*表示参数,比方说login.jsp?main这种 -->  
 	    <!-- authc：该过滤器下的页面必须验证后才能访问,它是Shiro内置的一个拦截器org.apache.shiro.web.filter.authc.FormAuthenticationFilter -->  
 		<!-- http://m.blog.csdn.net/blog/yaowanpengLiferay/17281341 -->
-		<property name="filterChainDefinitions">
-			<value>
-				<!-- /mydemo/login=anon  
+		<property name="filterChainDefinitions" value="${shiro.filterChainDefinitions}" />
+			<!-- <value>
+				/mydemo/login=anon  
              	/mydemo/getVerifyCodeImage=anon  
              	/main**=authc  
              	/user/info*=authc  
@@ -77,17 +79,17 @@
 				*：匹配零个或多个字符串，如/admin*将匹配/admin、/admin123，但不匹配/admin/1；
 				**：匹配路径中的零个或多个路径，如/admin/**将匹配/admin/a或/admin/a/b。
 				url 模式匹配顺序是按照在配置中的声明顺序匹配，即从头开始使用第一个匹配的url 模式对应的拦截器链
-				-->
-             	/js/** = anon <!-- 静态文件 -->
-             	/login_loginPage.action = authc 
+				
+             	/js/** = anon 静态文件
+             	/login_loginPage.action = authc
              	/login_logout.action = logout
              	/login_mainpage.action = user
-             	/login_*.action = anon 
+             	/login_*.action = anon
              	/register_*.action = anon
              	/** = user 
-             	<!-- /** = user --> <!-- 表示必须存在用户，当登入操作时不做检查 -->
+             	/** = user 表示必须存在用户，当登入操作时不做检查
 			</value>
-		</property>
+		</property> -->
 	</bean>
 	
 	<!-- AOP权限拦截，作用：允许AspecJ拦截Controller的method， 做权限的异常处理，因为shiro处理权限注解的时候，如果无权限只会抛异常 -->
@@ -95,14 +97,15 @@
 		估计是多个拦截器对同一方法起效的时候，spring根据配置顺序进行拦截，
 		被shiro的aop拦截器拦截后，因为没有权限直接抛异常，所以自定义的拦截器会失效 -->
 	<!-- proxy-target-class默认"false",更改为"ture"使用CGLib动态代理 -->
+	<!-- springmvc注解不起作用的原因是：打开aop功能的配置“<aop:aspectj-autoproxy proxy-target-class="true"/>”没有放在springmvc的servlet配置文件中，即放在扫描@Controller的那个配置文件中，配置在applicationContext.xml中是无效的。 -->
 	<aop:aspectj-autoproxy proxy-target-class="true" />
-	<bean id="shiroPermissionInterceptor" class="com.techstack.component.shiro.ShiroPermissionInterceptor">
+	<!-- <bean id="shiroPermissionInterceptor" class="com.techstack.component.shiro.ShiroPermissionInterceptor">
 		<property name="unauthorizedUrl" value="login" />
 	</bean>
 	<aop:config>
-		<aop:pointcut id="permissionActions" expression="execution(* com.techstack.sms2.permission.action.*.*(..))" />
+		<aop:pointcut id="permissionActions" expression="execution(* com.techstack.pms.springmvc.web.*.*(..))" />
 		<aop:advisor pointcut-ref="permissionActions" advice-ref="shiroPermissionInterceptor" />
-	</aop:config>
+	</aop:config> -->
 	<!-- <aop:config>
 		<aop:pointcut id="strutsActionsPms" expression="execution(* com.techstack.sms2.permission.action.*.*(..))" />
 		<aop:advisor pointcut-ref="strutsActionsPms" advice-ref="permissionInterceptor" />

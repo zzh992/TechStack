@@ -31,6 +31,8 @@
 			<interceptor name="params" class="com.opensymphony.xwork2.interceptor.ParametersInterceptor"></interceptor>
 			<!--定义模型驱动的拦截器 -->
 			<interceptor name="model-driven" class="com.opensymphony.xwork2.interceptor.ModelDrivenInterceptor"></interceptor>
+			<!-- 异常拦截器 -->
+			<interceptor name="exceptionInterceptor" class="com.techstack.component.struts2.Struts2ExceptionInterceptor"></interceptor>
 			<!-- 操作员登录拦截器 -->
 			<!-- <interceptor name="operatorLoginInterceptor" class="com.oocl.web.base.interceptor.OperatorLoginInterceptor"></interceptor> -->
 			
@@ -38,6 +40,7 @@
 			<interceptor-stack name="defaultStack">
 				<interceptor-ref name="model-driven" />
 				<interceptor-ref name="params" />
+				<interceptor-ref name="exceptionInterceptor" />
 			</interceptor-stack>
 		</interceptors>
 

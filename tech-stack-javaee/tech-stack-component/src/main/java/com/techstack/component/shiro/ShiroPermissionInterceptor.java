@@ -7,7 +7,7 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 
 public class ShiroPermissionInterceptor implements MethodInterceptor{
 
-	private String unauthorizedUrl;
+	private String unauthorizedUrl;	//TODO: spring mvc会报异常，不能直接抛出字符串
 
 	@Override
 	public Object invoke(MethodInvocation invocation) throws Throwable {
